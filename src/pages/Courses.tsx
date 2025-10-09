@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -9,13 +13,77 @@ import { ArrowLeft, BookOpen, Lock, CheckCircle, Award, GraduationCap, Leaf, Bra
 
 const Courses = () => {
   const navigate = useNavigate();
-  const [userProgress] = useState({
-    deliverance: { currentLevel: 1, completedLevels: [1], testsPassed: 1 },
+  const { user } = useAuth();
+  const [userProgress, setUserProgress] = useState({
+    deliverance: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     intercessors: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     trauma: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     naturalHealing: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     tribunals: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
   });
+
+  useEffect(() => {
+    if (user) {
+      loadProgress();
+    }
+  }, [user]);
+
+  const loadProgress = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('course_progress')
+        .select('*')
+        .eq('user_id', user!.id);
+
+      if (error) throw error;
+
+      const progressMap: any = {
+        deliverance: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
+        intercessors: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
+        trauma: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
+        naturalHealing: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
+        tribunals: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
+      };
+
+      data?.forEach(item => {
+        if (item.completed && item.course_id in progressMap) {
+          progressMap[item.course_id].completedLevels.push(item.level_index);
+          progressMap[item.course_id].testsPassed++;
+        }
+      });
+
+      setUserProgress(progressMap);
+    } catch (error) {
+      console.error('Error loading progress:', error);
+    }
+  };
+
+  const enrollInCourse = async (courseId: string, levelIndex: number) => {
+    if (!user) {
+      toast.error("Please login to enroll in courses");
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('course_progress')
+        .insert({
+          user_id: user.id,
+          course_id: courseId,
+          level_index: levelIndex,
+          completed: false,
+        });
+
+      if (error) throw error;
+
+      toast.success("Enrolled in course!");
+      await loadProgress();
+    } catch (error) {
+      console.error('Error enrolling:', error);
+      toast.error("Failed to enroll. Please try again.");
+    }
+  };
 
   const courseCategories = [
     {
@@ -253,7 +321,8 @@ const Courses = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <Button
           variant="ghost"
@@ -374,6 +443,8 @@ const Courses = () => {
                                   window.location.href = '/natural-healing';
                                 } else if (category.id === 'trauma') {
                                   window.location.href = '/spiritual-trauma';
+                                } else {
+                                  enrollInCourse(category.id, level.level);
                                 }
                               }}
                             >
@@ -396,7 +467,8 @@ const Courses = () => {
           })}
         </Tabs>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 };
 

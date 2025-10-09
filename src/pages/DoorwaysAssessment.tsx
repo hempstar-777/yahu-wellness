@@ -3,12 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft, Copy, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const DoorwaysAssessment = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const doorwayCategories = [
     {
@@ -443,10 +449,47 @@ const DoorwaysAssessment = () => {
     toast.success(`Copied ${selectedItems.length} items to clipboard!`);
   };
 
+  const saveResults = async () => {
+    if (selectedItems.length === 0) {
+      toast.error("Please select at least one item");
+      return;
+    }
+    
+    if (!user) {
+      toast.error("Please login to save your assessment");
+      navigate('/auth');
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const { error } = await supabase
+        .from('assessment_results')
+        .insert({
+          user_id: user.id,
+          assessment_type: 'doorways',
+          responses: { selected_items: selectedItems },
+          score: selectedItems.length,
+        });
+
+      if (error) throw error;
+
+      toast.success("Assessment saved successfully!");
+      setTimeout(() => navigate("/prayers"), 1500);
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      toast.error("Failed to save assessment. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const totalItems = doorwayCategories.reduce((sum, cat) => sum + cat.items.length, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-light">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-light">
       {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -557,12 +600,12 @@ const DoorwaysAssessment = () => {
                   </p>
                 </div>
                 <div className="flex gap-3">
-                  <Button onClick={copyResults} size="lg" variant="secondary">
+                  <Button onClick={copyResults} size="lg" variant="secondary" disabled={isSaving}>
                     <Copy className="w-4 h-4 mr-2" />
                     Copy List
                   </Button>
-                  <Button asChild size="lg" className="bg-background text-foreground hover:bg-background/90">
-                    <Link to="/prayers">View Prayers</Link>
+                  <Button onClick={saveResults} size="lg" className="bg-background text-foreground hover:bg-background/90" disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Save & Continue"}
                   </Button>
                 </div>
               </div>
@@ -570,7 +613,8 @@ const DoorwaysAssessment = () => {
           )}
         </div>
       </section>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 };
 
