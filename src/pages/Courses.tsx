@@ -124,29 +124,53 @@ const Courses = () => {
       levels: [
         {
           level: 1,
-          title: 'Biblical Healing & Nutrition',
-          topics: ['God\'s original diet (Genesis)', 'Healing foods and fruits', 'Vegetables as medicine', 'Clean eating principles', 'Fasting for health'],
+          title: 'Biblical Healing & Alkaline Nutrition',
+          topics: [
+            'God\'s original diet (Genesis 1:29)',
+            'Intracellular detoxification principles',
+            'Alkaline vs acidic foods',
+            'Wild crafted herbs foundation',
+            'Cellular regeneration basics (Yahki Awakened methodology)'
+          ],
           duration: '4 weeks',
           difficulty: 'Beginner'
         },
         {
           level: 2,
-          title: 'Herbal Medicine & Essential Oils',
-          topics: ['Biblical herbs and their uses', 'Essential oils in Scripture', 'Creating remedies', 'Topical applications', 'Aromatherapy for healing'],
+          title: 'Herbal Medicine & Anti-Parasitic Protocols',
+          topics: [
+            'Biblical herbs and their healing properties',
+            'The 3Bitters herbal blend approach',
+            'Anti-parasitic herbs and protocols',
+            'System-specific herbal therapies (cardiovascular, digestive, nervous)',
+            'Creating custom herbal formulas'
+          ],
           duration: '6 weeks',
           difficulty: 'Intermediate'
         },
         {
           level: 3,
-          title: 'Advanced Natural Remedies',
-          topics: ['Borax and mineral therapy', 'Suppressed cancer treatments', 'Parasite protocols', 'Heavy metal detox', 'Autoimmune healing'],
+          title: 'Advanced Natural Remedies & Detoxification',
+          topics: [
+            'Advanced parasite cleansing (spiritual-physical connection)',
+            'Borax and mineral therapy protocols',
+            'Heavy metal detoxification',
+            'Suppressed natural cancer treatments',
+            'Holistic revitalization techniques'
+          ],
           duration: '8 weeks',
           difficulty: 'Advanced'
         },
         {
           level: 4,
-          title: 'Spiritual-Physical Connection',
-          topics: ['How parasites open spiritual doors', 'Emotional roots of disease', 'Spirit-mind-body healing', 'Integrated protocols', 'Maintenance and prevention'],
+          title: 'Master Healer Training',
+          topics: [
+            'How parasites open spiritual doorways',
+            'Emotional-spiritual roots of disease',
+            'Complete mind-body-spirit healing protocols',
+            'Building natural healing programs',
+            'Teaching others holistic wellness (Yahki Awakened model)'
+          ],
           duration: '10 weeks',
           difficulty: 'Expert'
         }
@@ -327,6 +351,11 @@ const Courses = () => {
                               disabled={locked}
                               className="flex-1"
                               variant={completed ? "outline" : "default"}
+                              onClick={() => {
+                                if (category.id === 'naturalHealing') {
+                                  window.location.href = '/natural-healing';
+                                }
+                              }}
                             >
                               {completed ? 'Review Course' : locked ? 'Complete Previous Level First' : 'Start Course'}
                             </Button>
