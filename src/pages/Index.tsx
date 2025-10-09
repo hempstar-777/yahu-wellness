@@ -50,8 +50,8 @@ const Index = () => {
               Walk in the authority Yahusha Ha Mashiach purchased for you
             </p>
             <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
-              Simple, faith-enforced deliverance from bondages, trauma, and generational iniquities.
-              Honor Yahuah through biblical freedom.
+              Deliverance ministry is not taboo. We believe that healing is the children's bread, and we make these 
+              resources accessible to all believers seeking freedom in Yahusha Ha Mashiach.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button asChild size="lg" className="bg-gradient-spiritual shadow-elevated hover:shadow-glow transition-all duration-300">
@@ -69,10 +69,11 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         <Alert className="max-w-4xl mx-auto border-secondary/30 bg-secondary/5">
           <AlertCircle className="h-5 w-5 text-secondary" />
-          <AlertDescription className="text-sm">
-            <strong>Important:</strong> These prayers are powerful. Use in safe settings only (not while driving). 
-            Manifestations, memories, or emotions may occur. This is not a substitute for medical or psychological care. 
-            By proceeding, you release Deliverance Freedom from liability.
+          <AlertDescription className="text-sm leading-relaxed">
+            <strong>Important Safety Notice:</strong> These prayers are powerful and may cause manifestations, memories, 
+            or emotional releases. Use in safe, private settings only—not while driving or operating machinery. 
+            This resource is not a substitute for medical or psychological care. By proceeding, you agree to hold 
+            this ministry harmless for any adverse effects from self-deliverance. Governed by Texas law.
           </AlertDescription>
         </Alert>
       </div>
@@ -148,9 +149,10 @@ const Index = () => {
             "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."
           </blockquote>
           <cite className="text-lg text-muted-foreground">— 1 John 1:9</cite>
-          <p className="text-lg text-foreground/80 pt-6">
-            Deliverance is simple, voluntary, and rooted in Yahusha's victory. 
-            Speak everything out loud and invite the Ruach HaKodesh to fill you.
+          <p className="text-lg text-foreground/80 pt-6 max-w-2xl mx-auto">
+            Deliverance is simple, voluntary, and rooted in Yahusha Ha Mashiach's victory on the cross. 
+            Christians can have demons (see Acts 8:13-23), and biblical deliverance is the pathway to lasting freedom.
+            Speak everything out loud and invite the Ruach HaKodesh to fill you afterward.
           </p>
         </div>
       </section>
@@ -158,12 +160,17 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 bg-muted/30">
         <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto text-center text-sm text-muted-foreground space-y-2">
+          <div className="max-w-4xl mx-auto text-center text-sm text-muted-foreground space-y-3">
             <p>
-              This app is inspired by Bride Ministries and biblical principles of deliverance.
+              This app is inspired by <strong>Bride Ministries International</strong> and the deliverance teachings of 
+              Dan Duval, Amanda Buys, and other anointed ministers committed to setting captives free.
             </p>
             <p>
-              Governed by Texas law. For educational and spiritual purposes only.
+              We believe in making cutting-edge deliverance resources accessible to millions worldwide. 
+              All content is for educational and spiritual purposes only.
+            </p>
+            <p className="text-xs">
+              Governed by Texas law. Not a substitute for medical or psychological care.
             </p>
           </div>
         </div>

@@ -108,15 +108,23 @@ const Assessments = () => {
       <section className="container mx-auto px-4 py-8 pb-16">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {assessments.map((assessment, index) => (
-            <Card
-              key={assessment.id}
-              className={`group p-6 hover:shadow-elevated transition-all duration-300 animate-fade-in ${
-                assessment.available 
-                  ? 'border-border/50 hover:border-primary/30 cursor-pointer' 
-                  : 'opacity-60 border-border/30'
-              }`}
-              style={{ animationDelay: `${index * 75}ms` }}
+            <Link 
+              to={
+                assessment.id === 1 ? "/assessments/surface-issues" :
+                assessment.id === 2 ? "/assessments/bondages" :
+                "#"
+              }
+              className={assessment.available ? "" : "pointer-events-none"}
             >
+              <Card
+                key={assessment.id}
+                className={`group p-6 hover:shadow-elevated transition-all duration-300 animate-fade-in ${
+                  assessment.available 
+                    ? 'border-border/50 hover:border-primary/30 cursor-pointer' 
+                    : 'opacity-60 border-border/30'
+                }`}
+                style={{ animationDelay: `${index * 75}ms` }}
+              >
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div className={`p-3 rounded-lg ${
@@ -156,6 +164,7 @@ const Assessments = () => {
                 </div>
               </div>
             </Card>
+            </Link>
           ))}
         </div>
       </section>
