@@ -93,6 +93,45 @@ export type Database = {
           },
         ]
       }
+      course_purchases: {
+        Row: {
+          amount_paid: number
+          course_id: string
+          currency: string
+          id: string
+          level_index: number | null
+          purchase_type: string
+          purchased_at: string
+          stripe_payment_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          course_id: string
+          currency?: string
+          id?: string
+          level_index?: number | null
+          purchase_type: string
+          purchased_at?: string
+          stripe_payment_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          course_id?: string
+          currency?: string
+          id?: string
+          level_index?: number | null
+          purchase_type?: string
+          purchased_at?: string
+          stripe_payment_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       prayer_journal: {
         Row: {
           content: string

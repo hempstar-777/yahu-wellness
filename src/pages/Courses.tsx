@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,11 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, BookOpen, Lock, CheckCircle, Award, GraduationCap, Leaf, Brain, Heart, Scale } from 'lucide-react';
+import { ArrowLeft, BookOpen, Lock, CheckCircle, Award, GraduationCap, Leaf, Brain, Heart, Scale, DollarSign, ShoppingCart } from 'lucide-react';
+import { coursePricing, calculateSavings } from '@/lib/courseData';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Courses = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [userProgress, setUserProgress] = useState({
     deliverance: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     intercessors: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
@@ -21,12 +24,46 @@ const Courses = () => {
     naturalHealing: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     tribunals: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
   });
+  const [purchases, setPurchases] = useState<any[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (user) {
       loadProgress();
+      loadPurchases();
     }
   }, [user]);
+
+  useEffect(() => {
+    // Check for successful payment
+    const success = searchParams.get('success');
+    const sessionId = searchParams.get('session_id');
+    
+    if (success === 'true' && sessionId) {
+      toast.success('Payment successful! You now have access to the course.');
+      // Reload purchases and progress
+      loadPurchases();
+      loadProgress();
+    }
+
+    if (searchParams.get('canceled') === 'true') {
+      toast.error('Payment was canceled');
+    }
+  }, [searchParams]);
+
+  const loadPurchases = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('course_purchases')
+        .select('*')
+        .eq('user_id', user!.id);
+
+      if (error) throw error;
+      setPurchases(data || []);
+    } catch (error) {
+      console.error('Error loading purchases:', error);
+    }
+  };
 
   const loadProgress = async () => {
     try {
@@ -55,6 +92,72 @@ const Courses = () => {
       setUserProgress(progressMap);
     } catch (error) {
       console.error('Error loading progress:', error);
+    }
+  };
+
+  const hasPurchased = (courseId: string, levelIndex?: number) => {
+    if (!purchases.length) return false;
+    
+    // Check if full course was purchased
+    const fullCoursePurchase = purchases.find(
+      p => p.course_id === courseId && p.purchase_type === 'full_course'
+    );
+    if (fullCoursePurchase) return true;
+
+    // Check if specific module was purchased
+    if (levelIndex) {
+      return purchases.some(
+        p => p.course_id === courseId && 
+        p.level_index === levelIndex && 
+        p.purchase_type === 'module'
+      );
+    }
+
+    return false;
+  };
+
+  const handlePurchase = async (
+    courseId: string, 
+    courseName: string,
+    levelIndex: number | null,
+    levelName: string,
+    purchaseType: 'module' | 'full_course'
+  ) => {
+    if (!user) {
+      toast.error("Please login to purchase courses");
+      navigate('/auth');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const pricing = coursePricing[courseId as keyof typeof coursePricing];
+      const price = purchaseType === 'full_course' 
+        ? pricing.fullCourse 
+        : pricing.modules[(levelIndex || 1) - 1];
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          courseId,
+          levelIndex,
+          purchaseType,
+          courseName,
+          levelName,
+          price,
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast.error("Failed to initiate purchase. Please try again.");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -362,6 +465,10 @@ const Courses = () => {
 
           {courseCategories.map((category) => {
             const Icon = category.icon;
+            const pricing = coursePricing[category.id as keyof typeof coursePricing];
+            const { savings, savingsPercent } = calculateSavings(category.id as keyof typeof coursePricing);
+            const hasFullAccess = hasPurchased(category.id);
+
             return (
               <TabsContent key={category.id} value={category.id} className="space-y-6">
                 <Card className="border-2">
@@ -371,6 +478,48 @@ const Courses = () => {
                       <div className="flex-1">
                         <CardTitle className="text-2xl mb-2">{category.title}</CardTitle>
                         <CardDescription className="text-base">{category.description}</CardDescription>
+                        
+                        {/* Pricing Summary */}
+                        <div className="mt-4 p-4 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg border border-primary/20">
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">Full Course Price</p>
+                              <p className="text-3xl font-bold text-primary">${pricing.fullCourse}</p>
+                            </div>
+                            <div className="text-right">
+                              <Badge className="bg-green-100 text-green-800 mb-1">
+                                Save {savingsPercent}%
+                              </Badge>
+                              <p className="text-sm text-muted-foreground">
+                                vs ${calculateSavings(category.id as keyof typeof coursePricing).moduleTotal} for individual modules
+                              </p>
+                            </div>
+                          </div>
+                          {!hasFullAccess && (
+                            <Button
+                              onClick={() => handlePurchase(
+                                category.id,
+                                category.title,
+                                null,
+                                'Full Course',
+                                'full_course'
+                              )}
+                              disabled={isProcessing}
+                              className="w-full bg-gradient-spiritual"
+                              size="lg"
+                            >
+                              <ShoppingCart className="h-4 w-4 mr-2" />
+                              {isProcessing ? "Processing..." : `Purchase Full Course - $${pricing.fullCourse}`}
+                            </Button>
+                          )}
+                          {hasFullAccess && (
+                            <div className="flex items-center justify-center gap-2 text-green-600">
+                              <CheckCircle className="h-5 w-5" />
+                              <span className="font-semibold">You own the full course!</span>
+                            </div>
+                          )}
+                        </div>
+
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium">Overall Progress</span>
@@ -389,6 +538,9 @@ const Courses = () => {
                   {category.levels.map((level) => {
                     const locked = isLevelLocked(category.id, level.level);
                     const completed = isLevelCompleted(category.id, level.level);
+                    const isPurchased = hasPurchased(category.id, level.level) || hasFullAccess;
+                    const pricing = coursePricing[category.id as keyof typeof coursePricing];
+                    const modulePrice = pricing.modules[level.level - 1];
                     
                     return (
                       <Card
@@ -433,29 +585,71 @@ const Courses = () => {
                           </div>
                         </CardHeader>
                         <CardContent>
-                          <div className="flex gap-3">
-                            <Button
-                              disabled={locked}
-                              className="flex-1"
-                              variant={completed ? "outline" : "default"}
-                              onClick={() => {
-                                if (category.id === 'naturalHealing') {
-                                  window.location.href = '/natural-healing';
-                                } else if (category.id === 'trauma') {
-                                  window.location.href = '/spiritual-trauma';
-                                } else {
-                                  enrollInCourse(category.id, level.level);
-                                }
-                              }}
-                            >
-                              {completed ? 'Review Course' : locked ? 'Complete Previous Level First' : 'Start Course'}
-                            </Button>
-                            {!locked && !completed && (
-                              <Button variant="outline" disabled={locked}>
-                                <Award className="h-4 w-4 mr-2" />
-                                Take Exam
-                              </Button>
+                          <div className="space-y-3">
+                            {/* Pricing info for individual module */}
+                            {!isPurchased && !locked && (
+                              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                                <span className="text-sm font-medium">Module Price:</span>
+                                <div className="flex items-center gap-2">
+                                  <DollarSign className="h-4 w-4 text-primary" />
+                                  <span className="text-xl font-bold text-primary">${modulePrice}</span>
+                                </div>
+                              </div>
                             )}
+
+                            {isPurchased && (
+                              <div className="flex items-center gap-2 p-3 bg-green-50 text-green-700 rounded-lg">
+                                <CheckCircle className="h-5 w-5" />
+                                <span className="font-semibold">Purchased</span>
+                              </div>
+                            )}
+
+                            <div className="flex gap-3">
+                              {!isPurchased && !locked ? (
+                                <Button
+                                  onClick={() => handlePurchase(
+                                    category.id,
+                                    category.title,
+                                    level.level,
+                                    level.title,
+                                    'module'
+                                  )}
+                                  disabled={isProcessing}
+                                  className="flex-1"
+                                  variant="default"
+                                >
+                                  <ShoppingCart className="h-4 w-4 mr-2" />
+                                  {isProcessing ? "Processing..." : `Purchase Module - $${modulePrice}`}
+                                </Button>
+                              ) : isPurchased ? (
+                                <Button
+                                  disabled={locked}
+                                  className="flex-1"
+                                  variant={completed ? "outline" : "default"}
+                                  onClick={() => {
+                                    if (category.id === 'naturalHealing') {
+                                      window.location.href = '/natural-healing';
+                                    } else if (category.id === 'trauma') {
+                                      window.location.href = '/spiritual-trauma';
+                                    } else {
+                                      enrollInCourse(category.id, level.level);
+                                    }
+                                  }}
+                                >
+                                  {completed ? 'Review Course' : 'Start Course'}
+                                </Button>
+                              ) : (
+                                <Button disabled className="flex-1">
+                                  {locked ? 'Complete Previous Level First' : 'Purchase Required'}
+                                </Button>
+                              )}
+                              {isPurchased && !completed && (
+                                <Button variant="outline" disabled={locked}>
+                                  <Award className="h-4 w-4 mr-2" />
+                                  Take Exam
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
