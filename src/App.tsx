@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Assessments from "./pages/Assessments";
 import SurfaceIssuesAssessment from "./pages/SurfaceIssuesAssessment";
@@ -24,6 +25,10 @@ import Resources from "./pages/Resources";
 import Teachings from "./pages/Teachings";
 import ExpandedPrayers from "./pages/ExpandedPrayers";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
+import PrayerJournal from "./pages/PrayerJournal";
+import Testimonies from "./pages/Testimonies";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +38,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <AuthProvider>
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/assessments" element={<Assessments />} />
           <Route path="/assessments/surface-issues" element={<SurfaceIssuesAssessment />} />
@@ -54,9 +60,14 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/teachings" element={<Teachings />} />
           <Route path="/expanded-prayers" element={<ExpandedPrayers />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/prayer-journal" element={<PrayerJournal />} />
+          <Route path="/testimonies" element={<Testimonies />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

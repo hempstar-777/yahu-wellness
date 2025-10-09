@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap } from "lucide-react";
+import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "@/components/LanguageSelector";
+import { useAuth } from "@/hooks/useAuth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const { t } = useTranslation();
+  const { user, signOut } = useAuth();
   
   const quickStartCards = [
     {
@@ -46,8 +49,37 @@ const Index = () => {
       <header className="relative overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 bg-gradient-spiritual opacity-5" />
         <div className="container mx-auto px-4 py-16 relative">
-          <div className="flex justify-end mb-4">
-            <LanguageSelector />
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex-1" />
+            <div className="flex items-center gap-3">
+              <LanguageSelector />
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <User className="h-4 w-4" />
+                      {user.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                        <TrendingUp className="h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut} className="gap-2">
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/auth">Login / Sign Up</Link>
+                </Button>
+              )}
+            </div>
           </div>
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="font-serif text-5xl md:text-6xl font-bold bg-gradient-spiritual bg-clip-text text-transparent">

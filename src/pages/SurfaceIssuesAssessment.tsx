@@ -6,10 +6,15 @@ import { ChevronLeft, FileText, Copy } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const SurfaceIssuesAssessment = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const assessmentItems = {
     "Anger & Unforgiveness": [
@@ -133,19 +138,45 @@ const SurfaceIssuesAssessment = () => {
     toast.success("Results copied to clipboard!");
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (selectedItems.length === 0) {
       toast.error("Please select at least one item");
       return;
     }
     
-    localStorage.setItem("assessmentResults", JSON.stringify(selectedItems));
-    toast.success("Assessment saved! Redirecting to prayers...");
-    setTimeout(() => navigate("/prayers"), 1500);
+    if (!user) {
+      toast.error("Please login to save your assessment");
+      navigate('/auth');
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const { error } = await supabase
+        .from('assessment_results')
+        .insert({
+          user_id: user.id,
+          assessment_type: 'surface_issues',
+          responses: { selected_items: selectedItems },
+          score: selectedItems.length,
+        });
+
+      if (error) throw error;
+
+      toast.success("Assessment saved successfully!");
+      setTimeout(() => navigate("/prayers"), 1500);
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      toast.error("Failed to save assessment. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-light">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-light">
       {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -253,8 +284,13 @@ const SurfaceIssuesAssessment = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleComplete} size="lg" className="flex-1 bg-gradient-spiritual shadow-elevated">
-                  Save & Go to Prayers
+                <Button 
+                  onClick={handleComplete} 
+                  size="lg" 
+                  className="flex-1 bg-gradient-spiritual shadow-elevated"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save & Go to Prayers"}
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-primary/30">
                   <Link to="/deliverance">View 5-Step Process</Link>
@@ -264,7 +300,8 @@ const SurfaceIssuesAssessment = () => {
           </Card>
         </section>
       )}
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 };
 
