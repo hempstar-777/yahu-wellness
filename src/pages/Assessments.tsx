@@ -66,6 +66,16 @@ const Assessments = () => {
       available: true,
       path: "/assessments/advanced",
     },
+    {
+      id: 7,
+      title: "Doorways Assessment",
+      description: "Comprehensive list of 600+ specific doorways across all categories.",
+      icon: FileText,
+      difficulty: "Comprehensive",
+      duration: "20-30 min",
+      available: true,
+      path: "/assessments/doorways",
+    },
   ];
 
   return (

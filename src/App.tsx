@@ -12,6 +12,7 @@ import GenerationalAssessment from "./pages/GenerationalAssessment";
 import NewAgeAssessment from "./pages/NewAgeAssessment";
 import AdvancedAssessment from "./pages/AdvancedAssessment";
 import DoorwaysAssessment from "./pages/DoorwaysAssessment";
+import EmotionsDictionary from "./pages/EmotionsDictionary";
 import Deliverance from "./pages/Deliverance";
 import PreDeliverance from "./pages/PreDeliverance";
 import StayingFree from "./pages/StayingFree";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/assessments/new-age" element={<NewAgeAssessment />} />
           <Route path="/assessments/advanced" element={<AdvancedAssessment />} />
           <Route path="/assessments/doorways" element={<DoorwaysAssessment />} />
+          <Route path="/emotions" element={<EmotionsDictionary />} />
           <Route path="/deliverance" element={<Deliverance />} />
           <Route path="/pre-deliverance" element={<PreDeliverance />} />
           <Route path="/staying-free" element={<StayingFree />} />
