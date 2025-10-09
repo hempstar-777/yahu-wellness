@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import BibleAudioPlayer from "@/components/BibleAudioPlayer";
 import PrayerAudioPlayer from "@/components/PrayerAudioPlayer";
 import AIDeliveranceChat from "@/components/AIDeliveranceChat";
+import HebrewNamesGlossary from "@/components/HebrewNamesGlossary";
 
 const Resources = () => {
   const teachings = [
@@ -60,6 +61,19 @@ const Resources = () => {
           </div>
         </div>
       </header>
+
+      {/* Hebrew Names Glossary */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-6">
+            <h2 className="font-serif text-3xl font-bold mb-2">Hebrew Names Study</h2>
+            <p className="text-muted-foreground">
+              Discover the true meanings of sacred names (transliterated, not translated)
+            </p>
+          </div>
+          <HebrewNamesGlossary />
+        </div>
+      </section>
 
       {/* AI & Audio Tools */}
       <section className="container mx-auto px-4 py-8">
