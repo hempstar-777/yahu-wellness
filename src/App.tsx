@@ -15,6 +15,7 @@ import DoorwaysAssessment from "./pages/DoorwaysAssessment";
 import EmotionsDictionary from "./pages/EmotionsDictionary";
 import Courses from "./pages/Courses";
 import NaturalHealingResources from "./pages/NaturalHealingResources";
+import SpiritualTraumaResources from "./pages/SpiritualTraumaResources";
 import Deliverance from "./pages/Deliverance";
 import PreDeliverance from "./pages/PreDeliverance";
 import StayingFree from "./pages/StayingFree";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/emotions" element={<EmotionsDictionary />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/natural-healing" element={<NaturalHealingResources />} />
+          <Route path="/spiritual-trauma" element={<SpiritualTraumaResources />} />
           <Route path="/deliverance" element={<Deliverance />} />
           <Route path="/pre-deliverance" element={<PreDeliverance />} />
           <Route path="/staying-free" element={<StayingFree />} />

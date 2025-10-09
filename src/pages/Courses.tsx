@@ -94,22 +94,40 @@ const Courses = () => {
       levels: [
         {
           level: 1,
-          title: 'Understanding Trauma',
-          topics: ['Types of spiritual trauma', 'Mind-body-spirit connection', 'Trauma responses', 'Safe processing', 'Biblical healing model'],
+          title: 'Understanding Spiritual Trauma',
+          topics: [
+            'Biblical foundation for inner healing',
+            'Types of spiritual trauma (abuse, rejection, abandonment)',
+            'Mind-body-spirit connection in trauma',
+            'The role of the Holy Spirit in healing',
+            'Safe processing and creating emotional safety'
+          ],
           duration: '5 weeks',
           difficulty: 'Beginner'
         },
         {
           level: 2,
-          title: 'Inner Healing Methods',
-          topics: ['Sozo ministry', 'Healing prayer', 'Memory healing', 'Forgiveness work', 'Identity in Christ'],
+          title: 'Holy Spirit-Led Inner Healing',
+          topics: [
+            'Inviting the Holy Spirit into traumatic memories',
+            'Healing prayer and Spirit-led ministry',
+            'Breaking trauma bonds through the power of God',
+            'Renewing the mind (Romans 12:2)',
+            'Forgiveness work empowered by the Spirit'
+          ],
           duration: '7 weeks',
           difficulty: 'Intermediate'
         },
         {
           level: 3,
-          title: 'Complex Trauma & Ministry',
-          topics: ['PTSD and spiritual warfare', 'Dissociation', 'Ritual abuse recovery', 'Professional boundaries', 'Referral protocols'],
+          title: 'Complex Trauma & Deliverance Ministry',
+          topics: [
+            'PTSD and spiritual warfare connection',
+            'Dissociation and fragmentation healing',
+            'Ritual abuse and satanic trauma recovery',
+            'The Comforter\'s role in deep healing',
+            'Professional boundaries and referral protocols'
+          ],
           duration: '10 weeks',
           difficulty: 'Advanced'
         }
@@ -354,6 +372,8 @@ const Courses = () => {
                               onClick={() => {
                                 if (category.id === 'naturalHealing') {
                                   window.location.href = '/natural-healing';
+                                } else if (category.id === 'trauma') {
+                                  window.location.href = '/spiritual-trauma';
                                 }
                               }}
                             >
