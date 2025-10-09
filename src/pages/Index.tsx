@@ -69,6 +69,9 @@ const Index = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+                <Link to="/pre-deliverance">Pre-Deliverance Prep</Link>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
                 <Link to="/teachings">{t('home.spiritualTeachings')}</Link>
               </Button>
               <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">

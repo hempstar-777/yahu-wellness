@@ -11,7 +11,10 @@ import TraumaAssessment from "./pages/TraumaAssessment";
 import GenerationalAssessment from "./pages/GenerationalAssessment";
 import NewAgeAssessment from "./pages/NewAgeAssessment";
 import AdvancedAssessment from "./pages/AdvancedAssessment";
+import DoorwaysAssessment from "./pages/DoorwaysAssessment";
 import Deliverance from "./pages/Deliverance";
+import PreDeliverance from "./pages/PreDeliverance";
+import StayingFree from "./pages/StayingFree";
 import Prayers from "./pages/Prayers";
 import Resources from "./pages/Resources";
 import Teachings from "./pages/Teachings";
@@ -35,7 +38,10 @@ const App = () => (
           <Route path="/assessments/generational" element={<GenerationalAssessment />} />
           <Route path="/assessments/new-age" element={<NewAgeAssessment />} />
           <Route path="/assessments/advanced" element={<AdvancedAssessment />} />
+          <Route path="/assessments/doorways" element={<DoorwaysAssessment />} />
           <Route path="/deliverance" element={<Deliverance />} />
+          <Route path="/pre-deliverance" element={<PreDeliverance />} />
+          <Route path="/staying-free" element={<StayingFree />} />
           <Route path="/prayers" element={<Prayers />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/teachings" element={<Teachings />} />

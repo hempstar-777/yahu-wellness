@@ -144,6 +144,9 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
               <Button asChild size="lg" variant="outline" className="border-primary/30">
                 <Link to="/deliverance">Learn the 5 Steps</Link>
               </Button>
+              <Button asChild size="lg" variant="outline" className="border-primary/30">
+                <Link to="/staying-free">Staying Free Guide</Link>
+              </Button>
             </div>
           </div>
         </Card>
