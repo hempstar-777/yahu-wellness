@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Kurtuluş Duası Rehberi",
+    "tagline": "Yahusha Aracılığıyla Kutsal Kitap Öz Kurtuluşu"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "assessments": "Değerlendirmeler",
+    "deliverance": "Kurtuluş",
+    "prayers": "Dualar",
+    "resources": "Kaynaklar",
+    "teachings": "Öğretiler"
+  },
+  "hero": {
+    "title": "Yahusha Aracılığıyla Özgürleşin",
+    "subtitle": "Ruhani özgürlük için Kutsal Kitap öz kurtuluş rehberleri ve duaları",
+    "cta": "Değerlendirmenize Başlayın",
+    "learn": "5 Adımı Öğrenin",
+    "spiritualTeachings": "Ruhani Öğretiler",
+    "resourcesTools": "Kaynaklar ve Araçlar"
+  },
+  "safety": {
+    "title": "Önemli Güvenlik Bildirimi",
+    "text": "Bu dualar güçlüdür ve tezahürler, anılar veya duygusal salımlar yaratabilir. Sadece güvenli, özel ortamlarda kullanın—araç kullanırken veya makine çalıştırırken değil. Bu kaynak tıbbi veya psikolojik bakımın yerine geçmez. Ciddi ruhani savaş durumları için, bölgenizdeki deneyimli kurtuluş hizmetlilerinden rehberlik almayı düşünün."
+  },
+  "biblePlayer": {
+    "title": "24/7 Kutsal Kitap Sesi",
+    "subtitle": "Bilinçaltı seçeneği ile sürekli kutsal yazı okuma",
+    "subliminalMode": "Bilinçaltı Modu",
+    "subliminalInfo": "Bilinçaltı modunda, ses çok düşük seviyede çalar (bilinçli işitme için duyulamaz ancak bilinçaltında işlenir). Başkaları mevcut olduğunda arka plan oynatma için mükemmeldir.",
+    "volume": "Ses",
+    "selectLanguage": "Kutsal Kitap Okuma Dili",
+    "usingEthiopianCanon": "Etiyopya Kutsal Kitabı Kullanımı (81 kitap)",
+    "start": "24/7 Kutsal Kitap Okumayı Başlat",
+    "stop": "Okumayı Durdur",
+    "started": "Kutsal Kitap okuma başladı - 24/7 modu aktif",
+    "stopped": "Kutsal Kitap okuma durduruldu",
+    "notSupported": "Metin okuma tarayıcınızda desteklenmiyor"
+  },
+  "languages": {
+    "en": "İngilizce",
+    "es": "İspanyolca",
+    "fr": "Fransızca",
+    "de": "Almanca",
+    "pt": "Portekizce",
+    "zh": "Çince",
+    "ar": "Arapça",
+    "ru": "Rusça",
+    "hi": "Hintçe",
+    "ja": "Japonca",
+    "ko": "Korece",
+    "it": "İtalyanca",
+    "nl": "Flemenkçe",
+    "pl": "Lehçe",
+    "tr": "Türkçe",
+    "sw": "Svahili",
+    "am": "Amharca",
+    "he": "Paleo İbranice",
+    "arc": "Aramice"
+  }
+}

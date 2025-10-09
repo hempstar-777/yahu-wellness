@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Bevrijdingsgebed Gids",
+    "tagline": "Bijbelse Zelfbevrijding door Yahusha"
+  },
+  "nav": {
+    "home": "Home",
+    "assessments": "Beoordelingen",
+    "deliverance": "Bevrijding",
+    "prayers": "Gebeden",
+    "resources": "Bronnen",
+    "teachings": "Leringen"
+  },
+  "hero": {
+    "title": "Bevrijd jezelf door Yahusha",
+    "subtitle": "Bijbelse zelfbevrijdingsgidsen en gebeden voor spirituele vrijheid",
+    "cta": "Begin uw Beoordeling",
+    "learn": "Leer de 5 Stappen",
+    "spiritualTeachings": "Spirituele Leringen",
+    "resourcesTools": "Bronnen en Hulpmiddelen"
+  },
+  "safety": {
+    "title": "Belangrijke Veiligheidswaarschuwing",
+    "text": "Deze gebeden zijn krachtig en kunnen manifestaties, herinneringen of emotionele releases veroorzaken. Gebruik alleen in veilige, privé-omgevingen—niet tijdens het rijden of bedienen van machines. Deze bron is geen vervanging voor medische of psychologische zorg. Voor ernstige spirituele oorlogssituaties, overweeg begeleiding te zoeken van ervaren bevrijdingsdienaren in uw regio."
+  },
+  "biblePlayer": {
+    "title": "24/7 Bijbel Audio",
+    "subtitle": "Continue schriftlezing met subliminale optie",
+    "subliminalMode": "Subliminale Modus",
+    "subliminalInfo": "In subliminale modus speelt audio op zeer laag volume (onhoorbaar voor bewust gehoor maar onbewust verwerkt). Perfect voor achtergrond afspelen wanneer anderen aanwezig zijn.",
+    "volume": "Volume",
+    "selectLanguage": "Bijbelleestaal",
+    "usingEthiopianCanon": "Gebruik van Ethiopische Bijbel (81 boeken)",
+    "start": "Start 24/7 Bijbellezing",
+    "stop": "Stop Lezing",
+    "started": "Bijbellezing gestart - 24/7 modus actief",
+    "stopped": "Bijbellezing gestopt",
+    "notSupported": "Tekst-naar-spraak niet ondersteund in uw browser"
+  },
+  "languages": {
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "de": "Duits",
+    "pt": "Portugees",
+    "zh": "Chinees",
+    "ar": "Arabisch",
+    "ru": "Russisch",
+    "hi": "Hindi",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "it": "Italiaans",
+    "nl": "Nederlands",
+    "pl": "Pools",
+    "tr": "Turks",
+    "sw": "Swahili",
+    "am": "Amhaars",
+    "he": "Paleo-Hebreeuws",
+    "arc": "Aramees"
+  }
+}

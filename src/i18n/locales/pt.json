@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Guia de Oração de Libertação",
+    "tagline": "Auto-Libertação Bíblica através de Yahusha"
+  },
+  "nav": {
+    "home": "Início",
+    "assessments": "Avaliações",
+    "deliverance": "Libertação",
+    "prayers": "Orações",
+    "resources": "Recursos",
+    "teachings": "Ensinamentos"
+  },
+  "hero": {
+    "title": "Liberte-se através de Yahusha",
+    "subtitle": "Guias e orações bíblicas de auto-libertação para a liberdade espiritual",
+    "cta": "Começar sua Avaliação",
+    "learn": "Aprenda os 5 Passos",
+    "spiritualTeachings": "Ensinamentos Espirituais",
+    "resourcesTools": "Recursos e Ferramentas"
+  },
+  "safety": {
+    "title": "Aviso Importante de Segurança",
+    "text": "Estas orações são poderosas e podem causar manifestações, memórias ou liberações emocionais. Use apenas em ambientes seguros e privados—não enquanto dirige ou opera máquinas. Este recurso não substitui cuidados médicos ou psicológicos. Para situações graves de guerra espiritual, considere buscar orientação de ministros de libertação experientes em sua região."
+  },
+  "biblePlayer": {
+    "title": "Áudio Bíblico 24/7",
+    "subtitle": "Leitura contínua das escrituras com opção subliminar",
+    "subliminalMode": "Modo Subliminar",
+    "subliminalInfo": "No modo subliminar, o áudio é reproduzido em volume muito baixo (inaudível para a audição consciente, mas processado subconscientemente). Perfeito para reprodução em segundo plano enquanto outros estão presentes.",
+    "volume": "Volume",
+    "selectLanguage": "Idioma de Leitura Bíblica",
+    "usingEthiopianCanon": "Usando a Bíblia Etíope (81 livros)",
+    "start": "Iniciar Leitura Bíblica 24/7",
+    "stop": "Parar Leitura",
+    "started": "Leitura bíblica iniciada - modo 24/7 ativo",
+    "stopped": "Leitura bíblica parada",
+    "notSupported": "Texto para fala não suportado no seu navegador"
+  },
+  "languages": {
+    "en": "Inglês",
+    "es": "Espanhol",
+    "fr": "Francês",
+    "de": "Alemão",
+    "pt": "Português",
+    "zh": "Chinês",
+    "ar": "Árabe",
+    "ru": "Russo",
+    "hi": "Hindi",
+    "ja": "Japonês",
+    "ko": "Coreano",
+    "it": "Italiano",
+    "nl": "Holandês",
+    "pl": "Polonês",
+    "tr": "Turco",
+    "sw": "Suaíli",
+    "am": "Amárico",
+    "he": "Hebraico Paleo",
+    "arc": "Aramaico"
+  }
+}

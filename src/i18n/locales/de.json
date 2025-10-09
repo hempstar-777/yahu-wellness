@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Befreiungsgebetsleitfaden",
+    "tagline": "Biblische Selbstbefreiung durch Yahusha"
+  },
+  "nav": {
+    "home": "Startseite",
+    "assessments": "Bewertungen",
+    "deliverance": "Befreiung",
+    "prayers": "Gebete",
+    "resources": "Ressourcen",
+    "teachings": "Lehren"
+  },
+  "hero": {
+    "title": "Befreie dich durch Yahusha",
+    "subtitle": "Biblische Selbstbefreiungsanleitungen und Gebete für geistliche Freiheit",
+    "cta": "Beginnen Sie Ihre Bewertung",
+    "learn": "Lernen Sie die 5 Schritte",
+    "spiritualTeachings": "Spirituelle Lehren",
+    "resourcesTools": "Ressourcen und Werkzeuge"
+  },
+  "safety": {
+    "title": "Wichtiger Sicherheitshinweis",
+    "text": "Diese Gebete sind kraftvoll und können Manifestationen, Erinnerungen oder emotionale Freisetzungen verursachen. Verwenden Sie sie nur in sicheren, privaten Umgebungen – nicht beim Fahren oder Bedienen von Maschinen. Diese Ressource ersetzt keine medizinische oder psychologische Versorgung. Bei schweren geistlichen Kriegssituationen sollten Sie die Anleitung erfahrener Befreiungsdiener in Ihrer Region suchen."
+  },
+  "biblePlayer": {
+    "title": "24/7 Bibel-Audio",
+    "subtitle": "Kontinuierliche Schriftlesung mit subliminaler Option",
+    "subliminalMode": "Subliminaler Modus",
+    "subliminalInfo": "Im subliminalen Modus wird Audio bei sehr geringer Lautstärke abgespielt (für bewusstes Hören unhörbar, aber unterbewusst verarbeitet). Perfekt für Hintergrundwiedergabe, wenn andere anwesend sind.",
+    "volume": "Lautstärke",
+    "selectLanguage": "Bibelleseprache",
+    "usingEthiopianCanon": "Verwendung der äthiopischen Bibel (81 Bücher)",
+    "start": "24/7 Bibellesung starten",
+    "stop": "Lesung stoppen",
+    "started": "Bibellesung gestartet - 24/7-Modus aktiv",
+    "stopped": "Bibellesung gestoppt",
+    "notSupported": "Text-zu-Sprache wird in Ihrem Browser nicht unterstützt"
+  },
+  "languages": {
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "de": "Deutsch",
+    "pt": "Portugiesisch",
+    "zh": "Chinesisch",
+    "ar": "Arabisch",
+    "ru": "Russisch",
+    "hi": "Hindi",
+    "ja": "Japanisch",
+    "ko": "Koreanisch",
+    "it": "Italienisch",
+    "nl": "Niederländisch",
+    "pl": "Polnisch",
+    "tr": "Türkisch",
+    "sw": "Suaheli",
+    "am": "Amharisch",
+    "he": "Paläo-Hebräisch",
+    "arc": "Aramäisch"
+  }
+}

@@ -3,32 +3,30 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Play, Pause, Volume2, VolumeX, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { ethiopianBibleVerses } from "@/data/ethiopianBible";
 
 const BibleAudioPlayer = () => {
+  const { t } = useTranslation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSubliminal, setIsSubliminal] = useState(false);
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
+  const [bibleLanguage, setBibleLanguage] = useState('en');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // Bible verses for continuous reading (sample - can be expanded)
-  const bibleVerses = [
-    "Psalm 23: The Lord is my shepherd; I shall not want. He maketh me to lie down in green pastures: he leadeth me beside the still waters.",
-    "John 3:16: For Yahuah so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
-    "Psalm 91: He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty.",
-    "Isaiah 41:10: Fear thou not; for I am with thee: be not dismayed; for I am thy Elohim: I will strengthen thee; yea, I will help thee.",
-    "Philippians 4:13: I can do all things through Messiah which strengtheneth me.",
-    "Romans 8:28: And we know that all things work together for good to them that love Yahuah.",
-  ];
+  const bibleVerses = ethiopianBibleVerses;
 
   const startBibleReading = () => {
     if ('speechSynthesis' in window) {
       speechRef.current = new SpeechSynthesisUtterance();
       speechRef.current.rate = 0.9;
       speechRef.current.pitch = 1;
+      speechRef.current.lang = bibleLanguage === 'he' ? 'he-IL' : bibleLanguage === 'arc' ? 'ar-SA' : bibleLanguage;
       
       // Set volume based on subliminal mode
       if (isSubliminal) {
@@ -54,9 +52,9 @@ const BibleAudioPlayer = () => {
       };
 
       readNextVerse();
-      toast.success("Bible reading started - 24/7 mode active");
+      toast.success(t('biblePlayer.started'));
     } else {
-      toast.error("Text-to-speech not supported in your browser");
+      toast.error(t('biblePlayer.notSupported'));
     }
   };
 
@@ -65,7 +63,7 @@ const BibleAudioPlayer = () => {
       window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
-    toast.info("Bible reading stopped");
+    toast.info(t('biblePlayer.stopped'));
   };
 
   const togglePlay = () => {
@@ -105,20 +103,33 @@ const BibleAudioPlayer = () => {
         <div className="flex items-center gap-3">
           <BookOpen className="w-6 h-6 text-primary" />
           <div>
-            <h3 className="font-serif text-xl font-bold">24/7 Bible Audio</h3>
-            <p className="text-sm text-muted-foreground">
-              Continuous scripture reading with subliminal option
-            </p>
+            <h3 className="font-serif text-xl font-bold">{t('biblePlayer.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('biblePlayer.subtitle')}</p>
+            <p className="text-xs text-primary mt-1">{t('biblePlayer.usingEthiopianCanon')}</p>
           </div>
         </div>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">{t('biblePlayer.selectLanguage')}</label>
+            <Select value={bibleLanguage} onValueChange={setBibleLanguage}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">{t('languages.en')}</SelectItem>
+                <SelectItem value="es">{t('languages.es')}</SelectItem>
+                <SelectItem value="fr">{t('languages.fr')}</SelectItem>
+                <SelectItem value="ar">{t('languages.ar')}</SelectItem>
+                <SelectItem value="he">{t('languages.he')}</SelectItem>
+                <SelectItem value="arc">{t('languages.arc')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Subliminal Mode</label>
-            <Switch
-              checked={isSubliminal}
-              onCheckedChange={setIsSubliminal}
-            />
+            <label className="text-sm font-medium">{t('biblePlayer.subliminalMode')}</label>
+            <Switch checked={isSubliminal} onCheckedChange={setIsSubliminal} />
           </div>
           
           {isSubliminal && (

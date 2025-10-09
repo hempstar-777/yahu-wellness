@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Mwongozo wa Sala ya Wokovu",
+    "tagline": "Wokovu wa Kibiblia kupitia Yahusha"
+  },
+  "nav": {
+    "home": "Nyumbani",
+    "assessments": "Tathmini",
+    "deliverance": "Wokovu",
+    "prayers": "Maombi",
+    "resources": "Rasilimali",
+    "teachings": "Mafundisho"
+  },
+  "hero": {
+    "title": "Pata Uhuru kupitia Yahusha",
+    "subtitle": "Miongozo ya wokovu wa Kibiblia na maombi kwa uhuru wa kiroho",
+    "cta": "Anza Tathmini Yako",
+    "learn": "Jifunze Hatua 5",
+    "spiritualTeachings": "Mafundisho ya Kiroho",
+    "resourcesTools": "Rasilimali na Zana"
+  },
+  "safety": {
+    "title": "Onyo Muhimu la Usalama",
+    "text": "Maombi haya yana nguvu na yanaweza kusababisha dhihirisho, kumbukumbu au uachiliaji wa hisia. Tumia tu katika mazingira salama na ya faragha—si unaposiendersha gari au kuendesha mashine. Rasilimali hii haichukui nafasi ya huduma ya kimatibabu au kisaikolojia. Kwa hali ngumu za vita vya kiroho, fikiria kutafuta mwongozo kutoka kwa wahudumu wa wokovu wenye uzoefu katika eneo lako."
+  },
+  "biblePlayer": {
+    "title": "Sauti ya Biblia 24/7",
+    "subtitle": "Kusoma maandiko mfululizo na chaguo la subconscious",
+    "subliminalMode": "Hali ya Subconscious",
+    "subliminalInfo": "Katika hali ya subconscious, sauti inachezwa kwa sauti ndogo sana (haisikiki kwa kusikia kwa uelewa lakini inachakatwa kimisukosuko). Nzuri kwa kucheza chinichini wakati wengine wako.",
+    "volume": "Sauti",
+    "selectLanguage": "Lugha ya Kusoma Biblia",
+    "usingEthiopianCanon": "Kutumia Biblia ya Kiethiopia (vitabu 81)",
+    "start": "Anza Kusoma Biblia 24/7",
+    "stop": "Simamisha Kusoma",
+    "started": "Kusoma Biblia kumeanza - hali ya 24/7 inatumika",
+    "stopped": "Kusoma Biblia kumesimamishwa",
+    "notSupported": "Maandishi kwa sauti hayatumiki katika kivinjari chako"
+  },
+  "languages": {
+    "en": "Kiingereza",
+    "es": "Kihispania",
+    "fr": "Kifaransa",
+    "de": "Kijerumani",
+    "pt": "Kireno",
+    "zh": "Kichina",
+    "ar": "Kiarabu",
+    "ru": "Kirusi",
+    "hi": "Kihindi",
+    "ja": "Kijapani",
+    "ko": "Kikorea",
+    "it": "Kiitaliano",
+    "nl": "Kiholanzi",
+    "pl": "Kipolandi",
+    "tr": "Kituruki",
+    "sw": "Kiswahili",
+    "am": "Kiamhari",
+    "he": "Kiebrania cha Kale",
+    "arc": "Kiaramu"
+  }
+}

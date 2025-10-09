@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Deliverance Prayer Guide",
+    "tagline": "Biblical Self-Deliverance Through Yahusha"
+  },
+  "nav": {
+    "home": "Home",
+    "assessments": "Assessments",
+    "deliverance": "Deliverance",
+    "prayers": "Prayers",
+    "resources": "Resources",
+    "teachings": "Teachings"
+  },
+  "hero": {
+    "title": "Break Free Through Yahusha",
+    "subtitle": "Biblical self-deliverance guides and prayers for spiritual freedom",
+    "cta": "Begin Your Assessment",
+    "learn": "Learn the 5 Steps",
+    "spiritualTeachings": "Spiritual Teachings",
+    "resourcesTools": "Resources & Tools"
+  },
+  "safety": {
+    "title": "Important Safety Notice",
+    "text": "These prayers are powerful and may cause manifestations, memories, or emotional releases. Use in safe, private settings only—not while driving or operating machinery. This resource is not a substitute for medical or psychological care. For serious spiritual warfare situations, consider seeking guidance from experienced deliverance ministers in your region."
+  },
+  "biblePlayer": {
+    "title": "24/7 Bible Audio",
+    "subtitle": "Continuous scripture reading with subliminal option",
+    "subliminalMode": "Subliminal Mode",
+    "subliminalInfo": "In subliminal mode, audio plays at very low volume (inaudible to conscious hearing but processed subconsciously). Perfect for background play while others are present.",
+    "volume": "Volume",
+    "selectLanguage": "Bible Reading Language",
+    "usingEthiopianCanon": "Using Ethiopian Bible (81 books)",
+    "start": "Start 24/7 Bible Reading",
+    "stop": "Stop Reading",
+    "started": "Bible reading started - 24/7 mode active",
+    "stopped": "Bible reading stopped",
+    "notSupported": "Text-to-speech not supported in your browser"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German",
+    "pt": "Portuguese",
+    "zh": "Chinese",
+    "ar": "Arabic",
+    "ru": "Russian",
+    "hi": "Hindi",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "it": "Italian",
+    "nl": "Dutch",
+    "pl": "Polish",
+    "tr": "Turkish",
+    "sw": "Swahili",
+    "am": "Amharic",
+    "he": "Paleo Hebrew",
+    "arc": "Aramaic"
+  }
+}

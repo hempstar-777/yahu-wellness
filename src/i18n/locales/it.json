@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Guida alla Preghiera di Liberazione",
+    "tagline": "Auto-Liberazione Biblica attraverso Yahusha"
+  },
+  "nav": {
+    "home": "Home",
+    "assessments": "Valutazioni",
+    "deliverance": "Liberazione",
+    "prayers": "Preghiere",
+    "resources": "Risorse",
+    "teachings": "Insegnamenti"
+  },
+  "hero": {
+    "title": "Liberati attraverso Yahusha",
+    "subtitle": "Guide e preghiere bibliche di auto-liberazione per la libertà spirituale",
+    "cta": "Inizia la tua Valutazione",
+    "learn": "Impara i 5 Passi",
+    "spiritualTeachings": "Insegnamenti Spirituali",
+    "resourcesTools": "Risorse e Strumenti"
+  },
+  "safety": {
+    "title": "Avviso Importante sulla Sicurezza",
+    "text": "Queste preghiere sono potenti e possono causare manifestazioni, ricordi o rilasci emotivi. Utilizzare solo in ambienti sicuri e privati—non durante la guida o l'uso di macchinari. Questa risorsa non sostituisce le cure mediche o psicologiche. Per situazioni gravi di guerra spirituale, considera di cercare la guida di ministri di liberazione esperti nella tua regione."
+  },
+  "biblePlayer": {
+    "title": "Audio Biblico 24/7",
+    "subtitle": "Lettura continua delle scritture con opzione subliminale",
+    "subliminalMode": "Modalità Subliminale",
+    "subliminalInfo": "In modalità subliminale, l'audio viene riprodotto a volume molto basso (impercettibile all'udito cosciente ma elaborato inconsciamente). Perfetto per la riproduzione in background quando altri sono presenti.",
+    "volume": "Volume",
+    "selectLanguage": "Lingua di Lettura Biblica",
+    "usingEthiopianCanon": "Utilizzo della Bibbia Etiope (81 libri)",
+    "start": "Avvia Lettura Biblica 24/7",
+    "stop": "Interrompi Lettura",
+    "started": "Lettura biblica avviata - modalità 24/7 attiva",
+    "stopped": "Lettura biblica interrotta",
+    "notSupported": "Sintesi vocale non supportata nel tuo browser"
+  },
+  "languages": {
+    "en": "Inglese",
+    "es": "Spagnolo",
+    "fr": "Francese",
+    "de": "Tedesco",
+    "pt": "Portoghese",
+    "zh": "Cinese",
+    "ar": "Arabo",
+    "ru": "Russo",
+    "hi": "Hindi",
+    "ja": "Giapponese",
+    "ko": "Coreano",
+    "it": "Italiano",
+    "nl": "Olandese",
+    "pl": "Polacco",
+    "tr": "Turco",
+    "sw": "Swahili",
+    "am": "Amarico",
+    "he": "Ebraico Paleo",
+    "arc": "Aramaico"
+  }
+}

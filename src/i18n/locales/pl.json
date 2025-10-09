@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Przewodnik Modlitwy Wyzwolenia",
+    "tagline": "Biblijne Samowyzwolenie przez Yahusha"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "assessments": "Oceny",
+    "deliverance": "Wyzwolenie",
+    "prayers": "Modlitwy",
+    "resources": "Zasoby",
+    "teachings": "Nauki"
+  },
+  "hero": {
+    "title": "Uwolnij się przez Yahusha",
+    "subtitle": "Biblijne przewodniki samowyzwolenia i modlitwy dla duchowej wolności",
+    "cta": "Rozpocznij swoją Ocenę",
+    "learn": "Naucz się 5 Kroków",
+    "spiritualTeachings": "Nauki Duchowe",
+    "resourcesTools": "Zasoby i Narzędzia"
+  },
+  "safety": {
+    "title": "Ważne Ostrzeżenie o Bezpieczeństwie",
+    "text": "Te modlitwy są potężne i mogą powodować manifestacje, wspomnienia lub uwolnienia emocjonalne. Używaj tylko w bezpiecznych, prywatnych miejscach—nie podczas prowadzenia pojazdu lub obsługi maszyn. Ten zasób nie zastępuje opieki medycznej lub psychologicznej. W przypadku poważnych sytuacji wojny duchowej rozważ poszukiwanie wskazówek od doświadczonych służb wyzwolenia w Twoim regionie."
+  },
+  "biblePlayer": {
+    "title": "Audio Biblijne 24/7",
+    "subtitle": "Ciągłe czytanie pisma z opcją podprogową",
+    "subliminalMode": "Tryb Podprogowy",
+    "subliminalInfo": "W trybie podprogowym audio odtwarza się na bardzo niskiej głośności (niesłyszalne dla świadomego słuchu, ale przetwarzane podświadomie). Idealne do odtwarzania w tle, gdy inni są obecni.",
+    "volume": "Głośność",
+    "selectLanguage": "Język Czytania Biblii",
+    "usingEthiopianCanon": "Używanie Biblii Etiopskiej (81 ksiąg)",
+    "start": "Rozpocznij Czytanie Biblii 24/7",
+    "stop": "Zatrzymaj Czytanie",
+    "started": "Czytanie Biblii rozpoczęte - tryb 24/7 aktywny",
+    "stopped": "Czytanie Biblii zatrzymane",
+    "notSupported": "Zamiana tekstu na mowę nie jest obsługiwana w Twojej przeglądarce"
+  },
+  "languages": {
+    "en": "Angielski",
+    "es": "Hiszpański",
+    "fr": "Francuski",
+    "de": "Niemiecki",
+    "pt": "Portugalski",
+    "zh": "Chiński",
+    "ar": "Arabski",
+    "ru": "Rosyjski",
+    "hi": "Hindi",
+    "ja": "Japoński",
+    "ko": "Koreański",
+    "it": "Włoski",
+    "nl": "Holenderski",
+    "pl": "Polski",
+    "tr": "Turecki",
+    "sw": "Suahili",
+    "am": "Amharski",
+    "he": "Paleo-Hebrajski",
+    "arc": "Aramejski"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Guide de Prière de Délivrance",
+    "tagline": "Auto-Délivrance Biblique par Yahusha"
+  },
+  "nav": {
+    "home": "Accueil",
+    "assessments": "Évaluations",
+    "deliverance": "Délivrance",
+    "prayers": "Prières",
+    "resources": "Ressources",
+    "teachings": "Enseignements"
+  },
+  "hero": {
+    "title": "Libérez-vous par Yahusha",
+    "subtitle": "Guides et prières bibliques d'auto-délivrance pour la liberté spirituelle",
+    "cta": "Commencer votre Évaluation",
+    "learn": "Apprenez les 5 Étapes",
+    "spiritualTeachings": "Enseignements Spirituels",
+    "resourcesTools": "Ressources et Outils"
+  },
+  "safety": {
+    "title": "Avis Important de Sécurité",
+    "text": "Ces prières sont puissantes et peuvent causer des manifestations, des souvenirs ou des libérations émotionnelles. Utilisez uniquement dans des environnements sûrs et privés, pas en conduisant ou en utilisant des machines. Cette ressource ne remplace pas les soins médicaux ou psychologiques. Pour les situations graves de guerre spirituelle, envisagez de demander conseil à des ministres de délivrance expérimentés dans votre région."
+  },
+  "biblePlayer": {
+    "title": "Audio Biblique 24/7",
+    "subtitle": "Lecture continue des écritures avec option subliminale",
+    "subliminalMode": "Mode Subliminal",
+    "subliminalInfo": "En mode subliminal, l'audio joue à très faible volume (inaudible à l'audition consciente mais traité inconsciemment). Parfait pour jouer en arrière-plan lorsque d'autres sont présents.",
+    "volume": "Volume",
+    "selectLanguage": "Langue de Lecture Biblique",
+    "usingEthiopianCanon": "Utilisation de la Bible Éthiopienne (81 livres)",
+    "start": "Démarrer Lecture Biblique 24/7",
+    "stop": "Arrêter la Lecture",
+    "started": "Lecture biblique démarrée - mode 24/7 actif",
+    "stopped": "Lecture biblique arrêtée",
+    "notSupported": "Synthèse vocale non prise en charge dans votre navigateur"
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français",
+    "de": "Allemand",
+    "pt": "Portugais",
+    "zh": "Chinois",
+    "ar": "Arabe",
+    "ru": "Russe",
+    "hi": "Hindi",
+    "ja": "Japonais",
+    "ko": "Coréen",
+    "it": "Italien",
+    "nl": "Néerlandais",
+    "pl": "Polonais",
+    "tr": "Turc",
+    "sw": "Swahili",
+    "am": "Amharique",
+    "he": "Hébreu Paléo",
+    "arc": "Araméen"
+  }
+}
