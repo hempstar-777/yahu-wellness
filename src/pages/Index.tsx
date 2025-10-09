@@ -3,34 +3,38 @@ import { Card } from "@/components/ui/card";
 import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const Index = () => {
+  const { t } = useTranslation();
+  
   const quickStartCards = [
     {
       icon: ClipboardCheck,
-      title: "Take Assessment",
-      description: "Identify bondages and doorways through guided self-evaluation",
+      title: t('home.takeAssessment'),
+      description: t('home.takeAssessmentDesc'),
       href: "/assessments",
       variant: "primary" as const,
     },
     {
       icon: Shield,
-      title: "Start Deliverance 101",
-      description: "Follow the 5-step process to walk in freedom",
+      title: t('home.startDeliverance'),
+      description: t('home.startDeliveranceDesc'),
       href: "/deliverance",
       variant: "secondary" as const,
     },
     {
       icon: BookOpen,
-      title: "View Prayers",
-      description: "Access customizable prayers for renunciation and healing",
+      title: t('home.viewPrayers'),
+      description: t('home.viewPrayersDesc'),
       href: "/prayers",
       variant: "accent" as const,
     },
     {
       icon: Heart,
-      title: "More Resources",
-      description: "Teachings, testimonials, and advanced guidance",
+      title: t('home.moreResources'),
+      description: t('home.moreResourcesDesc'),
       href: "/resources",
       variant: "muted" as const,
     },
@@ -42,31 +46,33 @@ const Index = () => {
       <header className="relative overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 bg-gradient-spiritual opacity-5" />
         <div className="container mx-auto px-4 py-16 relative">
+          <div className="flex justify-end mb-4">
+            <LanguageSelector />
+          </div>
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="font-serif text-5xl md:text-6xl font-bold bg-gradient-spiritual bg-clip-text text-transparent">
-              Deliverance Freedom
+              {t('home.title')}
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground font-light">
-              Walk in the authority Yahusha Ha Mashiach purchased for you
+              {t('home.subtitle')}
             </p>
             <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
-              Deliverance ministry is not taboo. We believe that healing is the children's bread, and we make these 
-              resources accessible to all believers seeking freedom in Yahusha Ha Mashiach.
+              {t('home.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button asChild size="lg" className="bg-gradient-spiritual shadow-elevated hover:shadow-glow transition-all duration-300">
-                <Link to="/assessments">Begin Your Journey</Link>
+                <Link to="/assessments">{t('home.beginJourney')}</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary/30 hover:border-primary/50 hover:bg-accent/50">
-                <Link to="/deliverance">Learn the 5 Steps</Link>
+                <Link to="/deliverance">{t('home.learn5Steps')}</Link>
               </Button>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
-                <Link to="/teachings">Spiritual Teachings</Link>
+                <Link to="/teachings">{t('home.spiritualTeachings')}</Link>
               </Button>
               <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
-                <Link to="/resources">Resources & Tools</Link>
+                <Link to="/resources">{t('home.resourcesTools')}</Link>
               </Button>
             </div>
           </div>
@@ -78,10 +84,7 @@ const Index = () => {
         <Alert className="max-w-4xl mx-auto border-secondary/30 bg-secondary/5">
           <AlertCircle className="h-5 w-5 text-secondary" />
           <AlertDescription className="text-sm leading-relaxed">
-            <strong>Important Safety Notice:</strong> These prayers are powerful and may cause manifestations, memories, 
-            or emotional releases. Use in safe, private settings only—not while driving or operating machinery. 
-            This resource is not a substitute for medical or psychological care. For serious spiritual warfare situations, 
-            consider seeking guidance from experienced deliverance ministers in your region.
+            <strong>{t('home.safetyNotice')}</strong> {t('home.safetyText')}
           </AlertDescription>
         </Alert>
       </div>
@@ -90,7 +93,7 @@ const Index = () => {
       <section className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-center mb-12">
-            Your Path to Freedom
+            {t('home.pathToFreedom')}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {quickStartCards.map((card, index) => (
@@ -128,22 +131,22 @@ const Index = () => {
             <div className="flex items-center gap-4 mb-6">
               <TrendingUp className="w-10 h-10" />
               <div>
-                <h3 className="font-serif text-2xl font-bold">Track Your Progress</h3>
-                <p className="text-primary-foreground/80">Your journey to freedom, step by step</p>
+                <h3 className="font-serif text-2xl font-bold">{t('home.trackProgress')}</h3>
+                <p className="text-primary-foreground/80">{t('home.trackProgressDesc')}</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="text-3xl font-bold">0</div>
-                <div className="text-sm text-primary-foreground/70">Assessments</div>
+                <div className="text-sm text-primary-foreground/70">{t('home.assessments')}</div>
               </div>
               <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="text-3xl font-bold">0</div>
-                <div className="text-sm text-primary-foreground/70">Sessions</div>
+                <div className="text-sm text-primary-foreground/70">{t('home.sessions')}</div>
               </div>
               <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="text-3xl font-bold">0</div>
-                <div className="text-sm text-primary-foreground/70">Days</div>
+                <div className="text-sm text-primary-foreground/70">{t('home.days')}</div>
               </div>
             </div>
           </Card>
@@ -154,13 +157,11 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <blockquote className="font-serif text-2xl md:text-3xl italic text-foreground/90 leading-relaxed">
-            "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."
+            "{t('home.scripture')}"
           </blockquote>
-          <cite className="text-lg text-muted-foreground">— 1 John 1:9</cite>
+          <cite className="text-lg text-muted-foreground">— {t('home.scriptureRef')}</cite>
           <p className="text-lg text-foreground/80 pt-6 max-w-2xl mx-auto">
-            Deliverance is simple, voluntary, and rooted in Yahusha Ha Mashiach's victory on the cross. 
-            Christians can have demons (see Acts 8:13-23), and biblical deliverance is the pathway to lasting freedom.
-            Speak everything out loud and invite the Ruach HaKodesh to fill you afterward.
+            {t('home.encouragement')}
           </p>
         </div>
       </section>
@@ -170,15 +171,13 @@ const Index = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto text-center text-sm text-muted-foreground space-y-3">
             <p>
-              This app is inspired by <strong>Bride Ministries International</strong> and the deliverance teachings of 
-              Dan Duval, Amanda Buys, and other anointed ministers committed to setting captives free.
+              {t('home.footerInspired')}
             </p>
             <p>
-              We believe in making cutting-edge deliverance resources accessible to millions worldwide. 
-              All content is for educational and spiritual purposes only.
+              {t('home.footerMission')}
             </p>
             <p className="text-xs">
-              Governed by Texas law. Not a substitute for medical or psychological care.
+              {t('home.footerDisclaimer')}
             </p>
           </div>
         </div>
