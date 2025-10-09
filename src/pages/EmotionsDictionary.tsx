@@ -1,11 +1,140 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ChevronLeft, Heart, Brain, Sparkles, Leaf } from "lucide-react";
+import { ChevronLeft, Heart, Brain, Sparkles, Leaf, Scale, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
 const EmotionsDictionary = () => {
+  const deadlySins = [
+    {
+      sin: "Pride",
+      virtue: "Humility",
+      sinSpiritual: "Root of all sin. Lucifer's original fall (Isaiah 14:12-15). God opposes the proud (James 4:6)",
+      sinMind: "Superiority complex, unable to receive correction, blind to own faults, arrogance",
+      sinBody: "Rigid posture, chronic tension from maintaining false image, stress-related illness",
+      sinSoul: "Blocks intimacy with God, prevents growth, leads to isolation and eventual downfall",
+      sinDoorway: "Major gateway for Leviathan spirit, rebellion, independence, Jezebel, antichrist spirit",
+      sinParasites: "Pride creates spiritual blindness to physical issues, neglects body care",
+      sinHerbs: "Pride must be broken through repentance—no herb can substitute humility",
+      sinDeliverance: "Humble yourself before God, repent of pride and self-exaltation, break Leviathan, receive grace",
+      virtueSpiritual: "God gives grace to the humble (James 4:6). Key to all other virtues and breakthrough",
+      virtueMind: "Teachability, openness to correction, accurate self-assessment, gratitude",
+      virtueBody: "Relaxed posture, reduced stress, better health from accepting limitations",
+      virtueSoul: "Opens to God's presence, attracts divine favor, builds authentic relationships",
+      virtueHerbs: "Ashwagandha for grounding, Holy Basil for surrender, Valerian for releasing control",
+      virtuePractice: "Confession of faults, serving others, washing feet, accepting correction gracefully"
+    },
+    {
+      sin: "Greed/Avarice",
+      virtue: "Generosity/Charity",
+      sinSpiritual: "Idolatry—making money your god (Colossians 3:5). Cannot serve God and mammon (Matthew 6:24)",
+      sinMind: "Scarcity mindset, obsessive thoughts about money, hoarding, financial anxiety",
+      sinBody: "Stress-related digestive issues, ulcers, heart problems from financial worry",
+      sinSoul: "Loss of compassion, exploitation of others, spiritual emptiness despite material gain",
+      sinDoorway: "Opens to mammon spirit, poverty spirit (ironically), greed demon, theft, corruption",
+      sinParasites: "Chronic stress from greed creates gut parasites, digestive disorders",
+      sinHerbs: "Dandelion (release bitterness), Milk Thistle (liver detox from toxic accumulation)",
+      sinDeliverance: "Renounce mammon, break agreements with greed, give sacrificially, trust God's provision",
+      virtueSpiritual: "God loves a cheerful giver (2 Corinthians 9:7). Generosity opens heaven's windows (Malachi 3:10)",
+      virtueMind: "Abundance mindset, joy in giving, freedom from financial worry",
+      virtueBody: "Reduced stress hormones, better sleep, improved cardiovascular health",
+      virtueSoul: "Joy, freedom from bondage to money, trust in God's provision",
+      virtueHerbs: "Hawthorn for open heart, Rose for unconditional giving",
+      virtuePractice: "Tithing, almsgiving, radical generosity, supporting missions and the poor"
+    },
+    {
+      sin: "Lust",
+      virtue: "Chastity/Purity",
+      sinSpiritual: "Fornication joins you to harlot spirit (1 Corinthians 6:16). Defiles temple of Holy Spirit",
+      sinMind: "Obsessive sexual thoughts, objectification, pornographic addiction, fantasy bondage",
+      sinBody: "STDs, erectile dysfunction, hormonal chaos, premature aging, chronic fatigue",
+      sinSoul: "Creates soul ties with every partner, fragments personality, deep shame cycles",
+      sinDoorway: "Gateway for perversion spirits, pornography, incubus/succubus, sexual abuse, adultery",
+      sinParasites: "Sexual sin linked to candida overgrowth, parasites in reproductive organs, UTIs",
+      sinHerbs: "Saw Palmetto, Chaste Tree berry for hormonal balance (but deliverance is primary)",
+      sinDeliverance: "Renounce all sexual sin, break soul ties, cast out lust and perversion, receive purity",
+      virtueSpiritual: "Your body is temple of Holy Spirit (1 Corinthians 6:19). Purity brings God's manifest presence",
+      virtueMind: "Clean thought life, ability to see people as image-bearers, mental clarity",
+      virtueBody: "Hormonal balance, sexual health, vitality, radiant countenance",
+      virtueSoul: "Freedom from shame, capacity for true intimacy in marriage, wholeness",
+      virtueHerbs: "White Peony for hormonal balance, Damiana for healthy sexuality in marriage",
+      virtuePractice: "Guarding eyes and thoughts, accountability, fasting, worship, covenant marriage intimacy"
+    },
+    {
+      sin: "Envy",
+      virtue: "Kindness/Contentment",
+      sinSpiritual: "Envy is rottenness to the bones (Proverbs 14:30). Root of witchcraft and murder (James 3:16)",
+      sinMind: "Constant comparison, covetousness, resentment of others' blessings, never satisfied",
+      sinBody: "Bone diseases, osteoporosis, arthritis, skeletal weakness, joint pain",
+      sinSoul: "Destroys joy, prevents gratitude, creates competition rather than community",
+      sinDoorway: "Opens to witchcraft, jealousy, murder, Jezebel spirit, cursing others",
+      sinParasites: "Acidic internal environment from envy breeds bone parasites and calcium depletion",
+      sinHerbs: "Nettles for bone health, Alfalfa for mineral restoration, Horsetail for skeletal support",
+      sinDeliverance: "Repent of envy and jealousy, bless those you envied, break witchcraft, receive contentment",
+      virtueSpiritual: "Contentment with godliness is great gain (1 Timothy 6:6). Blessing others multiplies blessing",
+      virtueMind: "Celebrates others' victories, gratitude for own portion, peaceful satisfaction",
+      virtueBody: "Strong bones, healthy skeletal system, reduced inflammation",
+      virtueSoul: "Joy, peace, authentic community, freedom from comparison trap",
+      virtueHerbs: "Oatstraw for contentment, Ashwagandha for grounding in present blessings",
+      virtuePractice: "Gratitude journaling, celebrating others, blessing competitors, counting your blessings"
+    },
+    {
+      sin: "Gluttony",
+      virtue: "Temperance/Self-Control",
+      sinSpiritual: "Belly becomes your god (Philippians 3:19). Excess reveals lack of Spirit control",
+      sinMind: "Compulsive eating, food obsession, emotional eating, lack of self-regulation",
+      sinBody: "Obesity, diabetes, heart disease, metabolic syndrome, digestive disorders, fatigue",
+      sinSoul: "Using food to fill spiritual void, avoiding emotions, shame and self-hatred cycles",
+      sinDoorway: "Opens to addiction spirits, compulsion, eating disorders, gluttony demon, sloth",
+      sinParasites: "Overeating and sugar feed candida, parasites, harmful bacteria in gut",
+      sinHerbs: "Gymnema (sugar blocker), Bitter Melon (blood sugar), Garcinia Cambogia (appetite control)",
+      sinDeliverance: "Renounce gluttony, break agreement with food addiction, receive self-control from Holy Spirit",
+      virtueSpiritual: "Self-control is fruit of the Spirit (Galatians 5:23). Fasting builds spiritual strength",
+      virtueMind: "Mindful eating, emotional regulation, freedom from food obsession",
+      virtueBody: "Healthy weight, balanced metabolism, strong digestion, high energy",
+      virtueSoul: "Food in proper place, spiritual hunger satisfied in God, emotional maturity",
+      virtueHerbs: "Fenugreek for appetite regulation, Cinnamon for blood sugar balance",
+      virtuePractice: "Fasting, intermittent fasting, eating only when hungry, gratitude before meals, portion control"
+    },
+    {
+      sin: "Wrath/Anger",
+      virtue: "Patience/Meekness",
+      sinSpiritual: "Anger gives devil a foothold (Ephesians 4:26-27). Leads to murder in heart (Matthew 5:22)",
+      sinMind: "Hair-trigger temper, rage episodes, resentment, vengeful thoughts, explosive reactions",
+      sinBody: "High blood pressure, cardiovascular disease, strokes, chronic inflammation, adrenal fatigue",
+      sinSoul: "Destroys relationships, hardens heart, blocks love and compassion, creates isolation",
+      sinDoorway: "Gateway for rage spirit, violence, murder, retaliation, unforgiveness, bitterness",
+      sinParasites: "Chronic inflammation from anger creates breeding ground for all disease and pathogens",
+      sinHerbs: "Passionflower for calming rage, Wood Betony for anger release, Chamomile for peace",
+      sinDeliverance: "Forgive all offenders, renounce anger and wrath, break spirit of violence and rage",
+      virtueSpiritual: "Meekness inherits the earth (Matthew 5:5). Slow to anger reflects God's character (Exodus 34:6)",
+      virtueMind: "Calm responses, emotional regulation, ability to pause before reacting, understanding",
+      virtueBody: "Normal blood pressure, cardiovascular health, reduced inflammation, longevity",
+      virtueSoul: "Peace in relationships, strength under control, gentle influence, respect from others",
+      virtueHerbs: "Lemon Balm for calm responses, Lavender for peace, Holy Basil for stress adaptation",
+      virtuePractice: "Count to 10, walk away practice, forgiveness prayers, blessing enemies, anger journaling"
+    },
+    {
+      sin: "Sloth/Acedia",
+      virtue: "Diligence/Zeal",
+      sinSpiritual: "Spiritual laziness—not pursuing God despite knowing truth. Lukewarm Christianity (Revelation 3:16)",
+      sinMind: "Procrastination, apathy, inability to start or finish, decision paralysis, mental fog",
+      sinBody: "Physical weakness, poor muscle tone, chronic fatigue, low vitality, lethargy",
+      sinSoul: "Loss of vision and purpose, wasted calling, unfulfilled potential, regret",
+      sinDoorway: "Opens to spirit of slumber, procrastination, poverty, death, heaviness, depression",
+      sinParasites: "Sedentary lifestyle and poor circulation create stagnation for parasites and toxins",
+      sinHerbs: "Ginseng for energy, Rhodiola for motivation, Guarana for alertness (address spiritual root first)",
+      sinDeliverance: "Repent of sloth and spiritual laziness, break spirit of slumber, receive zeal and fire",
+      virtueSpiritual: "Zeal for God's house consumes me (Psalm 69:9). Work as unto the Lord (Colossians 3:23)",
+      virtueMind: "Clarity of purpose, motivation, follow-through, excellence mindset, creativity",
+      virtueBody: "Physical strength, vitality, energy, robust health, strong immune function",
+      virtueSoul: "Fulfillment of calling, sense of purpose, satisfaction in work, legacy building",
+      virtueHerbs: "Eleuthero for sustained energy, Maca for vitality, Green Tea for focus",
+      virtuePractice: "Daily disciplines, goal setting, accountability, work unto the Lord, pursuing excellence"
+    }
+  ];
+
   const positiveEmotions = [
     {
       name: "Joy",
@@ -279,8 +408,12 @@ const EmotionsDictionary = () => {
           </div>
         </Card>
 
-        <Tabs defaultValue="positive" className="max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-2 h-auto p-2 bg-muted/50">
+        <Tabs defaultValue="deadly-sins" className="max-w-6xl mx-auto">
+          <TabsList className="grid w-full grid-cols-3 h-auto p-2 bg-muted/50">
+            <TabsTrigger value="deadly-sins" className="flex items-center gap-2">
+              <Flame className="w-4 h-4" />
+              7 Deadly Sins & Virtues
+            </TabsTrigger>
             <TabsTrigger value="positive" className="flex items-center gap-2">
               <Heart className="w-4 h-4" />
               Positive Emotions
@@ -290,6 +423,173 @@ const EmotionsDictionary = () => {
               Negative Emotions
             </TabsTrigger>
           </TabsList>
+
+          {/* 7 Deadly Sins & Opposing Virtues */}
+          <TabsContent value="deadly-sins" className="space-y-6 mt-6">
+            <Card className="p-6 border-primary/30 bg-gradient-spiritual/5">
+              <p className="text-sm text-foreground/80 leading-relaxed">
+                <strong>The Seven Deadly Sins</strong> are the root patterns of all sin, opening major spiritual doorways. 
+                Each deadly sin has an opposing virtue that brings freedom and reflects Christ's character. 
+                Understanding both the sin and the virtue is essential for complete transformation.
+              </p>
+            </Card>
+
+            <div className="grid gap-8">
+              {deadlySins.map((item, index) => (
+                <Card key={index} className="border-primary/20 shadow-elevated overflow-hidden">
+                  {/* Header with Sin vs Virtue */}
+                  <div className="grid md:grid-cols-2 divide-x divide-border/50">
+                    <div className="bg-destructive/10 p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge variant="destructive" className="text-base px-4 py-1">
+                          DEADLY SIN
+                        </Badge>
+                      </div>
+                      <h3 className="font-serif text-3xl font-bold text-destructive mb-1">{item.sin}</h3>
+                      <p className="text-sm text-muted-foreground">What leads you there & its effects</p>
+                    </div>
+                    <div className="bg-primary/10 p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge className="text-base px-4 py-1 bg-gradient-spiritual">
+                          OPPOSING VIRTUE
+                        </Badge>
+                      </div>
+                      <h3 className="font-serif text-3xl font-bold text-primary mb-1">{item.virtue}</h3>
+                      <p className="text-sm text-muted-foreground">The path to freedom & wholeness</p>
+                    </div>
+                  </div>
+
+                  <CardContent className="p-6 space-y-6">
+                    {/* The Deadly Sin Section */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-xl text-destructive flex items-center gap-2">
+                        <Flame className="w-5 h-5" />
+                        Understanding the Sin of {item.sin}
+                      </h4>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Badge variant="destructive" className="bg-destructive/20 text-destructive border-destructive/30">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            Spiritual Root
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.sinSpiritual}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="destructive" className="bg-destructive/20 text-destructive border-destructive/30">
+                            <Brain className="w-3 h-3 mr-1" />
+                            Mental Effect
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.sinMind}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="destructive" className="bg-destructive/20 text-destructive border-destructive/30">
+                            <Heart className="w-3 h-3 mr-1" />
+                            Physical Impact
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.sinBody}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="destructive" className="bg-destructive/20 text-destructive border-destructive/30">
+                            Soul Damage
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.sinSoul}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/20">
+                          <p className="font-semibold text-sm mb-2 text-destructive">🚪 Spiritual Doorways Opened:</p>
+                          <p className="text-sm text-foreground/80">{item.sinDoorway}</p>
+                        </div>
+
+                        <div className="bg-muted/50 p-4 rounded-lg">
+                          <p className="font-semibold text-sm mb-2">🦠 Physical/Parasite Connection:</p>
+                          <p className="text-sm text-foreground/80">{item.sinParasites}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="bg-muted/50 p-4 rounded-lg">
+                          <p className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Leaf className="w-4 h-4 text-primary" />
+                            Herbal Support (Secondary):
+                          </p>
+                          <p className="text-sm text-foreground/80">{item.sinHerbs}</p>
+                        </div>
+                        
+                        <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                          <p className="font-semibold text-sm mb-2 text-primary">✨ Deliverance Strategy:</p>
+                          <p className="text-sm text-foreground/80">{item.sinDeliverance}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t-2 border-primary/30 pt-6"></div>
+
+                    {/* The Opposing Virtue Section */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-xl text-primary flex items-center gap-2">
+                        <Scale className="w-5 h-5" />
+                        The Virtue of {item.virtue} - Your Path to Freedom
+                      </h4>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            Spiritual Power
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.virtueSpiritual}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">
+                            <Brain className="w-3 h-3 mr-1" />
+                            Mental Benefits
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.virtueMind}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">
+                            <Heart className="w-3 h-3 mr-1" />
+                            Physical Health
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.virtueBody}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">
+                            Soul Healing
+                          </Badge>
+                          <p className="text-sm text-foreground/80">{item.virtueSoul}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="bg-muted/50 p-4 rounded-lg">
+                          <p className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Leaf className="w-4 h-4 text-primary" />
+                            Natural Support for {item.virtue}:
+                          </p>
+                          <p className="text-sm text-foreground/80">{item.virtueHerbs}</p>
+                        </div>
+                        
+                        <div className="bg-gradient-spiritual/10 p-4 rounded-lg border border-primary/20">
+                          <p className="font-semibold text-sm mb-2 text-primary">🙏 Spiritual Practices:</p>
+                          <p className="text-sm text-foreground/80">{item.virtuePractice}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
 
           {/* Positive Emotions */}
           <TabsContent value="positive" className="space-y-6 mt-6">
