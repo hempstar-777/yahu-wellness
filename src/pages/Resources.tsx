@@ -1,0 +1,186 @@
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+
+const Resources = () => {
+  const teachings = [
+    {
+      title: "Handling Trauma: Forgive & Heal",
+      description: "Break victimhood agreements and address secondary effects like bitterness and addiction",
+      duration: "15 min read",
+    },
+    {
+      title: "Generational Freedom",
+      description: "Understanding and confessing bloodline iniquities to break spiritual strongholds",
+      duration: "12 min read",
+    },
+    {
+      title: "Post-Deliverance Filling",
+      description: "Why inviting the Ruach HaKodesh is crucial—avoiding spiritual voids",
+      duration: "8 min read",
+    },
+  ];
+
+  const testimonials = [
+    {
+      quote: "Burping and overwhelming joy after renouncing my New Age tattoo. The freedom is real!",
+      context: "Surface Issues Assessment",
+    },
+    {
+      quote: "For molestation trauma: I forgave, broke victim agreements—the secondary bitterness just vanished.",
+      context: "Trauma & Soul Wounds",
+    },
+    {
+      quote: "I prayed daily for three weeks. Persistence broke through longstanding resistance. Don't give up!",
+      context: "Advanced Strongholds",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-light">
+      {/* Header */}
+      <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/">
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Back
+              </Link>
+            </Button>
+            <div>
+              <h1 className="font-serif text-2xl md:text-3xl font-bold">Resources</h1>
+              <p className="text-sm text-muted-foreground">Teachings, testimonials, and deeper guidance</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Video Library Section */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="font-serif text-3xl font-bold">Video Library</h2>
+            <p className="text-muted-foreground">Step-by-step guidance from deliverance experts</p>
+          </div>
+
+          <Card className="p-8 border-primary/20 shadow-elevated">
+            <div className="flex items-start gap-6">
+              <div className="p-4 rounded-lg bg-gradient-spiritual text-primary-foreground">
+                <Video className="w-8 h-8" />
+              </div>
+              <div className="flex-1 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="font-serif text-2xl font-semibold mb-2">Deliverance 101 Walkthrough</h3>
+                    <p className="text-muted-foreground">
+                      Complete video guide walking through all 5 steps with real-time prayer demonstration
+                    </p>
+                  </div>
+                  <Badge variant="secondary">10 min</Badge>
+                </div>
+                <Button variant="outline" className="gap-2" disabled>
+                  <ExternalLink className="w-4 h-4" />
+                  Coming Soon
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Teachings Hub */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="font-serif text-3xl font-bold">Teachings Hub</h2>
+            <p className="text-muted-foreground">Biblical foundations for lasting freedom</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {teachings.map((teaching, index) => (
+              <Card
+                key={index}
+                className="p-6 space-y-4 hover:shadow-elevated transition-all duration-300 border-border/50 hover:border-primary/30"
+              >
+                <div className="p-3 rounded-lg bg-accent text-accent-foreground inline-flex">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-serif text-xl font-semibold">{teaching.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {teaching.description}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                  <span className="text-xs text-muted-foreground">{teaching.duration}</span>
+                  <Button size="sm" variant="ghost" disabled className="text-muted-foreground">
+                    Coming Soon
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="container mx-auto px-4 py-12 pb-16">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="font-serif text-3xl font-bold">Testimonials</h2>
+            <p className="text-muted-foreground">Real stories of breakthrough and freedom</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <Card
+                key={index}
+                className="p-6 space-y-4 bg-gradient-divine text-primary-foreground border-0 shadow-glow"
+              >
+                <MessageCircle className="w-8 h-8 opacity-80" />
+                <blockquote className="text-sm leading-relaxed italic">
+                  "{testimonial.quote}"
+                </blockquote>
+                <Badge variant="secondary" className="text-xs">
+                  {testimonial.context}
+                </Badge>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="p-6 text-center bg-muted/30 border-border/50">
+            <p className="text-muted-foreground mb-4">
+              Have a testimony to share? Your story could encourage others on their journey.
+            </p>
+            <Button variant="outline" disabled className="gap-2">
+              <MessageCircle className="w-4 h-4" />
+              Share Your Story (Coming Soon)
+            </Button>
+          </Card>
+        </div>
+      </section>
+
+      {/* External Resources */}
+      <section className="container mx-auto px-4 py-12 pb-16">
+        <Card className="max-w-4xl mx-auto p-8 border-primary/20 shadow-elevated">
+          <h3 className="font-serif text-2xl font-bold mb-4">Additional Resources</h3>
+          <div className="space-y-3 text-foreground/80">
+            <p className="leading-relaxed">
+              This app is inspired by <strong>Bride Ministries</strong> and the teachings of deliverance experts 
+              like Dan Duval and Amanda Buys.
+            </p>
+            <p className="leading-relaxed">
+              For more in-depth study, consider exploring their published works on topics like authority on earth, 
+              captive spirits, and advanced spiritual warfare.
+            </p>
+          </div>
+        </Card>
+      </section>
+    </div>
+  );
+};
+
+export default Resources;
