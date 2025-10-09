@@ -3,6 +3,9 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import BibleAudioPlayer from "@/components/BibleAudioPlayer";
+import PrayerAudioPlayer from "@/components/PrayerAudioPlayer";
+import AIDeliveranceChat from "@/components/AIDeliveranceChat";
 
 const Resources = () => {
   const teachings = [
@@ -57,6 +60,23 @@ const Resources = () => {
           </div>
         </div>
       </header>
+
+      {/* AI & Audio Tools */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="text-center">
+            <h2 className="font-serif text-3xl font-bold mb-2">AI & Audio Tools</h2>
+            <p className="text-muted-foreground">Interactive assistance and 24/7 spiritual reinforcement</p>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-6">
+            <AIDeliveranceChat />
+            <div className="space-y-6">
+              <BibleAudioPlayer />
+              <PrayerAudioPlayer />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Video Library Section */}
       <section className="container mx-auto px-4 py-12">

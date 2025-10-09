@@ -14,6 +14,7 @@ const Assessments = () => {
       difficulty: "Beginner",
       duration: "10-15 min",
       available: true,
+      path: "/assessments/surface-issues",
     },
     {
       id: 2,
@@ -23,6 +24,7 @@ const Assessments = () => {
       difficulty: "Intermediate",
       duration: "15-20 min",
       available: true,
+      path: "/assessments/bondages",
     },
     {
       id: 3,
@@ -31,7 +33,8 @@ const Assessments = () => {
       icon: Heart,
       difficulty: "Advanced",
       duration: "20-30 min",
-      available: false,
+      available: true,
+      path: "/assessments/trauma",
     },
     {
       id: 4,
@@ -40,7 +43,8 @@ const Assessments = () => {
       icon: Users,
       difficulty: "Advanced",
       duration: "20-25 min",
-      available: false,
+      available: true,
+      path: "/assessments/generational",
     },
     {
       id: 5,
@@ -49,7 +53,8 @@ const Assessments = () => {
       icon: Sparkles,
       difficulty: "Intermediate",
       duration: "15-20 min",
-      available: false,
+      available: true,
+      path: "/assessments/new-age",
     },
     {
       id: 6,
@@ -58,7 +63,8 @@ const Assessments = () => {
       icon: Lock,
       difficulty: "Expert",
       duration: "30+ min",
-      available: false,
+      available: true,
+      path: "/assessments/advanced",
     },
   ];
 
@@ -109,11 +115,7 @@ const Assessments = () => {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {assessments.map((assessment, index) => (
             <Link 
-              to={
-                assessment.id === 1 ? "/assessments/surface-issues" :
-                assessment.id === 2 ? "/assessments/bondages" :
-                "#"
-              }
+              to={assessment.path || "#"}
               className={assessment.available ? "" : "pointer-events-none"}
             >
               <Card
