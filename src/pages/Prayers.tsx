@@ -38,13 +38,15 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
       title: "Forgiveness & Healing",
       icon: Heart,
       description: "Prayers for releasing offenders and inviting Yahusha to mend soul wounds",
-      available: false,
+      available: true,
+      link: "/expanded-prayers",
     },
     {
       title: "Bloodline Confession",
       icon: Users,
       description: "Advanced prayers for generational iniquities and family sins",
-      available: false,
+      available: true,
+      link: "/expanded-prayers",
     },
   ];
 
@@ -72,27 +74,32 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
       <section className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
           {prayerCategories.map((category, index) => (
-            <Card
-              key={index}
-              className={`p-6 text-center space-y-3 transition-all duration-300 ${
-                category.available
-                  ? 'border-primary/30 shadow-elevated hover:shadow-glow'
-                  : 'opacity-60 border-border/30'
-              }`}
+            <Link 
+              key={index} 
+              to={category.link || "#"}
+              className={!category.available ? "pointer-events-none" : ""}
             >
-              <div className={`inline-flex p-4 rounded-full ${
-                category.available
-                  ? 'bg-gradient-spiritual text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              }`}>
-                <category.icon className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-lg font-semibold">{category.title}</h3>
-              <p className="text-sm text-muted-foreground">{category.description}</p>
-              {!category.available && (
-                <Badge variant="outline" className="text-xs">Coming Soon</Badge>
-              )}
-            </Card>
+              <Card
+                className={`p-6 text-center space-y-3 transition-all duration-300 ${
+                  category.available
+                    ? 'border-primary/30 shadow-elevated hover:shadow-glow cursor-pointer'
+                    : 'opacity-60 border-border/30'
+                }`}
+              >
+                <div className={`inline-flex p-4 rounded-full ${
+                  category.available
+                    ? 'bg-gradient-spiritual text-primary-foreground'
+                    : 'bg-muted text-muted-foreground'
+                }`}>
+                  <category.icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-lg font-semibold">{category.title}</h3>
+                <p className="text-sm text-muted-foreground">{category.description}</p>
+                {!category.available && (
+                  <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+                )}
+              </Card>
+            </Link>
           ))}
         </div>
       </section>

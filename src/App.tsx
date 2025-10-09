@@ -14,6 +14,8 @@ import AdvancedAssessment from "./pages/AdvancedAssessment";
 import Deliverance from "./pages/Deliverance";
 import Prayers from "./pages/Prayers";
 import Resources from "./pages/Resources";
+import Teachings from "./pages/Teachings";
+import ExpandedPrayers from "./pages/ExpandedPrayers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
