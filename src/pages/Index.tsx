@@ -61,6 +61,14 @@ const Index = () => {
                 <Link to="/deliverance">Learn the 5 Steps</Link>
               </Button>
             </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+                <Link to="/teachings">Spiritual Teachings</Link>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+                <Link to="/resources">Resources & Tools</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -72,8 +80,8 @@ const Index = () => {
           <AlertDescription className="text-sm leading-relaxed">
             <strong>Important Safety Notice:</strong> These prayers are powerful and may cause manifestations, memories, 
             or emotional releases. Use in safe, private settings only—not while driving or operating machinery. 
-            This resource is not a substitute for medical or psychological care. By proceeding, you agree to hold 
-            this ministry harmless for any adverse effects from self-deliverance. Governed by Texas law.
+            This resource is not a substitute for medical or psychological care. For serious spiritual warfare situations, 
+            consider seeking guidance from experienced deliverance ministers in your region.
           </AlertDescription>
         </Alert>
       </div>
