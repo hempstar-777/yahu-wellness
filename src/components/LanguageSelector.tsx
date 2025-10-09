@@ -23,6 +23,7 @@ const LanguageSelector = () => {
     { code: 'tr', name: t('languages.tr') },
     { code: 'sw', name: t('languages.sw') },
     { code: 'am', name: t('languages.am') },
+    { code: 'ro', name: t('languages.ro') },
   ];
 
   const handleLanguageChange = (langCode: string) => {

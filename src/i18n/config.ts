@@ -20,6 +20,7 @@ import pl from './locales/pl.json';
 import tr from './locales/tr.json';
 import sw from './locales/sw.json';
 import am from './locales/am.json';
+import ro from './locales/ro.json';
 
 i18n
   .use(LanguageDetector)
@@ -43,6 +44,7 @@ i18n
       tr: { translation: tr },
       sw: { translation: sw },
       am: { translation: am },
+      ro: { translation: ro },
     },
     fallbackLng: 'en',
     interpolation: {

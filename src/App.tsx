@@ -13,6 +13,7 @@ import NewAgeAssessment from "./pages/NewAgeAssessment";
 import AdvancedAssessment from "./pages/AdvancedAssessment";
 import DoorwaysAssessment from "./pages/DoorwaysAssessment";
 import EmotionsDictionary from "./pages/EmotionsDictionary";
+import Courses from "./pages/Courses";
 import Deliverance from "./pages/Deliverance";
 import PreDeliverance from "./pages/PreDeliverance";
 import StayingFree from "./pages/StayingFree";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/assessments/advanced" element={<AdvancedAssessment />} />
           <Route path="/assessments/doorways" element={<DoorwaysAssessment />} />
           <Route path="/emotions" element={<EmotionsDictionary />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/deliverance" element={<Deliverance />} />
           <Route path="/pre-deliverance" element={<PreDeliverance />} />
           <Route path="/staying-free" element={<StayingFree />} />

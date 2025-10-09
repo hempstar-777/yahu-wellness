@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain } from "lucide-react";
+import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslation } from "react-i18next";
@@ -79,6 +79,9 @@ const Index = () => {
             </Button>
             <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
               <Link to="/emotions">Emotions Dictionary</Link>
+            </Button>
+            <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Link to="/courses">Spiritual University</Link>
             </Button>
           </div>
         </div>
