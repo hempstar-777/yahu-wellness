@@ -1,3 +1,6 @@
+// Stripe configuration
+export const STRIPE_PUBLISHABLE_KEY = "pk_live_51RguezKudeVpFdWFChv7wcwiQsEpk0LyzgHD1qsj3OeiCzF3vq6TagDy67LLezqbw02t1CvRYYdxwOfeWBpbvwEU00G09w4FG0";
+
 // Course pricing structure
 export const coursePricing = {
   deliverance: {
