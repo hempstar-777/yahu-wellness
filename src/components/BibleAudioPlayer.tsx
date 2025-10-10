@@ -90,12 +90,26 @@ const BibleAudioPlayer = () => {
   }, [volume, isSubliminal]);
 
   useEffect(() => {
+    // Handle page visibility to keep audio playing
+    const handleVisibilityChange = () => {
+      if (document.hidden && isPlaying) {
+        // Keep playing even when tab is hidden
+        console.log('Tab hidden but keeping audio playing');
+      } else if (!document.hidden && isPlaying && !window.speechSynthesis.speaking) {
+        // Resume if stopped when tab becomes visible
+        startBibleReading();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
     };
-  }, []);
+  }, [isPlaying]);
 
   return (
     <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">

@@ -189,9 +189,11 @@ const Resources = () => {
             <p className="text-muted-foreground mb-4">
               Have a testimony to share? Your story could encourage others on their journey.
             </p>
-            <Button variant="outline" disabled className="gap-2">
-              <MessageCircle className="w-4 h-4" />
-              Share Your Story (Coming Soon)
+            <Button variant="outline" asChild className="gap-2">
+              <Link to="/testimonies">
+                <MessageCircle className="w-4 h-4" />
+                Share Your Story
+              </Link>
             </Button>
           </Card>
         </div>
