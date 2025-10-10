@@ -15,7 +15,9 @@ import {
   TrendingUp,
   ChevronLeft,
   Calendar,
-  Award
+  Award,
+  Video,
+  Users
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -374,6 +376,24 @@ const Dashboard = () => {
                   <Link to="/testimonies" className="flex flex-col items-center gap-2">
                     <MessageSquare className="w-6 h-6" />
                     <span>Share Testimony</span>
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="h-auto py-4">
+                  <Link to="/prayer-videos" className="flex flex-col items-center gap-2">
+                    <Video className="w-6 h-6" />
+                    <span>Prayer Videos</span>
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="h-auto py-4">
+                  <Link to="/group-prayer" className="flex flex-col items-center gap-2">
+                    <Users className="w-6 h-6" />
+                    <span>Group Prayer</span>
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="h-auto py-4">
+                  <Link to="/forums" className="flex flex-col items-center gap-2">
+                    <MessageSquare className="w-6 h-6" />
+                    <span>Forums</span>
                   </Link>
                 </Button>
               </div>

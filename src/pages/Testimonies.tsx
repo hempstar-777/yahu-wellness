@@ -14,6 +14,7 @@ import { ChevronLeft, MessageSquare, Plus, Edit, Trash2, Calendar, Lock, Globe }
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import TestimonialMatching from '@/components/TestimonialMatching';
 
 interface Testimony {
   id: string;
@@ -308,7 +309,10 @@ const Testimonies = () => {
               <TabsTrigger value="community">Community Testimonies</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="my-testimonies">
+            <TabsContent value="my-testimonies" className="space-y-6">
+              {myTestimonies.length > 0 && (
+                <TestimonialMatching currentTestimonyId={myTestimonies[0].id} />
+              )}
               {isLoading ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground">Loading testimonies...</p>

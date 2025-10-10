@@ -221,6 +221,142 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_replies: {
+        Row: {
+          content: string
+          created_at: string | null
+          forum_id: string
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          forum_id: string
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          forum_id?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_forum_id_fkey"
+            columns: ["forum_id"]
+            isOneToOne: false
+            referencedRelation: "forums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forums: {
+        Row: {
+          category: string
+          content: string
+          created_at: string | null
+          id: string
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          reply_count: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          reply_count?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          reply_count?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      group_prayer_participants: {
+        Row: {
+          id: string
+          joined_at: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_prayer_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "group_prayer_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_prayer_sessions: {
+        Row: {
+          created_at: string | null
+          host_user_id: string
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          prayer_type: string | null
+          scheduled_time: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          host_user_id: string
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          prayer_type?: string | null
+          scheduled_time?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          host_user_id?: string
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          prayer_type?: string | null
+          scheduled_time?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       prayer_journal: {
         Row: {
           content: string
@@ -261,6 +397,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      prayer_videos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_vip_only: boolean | null
+          prayer_category: string
+          title: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_vip_only?: boolean | null
+          prayer_category: string
+          title: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_vip_only?: boolean | null
+          prayer_category?: string
+          title?: string
+          video_url?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

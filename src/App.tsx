@@ -36,6 +36,9 @@ import CourseExam from "./pages/CourseExam";
 import PersonalizedRoadmap from "./pages/PersonalizedRoadmap";
 import ProgressTracking from "./pages/ProgressTracking";
 import FastingTracker from "./pages/FastingTracker";
+import PrayerVideos from "./pages/PrayerVideos";
+import GroupPrayer from "./pages/GroupPrayer";
+import Forums from "./pages/Forums";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +81,9 @@ const App = () => (
           <Route path="/roadmap" element={<PersonalizedRoadmap />} />
           <Route path="/progress" element={<ProgressTracking />} />
           <Route path="/fasting" element={<FastingTracker />} />
+          <Route path="/prayer-videos" element={<PrayerVideos />} />
+          <Route path="/group-prayer" element={<GroupPrayer />} />
+          <Route path="/forums" element={<Forums />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
