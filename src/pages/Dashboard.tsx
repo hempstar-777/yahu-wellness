@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { VIPStatus } from '@/components/VIPStatus';
 import { 
   ClipboardCheck, 
   GraduationCap, 
@@ -150,8 +151,11 @@ const Dashboard = () => {
         </header>
 
         <div className="container mx-auto px-4 py-8">
+          {/* VIP Status */}
+          <VIPStatus />
+          
           {/* Stats Overview */}
-          <div className="grid md:grid-cols-4 gap-4 mb-8">
+          <div className="grid md:grid-cols-4 gap-4 mb-8 mt-6">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
