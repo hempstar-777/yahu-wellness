@@ -11,6 +11,30 @@ import HebrewNamesGlossary from "@/components/HebrewNamesGlossary";
 const Resources = () => {
   const teachings = [
     {
+      title: "The Holy Blood of Yahusha",
+      description: "Understanding the power, protection, and deliverance through the blood of Messiah",
+      duration: "18 min read",
+      link: "/teaching/blood-of-messiah"
+    },
+    {
+      title: "The Holy Fire of the Spirit",
+      description: "How the consuming fire of the Ruach HaKodesh defeats darkness and purifies believers",
+      duration: "14 min read",
+      link: "/teaching/holy-fire"
+    },
+    {
+      title: "The Power of Fasting",
+      description: "Physical, emotional, and spiritual breakthroughs through biblical fasting",
+      duration: "16 min read",
+      link: "/teaching/fasting-importance"
+    },
+    {
+      title: "The Authority of Prayer",
+      description: "Understanding how prayer activates heavenly authority and brings transformation",
+      duration: "12 min read",
+      link: "/teaching/prayer-power"
+    },
+    {
       title: "Handling Trauma: Forgive & Heal",
       description: "Break victimhood agreements and address secondary effects like bitterness and addiction",
       duration: "15 min read",
