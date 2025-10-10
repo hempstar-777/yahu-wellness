@@ -132,6 +132,50 @@ export type Database = {
         }
         Relationships: []
       }
+      deliverance_roadmaps: {
+        Row: {
+          assessment_id: string | null
+          completed_at: string | null
+          created_at: string
+          duration_days: number
+          id: string
+          progress: Json
+          roadmap_data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          duration_days?: number
+          id?: string
+          progress?: Json
+          roadmap_data?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          duration_days?: number
+          id?: string
+          progress?: Json
+          roadmap_data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliverance_roadmaps_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_journal: {
         Row: {
           content: string

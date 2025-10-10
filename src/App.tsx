@@ -33,6 +33,7 @@ import Testimonies from "./pages/Testimonies";
 import VIPBenefits from "./pages/VIPBenefits";
 import Achievements from "./pages/Achievements";
 import CourseExam from "./pages/CourseExam";
+import PersonalizedRoadmap from "./pages/PersonalizedRoadmap";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/vip-benefits" element={<VIPBenefits />} />
           <Route path="/achievements" element={<Achievements />} />
           <Route path="/course-exam" element={<CourseExam />} />
+          <Route path="/roadmap" element={<PersonalizedRoadmap />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
