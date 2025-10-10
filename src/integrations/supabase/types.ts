@@ -357,6 +357,113 @@ export type Database = {
         }
         Relationships: []
       }
+      minister_clients: {
+        Row: {
+          client_name: string
+          created_at: string
+          email: string | null
+          first_session_date: string | null
+          id: string
+          initial_concerns: string | null
+          last_session_date: string | null
+          minister_id: string
+          notes: string | null
+          phone: string | null
+          prayer_focus: string[] | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          email?: string | null
+          first_session_date?: string | null
+          id?: string
+          initial_concerns?: string | null
+          last_session_date?: string | null
+          minister_id: string
+          notes?: string | null
+          phone?: string | null
+          prayer_focus?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          email?: string | null
+          first_session_date?: string | null
+          id?: string
+          initial_concerns?: string | null
+          last_session_date?: string | null
+          minister_id?: string
+          notes?: string | null
+          phone?: string | null
+          prayer_focus?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      minister_sessions: {
+        Row: {
+          breakthrough_moments: string | null
+          client_id: string | null
+          created_at: string
+          duration_minutes: number | null
+          follow_up_needed: string | null
+          id: string
+          minister_id: string
+          next_steps: string | null
+          prayer_points: string | null
+          private_notes: string | null
+          session_date: string
+          session_type: string
+          topics_covered: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          breakthrough_moments?: string | null
+          client_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          follow_up_needed?: string | null
+          id?: string
+          minister_id: string
+          next_steps?: string | null
+          prayer_points?: string | null
+          private_notes?: string | null
+          session_date?: string
+          session_type: string
+          topics_covered?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          breakthrough_moments?: string | null
+          client_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          follow_up_needed?: string | null
+          id?: string
+          minister_id?: string
+          next_steps?: string | null
+          prayer_points?: string | null
+          private_notes?: string | null
+          session_date?: string
+          session_type?: string
+          topics_covered?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "minister_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "minister_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_journal: {
         Row: {
           content: string

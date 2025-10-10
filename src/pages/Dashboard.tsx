@@ -17,7 +17,8 @@ import {
   Calendar,
   Award,
   Video,
-  Users
+  Users,
+  Briefcase
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -394,6 +395,12 @@ const Dashboard = () => {
                   <Link to="/forums" className="flex flex-col items-center gap-2">
                     <MessageSquare className="w-6 h-6" />
                     <span>Forums</span>
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="h-auto py-4">
+                  <Link to="/minister-toolkit" className="flex flex-col items-center gap-2">
+                    <Briefcase className="w-6 h-6" />
+                    <span>Minister Toolkit</span>
                   </Link>
                 </Button>
               </div>
