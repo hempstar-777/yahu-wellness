@@ -23,6 +23,7 @@ import StayingFree from "./pages/StayingFree";
 import Prayers from "./pages/Prayers";
 import Resources from "./pages/Resources";
 import Teachings from "./pages/Teachings";
+import TeachingContent from "./pages/TeachingContent";
 import ExpandedPrayers from "./pages/ExpandedPrayers";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/prayers" element={<Prayers />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/teachings" element={<Teachings />} />
+          <Route path="/teaching/:id" element={<TeachingContent />} />
           <Route path="/expanded-prayers" element={<ExpandedPrayers />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />

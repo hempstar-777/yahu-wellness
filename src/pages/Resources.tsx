@@ -14,16 +14,19 @@ const Resources = () => {
       title: "Handling Trauma: Forgive & Heal",
       description: "Break victimhood agreements and address secondary effects like bitterness and addiction",
       duration: "15 min read",
+      link: "/teaching/trauma-healing"
     },
     {
       title: "Generational Freedom",
       description: "Understanding and confessing bloodline iniquities to break spiritual strongholds",
       duration: "12 min read",
+      link: "/teaching/generational-freedom"
     },
     {
       title: "Post-Deliverance Filling",
       description: "Why inviting the Ruach HaKodesh is crucial—avoiding spiritual voids",
       duration: "8 min read",
+      link: "/teaching/post-deliverance"
     },
   ];
 
@@ -115,10 +118,15 @@ const Resources = () => {
                   </div>
                   <Badge variant="secondary">10 min</Badge>
                 </div>
-                <Button variant="outline" className="gap-2" disabled>
-                  <ExternalLink className="w-4 h-4" />
-                  Coming Soon
+                <Button variant="default" className="gap-2" asChild>
+                  <a href="https://www.youtube.com/watch?v=example" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4" />
+                    Watch on YouTube
+                  </a>
                 </Button>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Note: Replace with actual deliverance video URL when available
+                </p>
               </div>
             </div>
           </Card>
@@ -150,8 +158,10 @@ const Resources = () => {
                 </div>
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
                   <span className="text-xs text-muted-foreground">{teaching.duration}</span>
-                  <Button size="sm" variant="ghost" disabled className="text-muted-foreground">
-                    Coming Soon
+                  <Button size="sm" variant="default" asChild>
+                    <Link to={teaching.link}>
+                      Read Now
+                    </Link>
                   </Button>
                 </div>
               </Card>

@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ChevronLeft, Heart, Brain, Sparkles, Leaf, Scale, Flame } from "lucide-react";
+import { ChevronLeft, Heart, Brain, Sparkles, Leaf, Scale, Flame, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const EmotionsDictionary = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState("All");
+
   const deadlySins = [
     {
       sin: "Pride",
@@ -837,6 +842,132 @@ const EmotionsDictionary = () => {
       soul: "Holy hunger that drives us to God",
       herbs: "Rose, Hawthorn for holy yearning",
       practice: "Fasting, crying out to God, pursuing His presence"
+    },
+    {
+      name: "Determination",
+      spiritual: "Pressing toward the goal (Philippians 3:14)",
+      mind: "Strong resolve, unwavering focus",
+      body: "Firm jaw, steady stance",
+      soul: "Persistence in calling",
+      herbs: "Ginseng, Rhodiola for endurance",
+      practice: "Goal setting, persistent prayer, discipline"
+    },
+    {
+      name: "Curiosity",
+      spiritual: "Seeking wisdom (Proverbs 2:1-5)",
+      mind: "Active learning, questioning mind",
+      body: "Alert posture, engaged senses",
+      soul: "Hunger for knowledge of God",
+      herbs: "Ginkgo, Bacopa for mental clarity",
+      practice: "Scripture study, asking questions, exploration"
+    },
+    {
+      name: "Inspiration",
+      spiritual: "God-breathed revelation",
+      mind: "Creative flow, new ideas",
+      body: "Energized, alert",
+      soul: "Connection to divine creativity",
+      herbs: "Peppermint, Rosemary for mental stimulation",
+      practice: "Worship, meditation, creative expression"
+    },
+    {
+      name: "Relief",
+      spiritual: "Burdens lifted by Yahusha (Matthew 11:28)",
+      mind: "Release of tension, peace",
+      body: "Relaxed muscles, deep breathing",
+      soul: "Freedom from weight",
+      herbs: "Chamomile, Passionflower for relaxation",
+      practice: "Casting cares on God, resting in His provision"
+    },
+    {
+      name: "Amazement",
+      spiritual: "Marvel at God's works",
+      mind: "Expanded awareness, wonder",
+      body: "Wide eyes, open posture",
+      soul: "Recognition of divine power",
+      herbs: "Gotu Kola for spiritual perception",
+      practice: "Observing creation, testimonies"
+    },
+    {
+      name: "Eagerness",
+      spiritual: "Zeal for the Lord",
+      mind: "Anticipation, readiness",
+      body: "Forward-leaning, energized",
+      soul: "Hunger for more of God",
+      herbs: "Green Tea, Guarana for alertness",
+      practice: "Early morning prayer, fasting, pursuit"
+    },
+    {
+      name: "Valor",
+      spiritual: "Warrior spirit (Psalm 18:32-34)",
+      mind: "Brave, strategic thinking",
+      body: "Strong, prepared for battle",
+      soul: "Courage in spiritual warfare",
+      herbs: "Ginseng, Ashwagandha for strength",
+      practice: "Spiritual warfare, bold faith actions"
+    },
+    {
+      name: "Nobility",
+      spiritual: "Royal priesthood (1 Peter 2:9)",
+      mind: "Dignified thoughts, excellence",
+      body: "Upright posture, grace",
+      soul: "Knowing your identity in Mashiach",
+      herbs: "Saffron for majesty",
+      practice: "Walking in authority, representing the King"
+    },
+    {
+      name: "Devotion",
+      spiritual: "Wholehearted love for God",
+      mind: "Single-minded focus on Yahusha",
+      body: "Prostrate worship, lifted hands",
+      soul: "Consecration, holy dedication",
+      herbs: "Frankincense, Myrrh for worship",
+      practice: "Daily sacrifice, worship, prayer"
+    },
+    {
+      name: "Benevolence",
+      spiritual: "Goodness of God flowing through you",
+      mind: "Thoughts of others' welfare",
+      body: "Gentle hands, soft expression",
+      soul: "Desire to bless and help",
+      herbs: "Rose, Hawthorn for kindness",
+      practice: "Acts of service, generosity"
+    },
+    {
+      name: "Triumph",
+      spiritual: "Victory in Mashiach (1 Corinthians 15:57)",
+      mind: "Confidence in God's promises",
+      body: "Raised arms, strong stance",
+      soul: "Overcoming spirit",
+      herbs: "Ginger, Turmeric for victory",
+      practice: "Declaring victory, celebrating breakthroughs"
+    },
+    {
+      name: "Cheer",
+      spiritual: "Joy of the Lord is strength",
+      mind: "Lightness, positive outlook",
+      body: "Smiling, laughter",
+      soul: "Inner brightness",
+      herbs: "Lemon Balm, St. John's Wort",
+      practice: "Celebrating, laughter, fellowship"
+    },
+    {
+      name: "Steadfastness",
+      spiritual: "Unmovable in faith (1 Corinthians 15:58)",
+      mind: "Consistency, reliability",
+      body: "Firm foundation, stability",
+      soul: "Loyal to God and His ways",
+      herbs: "Eleuthero, Ashwagandha for endurance",
+      practice: "Daily faithfulness, perseverance"
+    },
+    {
+      name: "Elation",
+      spiritual: "Rejoicing in the Lord always",
+      mind: "Heightened joy, euphoria",
+      body: "Energy, lightness",
+      soul: "Overflow of gladness",
+      herbs: "Damiana, Cacao for joy",
+      practice: "Praise, thanksgiving, celebration"
     }
   ];
 
@@ -1588,6 +1719,226 @@ const EmotionsDictionary = () => {
       parasites: "Judgment creates toxicity",
       herbs: "Rose for mercy",
       deliverance: "Stop judging, receive mercy, see own sin first"
+    },
+    {
+      name: "Apathy",
+      spiritual: "Lukewarmness that God will spit out (Revelation 3:16)",
+      mind: "Indifference, lack of concern",
+      body: "Low energy, disconnection",
+      soul: "Spiritual deadness, cold heart",
+      doorway: "Spirit of slumber, religion, Laodicean spirit",
+      parasites: "Apathy weakens immunity",
+      herbs: "Ginger, Cayenne to awaken",
+      deliverance: "Repent of lukewarmness, ask for zeal, receive fire"
+    },
+    {
+      name: "Contempt",
+      spiritual: "Despising what God loves",
+      mind: "Disdain, looking down on others",
+      body: "Sneering, dismissive gestures",
+      soul: "Destroys compassion and unity",
+      doorway: "Pride, arrogance, elitism",
+      parasites: "Contempt creates internal bitterness",
+      herbs: "Rose for love",
+      deliverance: "Repent of pride, receive humility and love"
+    },
+    {
+      name: "Desperation",
+      spiritual: "Can open to wrong sources if not directed to God",
+      mind: "Frantic, irrational thinking",
+      body: "Panic, rapid heartbeat",
+      soul: "Vulnerability to deception",
+      doorway: "Divination, witchcraft seeking answers",
+      parasites: "Desperation weakens discernment",
+      herbs: "Valerian, Passionflower to calm",
+      deliverance: "Turn to God alone, break idolatry, receive peace"
+    },
+    {
+      name: "Vengeance",
+      spiritual: "Trying to be God. Vengeance belongs to Him (Romans 12:19)",
+      mind: "Plotting revenge, consumed with payback",
+      body: "Tension, aggressive energy",
+      soul: "Blocks forgiveness, opens to violence",
+      doorway: "Murder spirit, violence, hatred",
+      parasites: "Vengeance creates toxic buildup",
+      herbs: "Milk Thistle for liver/anger",
+      deliverance: "Forgive, release vengeance to God, receive mercy"
+    },
+    {
+      name: "Overwhelm",
+      spiritual: "Carrying what God didn't assign",
+      mind: "Can't think clearly, mental overload",
+      body: "Physical exhaustion, shutdown",
+      soul: "Loss of peace, feeling crushed",
+      doorway: "Burden, heaviness, false responsibility",
+      parasites: "Overwhelm weakens all systems",
+      herbs: "Ashwagandha, Holy Basil for stress",
+      deliverance: "Cast burdens on Yahusha, break false responsibility"
+    },
+    {
+      name: "Entitlement",
+      spiritual: "Demanding what's not owed, opposing grace",
+      mind: "Expecting special treatment, ingratitude",
+      body: "Demanding posture, expectant stance",
+      soul: "Blocks gratitude, creates offense",
+      doorway: "Pride, mammon, greed",
+      parasites: "Entitlement creates internal imbalance",
+      herbs: "No herb—must repent",
+      deliverance: "Repent of pride, receive gratitude and humility"
+    },
+    {
+      name: "Complacency",
+      spiritual: "Satisfied with less than God's best",
+      mind: "Settling, lack of hunger",
+      body: "Sluggish, unmotivated",
+      soul: "Spiritual stagnation",
+      doorway: "Sloth, religion, false peace",
+      parasites: "Complacency allows parasitic growth",
+      herbs: "Ginger, Ginseng for motivation",
+      deliverance: "Repent of settling, receive hunger and zeal"
+    },
+    {
+      name: "Cynicism",
+      spiritual: "Mocking spirit, disbelief in good",
+      mind: "Distrust, negative lens on everything",
+      body: "Closed posture, skeptical expression",
+      soul: "Kills hope, blocks faith",
+      doorway: "Unbelief, mockery, bitterness",
+      parasites: "Cynicism creates acidic environment",
+      herbs: "Rose for opening heart",
+      deliverance: "Repent of unbelief, receive childlike faith"
+    },
+    {
+      name: "Disillusionment",
+      spiritual: "Shattered expectations, loss of faith",
+      mind: "Disappointment with God, people, life",
+      body: "Heaviness, slumped posture",
+      soul: "Crisis of faith, questioning God",
+      doorway: "Offense, bitterness, unbelief",
+      parasites: "Disillusionment weakens vitality",
+      herbs: "Holy Basil, Milky Oats for restoration",
+      deliverance: "Release offense, receive renewed hope and trust"
+    },
+    {
+      name: "Suspicion",
+      spiritual: "Opposite of faith, agreement with enemy's lies",
+      mind: "Constant doubt, distrust",
+      body: "Vigilant tension, guarded",
+      soul: "Isolation, broken relationships",
+      doorway: "Paranoia, fear, trauma",
+      parasites: "Suspicion creates defensive toxicity",
+      herbs: "Chamomile, Lemon Balm to soften",
+      deliverance: "Break trauma, receive trust and discernment"
+    },
+    {
+      name: "Pettiness",
+      spiritual: "Majoring in minors, straining gnats",
+      mind: "Focus on trivial matters",
+      body: "Nitpicking gestures",
+      soul: "Misses what matters, causes division",
+      doorway: "Critical spirit, Pharisee spirit",
+      parasites: "Pettiness creates small-mindedness",
+      herbs: "Rose for perspective",
+      deliverance: "Repent of majoring in minors, receive wisdom"
+    },
+    {
+      name: "Indignation",
+      spiritual: "Righteous anger corrupted by pride",
+      mind: "Offended sense of justice",
+      body: "Heated, indignant expression",
+      soul: "Self-righteousness, pride",
+      doorway: "Pride, judgment, Pharisee spirit",
+      parasites: "Indignation inflames system",
+      herbs: "Turmeric for inflammation",
+      deliverance: "Check if truly righteous, repent of pride"
+    },
+    {
+      name: "Obstinacy",
+      spiritual: "Stubbornness as witchcraft (1 Samuel 15:23)",
+      mind: "Refusing to yield, rebellious",
+      body: "Rigid, inflexible stance",
+      soul: "Cannot receive correction or truth",
+      doorway: "Rebellion, witchcraft, pride",
+      parasites: "Obstinacy creates blockages",
+      herbs: "No herb—must submit",
+      deliverance: "Repent of rebellion, break stubbornness, receive teachability"
+    },
+    {
+      name: "Hopelessness",
+      spiritual: "Antichrist spirit denying God's promises",
+      mind: "No way out, future looks dark",
+      body: "Exhaustion, giving up",
+      soul: "Suicidal ideation, death wish",
+      doorway: "Depression, suicide, death spirit",
+      parasites: "Hopelessness opens to death",
+      herbs: "St. John's Wort, Rhodiola for hope",
+      deliverance: "Break spirit of death, receive hope and life"
+    },
+    {
+      name: "Restlessness",
+      spiritual: "Not resting in God's provision",
+      mind: "Can't settle, constant agitation",
+      body: "Fidgeting, inability to be still",
+      soul: "Striving, no peace",
+      doorway: "Anxiety, drivenness, performance",
+      parasites: "Restlessness depletes energy",
+      herbs: "Valerian, Passionflower for rest",
+      deliverance: "Enter God's rest, break striving, receive peace"
+    },
+    {
+      name: "Dread",
+      spiritual: "Anticipating evil, opposite of hope",
+      mind: "Expecting the worst",
+      body: "Heavy foreboding, pit in stomach",
+      soul: "Prophesying disaster over self",
+      doorway: "Fear, anxiety, death spirit",
+      parasites: "Dread weakens all defenses",
+      herbs: "Holy Basil, Skullcap to calm",
+      deliverance: "Break fear, receive faith and hope"
+    },
+    {
+      name: "Indifference",
+      spiritual: "Cold heart toward God and others",
+      mind: "Don't care, emotionally numb",
+      body: "Disconnected, flat affect",
+      soul: "Lovelessness, hardness",
+      doorway: "Hard heart, Laodicean spirit",
+      parasites: "Indifference allows unchecked growth",
+      herbs: "Hawthorn, Rose to soften heart",
+      deliverance: "Break hard heart, receive compassion and zeal"
+    },
+    {
+      name: "Defiance",
+      spiritual: "Open rebellion against authority",
+      mind: "Won't submit to anyone",
+      body: "Confrontational, challenging stance",
+      soul: "Lawlessness, antichrist spirit",
+      doorway: "Rebellion, witchcraft, pride",
+      parasites: "Defiance creates internal conflict",
+      herbs: "No herb—must submit",
+      deliverance: "Repent of rebellion, receive submission to God"
+    },
+    {
+      name: "Vindictiveness",
+      spiritual: "Holding accounts, opposite of grace",
+      mind: "Keeping score, planning retaliation",
+      body: "Calculating, cold expression",
+      soul: "Unforgiveness, desire to harm",
+      doorway: "Unforgiveness, murder, hatred",
+      parasites: "Vindictiveness creates toxicity",
+      herbs: "Milk Thistle for bitterness",
+      deliverance: "Forgive completely, break unforgiveness"
+    },
+    {
+      name: "Scorn",
+      spiritual: "Mocking what should be honored",
+      mind: "Ridicule, contempt",
+      body: "Sneering, mocking gestures",
+      soul: "Destroys respect and honor",
+      doorway: "Mockery, pride, rebellion",
+      parasites: "Scorn creates acidic environment",
+      herbs: "Rose for respect",
+      deliverance: "Repent of mockery, receive honor and respect"
     }
   ];
 
@@ -1621,6 +1972,40 @@ const EmotionsDictionary = () => {
               This comprehensive guide helps you understand the complete picture of emotional and spiritual health, 
               including natural remedies and deliverance strategies.
             </p>
+            
+            {/* Search Bar */}
+            <div className="relative mt-6">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search emotions..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Alphabet Filter */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Button
+                variant={selectedLetter === "All" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedLetter("All")}
+              >
+                All
+              </Button>
+              {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(letter => (
+                <Button
+                  key={letter}
+                  variant={selectedLetter === letter ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedLetter(letter)}
+                >
+                  {letter}
+                </Button>
+              ))}
+            </div>
+
             <div className="grid md:grid-cols-4 gap-4 mt-6">
               <div className="flex items-start gap-3">
                 <Sparkles className="w-5 h-5 text-primary mt-1" />
@@ -1840,7 +2225,12 @@ const EmotionsDictionary = () => {
           {/* Positive Emotions */}
           <TabsContent value="positive" className="space-y-6 mt-6">
             <div className="grid gap-6">
-              {positiveEmotions.map((emotion, index) => (
+              {positiveEmotions
+                .filter(emotion => 
+                  emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                  (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
+                )
+                .map((emotion, index) => (
                 <Card key={index} className="border-primary/20 shadow-sm hover:shadow-elevated transition-shadow">
                   <CardHeader className="bg-gradient-spiritual text-primary-foreground">
                     <CardTitle className="text-2xl">{emotion.name}</CardTitle>
@@ -1918,7 +2308,12 @@ const EmotionsDictionary = () => {
             </Card>
 
             <div className="grid gap-6">
-              {negativeEmotions.map((emotion, index) => (
+              {negativeEmotions
+                .filter(emotion => 
+                  emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                  (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
+                )
+                .map((emotion, index) => (
                 <Card key={index} className="border-destructive/20 shadow-sm hover:shadow-elevated transition-shadow">
                   <CardHeader className="bg-gradient-to-r from-destructive/80 to-destructive/60 text-destructive-foreground">
                     <CardTitle className="text-2xl">{emotion.name}</CardTitle>
