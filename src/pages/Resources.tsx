@@ -209,18 +209,19 @@ const Resources = () => {
         </div>
       </section>
 
-      {/* External Resources */}
+      {/* Biblical Foundation */}
       <section className="container mx-auto px-4 py-12 pb-16">
         <Card className="max-w-4xl mx-auto p-8 border-primary/20 shadow-elevated">
-          <h3 className="font-serif text-2xl font-bold mb-4">Additional Resources</h3>
+          <h3 className="font-serif text-2xl font-bold mb-4">Biblical Foundation</h3>
           <div className="space-y-3 text-foreground/80">
             <p className="leading-relaxed">
-              This app is inspired by <strong>Bride Ministries</strong> and the teachings of deliverance experts 
-              like Dan Duval and Amanda Buys.
+              This app is built on biblical principles and guided by the Ruach HaKodesh (Holy Spirit). 
+              All teachings and prayers are rooted in Scripture and focus on helping believers walk in freedom through Yeshua.
             </p>
             <p className="leading-relaxed">
-              For more in-depth study, consider exploring their published works on topics like authority on earth, 
-              captive spirits, and advanced spiritual warfare.
+              We combine timeless biblical truths with modern AI technology to provide personalized guidance 
+              and support for your deliverance journey. Our approach emphasizes personal relationship with the Holy Spirit 
+              and the authority believers have through Messiah.
             </p>
           </div>
         </Card>
