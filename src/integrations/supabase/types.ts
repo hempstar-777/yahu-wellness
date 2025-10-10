@@ -176,6 +176,51 @@ export type Database = {
           },
         ]
       }
+      fasting_tracker: {
+        Row: {
+          completed: boolean | null
+          created_at: string
+          duration_hours: number | null
+          end_time: string | null
+          fasting_type: string
+          goal_hours: number
+          id: string
+          notes: string | null
+          start_time: string
+          updated_at: string
+          user_id: string
+          water_intake_ml: number | null
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string
+          duration_hours?: number | null
+          end_time?: string | null
+          fasting_type: string
+          goal_hours: number
+          id?: string
+          notes?: string | null
+          start_time: string
+          updated_at?: string
+          user_id: string
+          water_intake_ml?: number | null
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string
+          duration_hours?: number | null
+          end_time?: string | null
+          fasting_type?: string
+          goal_hours?: number
+          id?: string
+          notes?: string | null
+          start_time?: string
+          updated_at?: string
+          user_id?: string
+          water_intake_ml?: number | null
+        }
+        Relationships: []
+      }
       prayer_journal: {
         Row: {
           content: string
@@ -390,6 +435,42 @@ export type Database = {
           },
         ]
       }
+      user_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_activity_date: string
+          level: number
+          longest_streak: number
+          total_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string
+          level?: number
+          longest_streak?: number
+          total_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string
+          level?: number
+          longest_streak?: number
+          total_xp?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vip_users: {
         Row: {
           granted_at: string
@@ -414,11 +495,42 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_activities: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          id: string
+          metadata: Json | null
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          activity_date?: string
+          activity_type: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+          xp_earned: number
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      calculate_level: {
+        Args: { total_xp: number }
+        Returns: number
+      }
       get_vip_count: {
         Args: Record<PropertyKey, never>
         Returns: number

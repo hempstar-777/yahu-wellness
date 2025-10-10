@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { VIPStatus } from '@/components/VIPStatus';
 import { UserBadge } from '@/components/UserBadge';
+import { XPDisplay } from '@/components/XPDisplay';
 import { 
   ClipboardCheck, 
   GraduationCap, 
@@ -166,6 +167,11 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-8">
           {/* VIP Status */}
           <VIPStatus />
+
+          {/* XP and Streak Display */}
+          <div className="mt-6">
+            <XPDisplay />
+          </div>
 
           {/* Badges */}
           {badges.length > 0 && (
