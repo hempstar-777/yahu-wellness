@@ -17,6 +17,7 @@ const Courses = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const [isVIP, setIsVIP] = useState(false);
   const [userProgress, setUserProgress] = useState({
     deliverance: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
     intercessors: { currentLevel: 1, completedLevels: [], testsPassed: 0 },
@@ -31,6 +32,7 @@ const Courses = () => {
     if (user) {
       loadProgress();
       loadPurchases();
+      checkVIPStatus();
     }
   }, [user]);
 
@@ -62,6 +64,22 @@ const Courses = () => {
       setPurchases(data || []);
     } catch (error) {
       console.error('Error loading purchases:', error);
+    }
+  };
+
+  const checkVIPStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('vip_users' as any)
+        .select('is_active')
+        .eq('user_id', user!.id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+      setIsVIP(!!data);
+    } catch (error) {
+      console.error('Error checking VIP status:', error);
     }
   };
 
@@ -484,33 +502,56 @@ const Courses = () => {
                           <div className="flex items-center justify-between mb-3">
                             <div>
                               <p className="text-sm font-medium text-muted-foreground">Full Course Price</p>
-                              <p className="text-3xl font-bold text-primary">${pricing.fullCourse}</p>
+                              {isVIP ? (
+                                <div>
+                                  <Badge className="bg-gradient-spiritual text-primary-foreground mb-2">
+                                    VIP - FREE
+                                  </Badge>
+                                  <p className="text-sm text-muted-foreground line-through">
+                                    Regular: ${pricing.fullCourse}
+                                  </p>
+                                </div>
+                              ) : (
+                                <p className="text-3xl font-bold text-primary">${pricing.fullCourse}</p>
+                              )}
                             </div>
-                            <div className="text-right">
-                              <Badge className="bg-green-100 text-green-800 mb-1">
-                                Save {savingsPercent}%
-                              </Badge>
-                              <p className="text-sm text-muted-foreground">
-                                vs ${calculateSavings(category.id as keyof typeof coursePricing).moduleTotal} for individual modules
-                              </p>
-                            </div>
+                            {!isVIP && (
+                              <div className="text-right">
+                                <Badge className="bg-green-100 text-green-800 mb-1">
+                                  Save {savingsPercent}%
+                                </Badge>
+                                <p className="text-sm text-muted-foreground">
+                                  vs ${calculateSavings(category.id as keyof typeof coursePricing).moduleTotal} for individual modules
+                                </p>
+                              </div>
+                            )}
                           </div>
                           {!hasFullAccess && (
-                            <Button
-                              onClick={() => handlePurchase(
-                                category.id,
-                                category.title,
-                                null,
-                                'Full Course',
-                                'full_course'
-                              )}
-                              disabled={isProcessing}
-                              className="w-full bg-gradient-spiritual"
-                              size="lg"
-                            >
-                              <ShoppingCart className="h-4 w-4 mr-2" />
-                              {isProcessing ? "Processing..." : `Purchase Full Course - $${pricing.fullCourse}`}
-                            </Button>
+                            isVIP ? (
+                              <Button
+                                onClick={() => enrollInCourse(category.id, 1)}
+                                className="w-full bg-gradient-spiritual"
+                                size="lg"
+                              >
+                                Start Full Course (VIP Access)
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => handlePurchase(
+                                  category.id,
+                                  category.title,
+                                  null,
+                                  'Full Course',
+                                  'full_course'
+                                )}
+                                disabled={isProcessing}
+                                className="w-full bg-gradient-spiritual"
+                                size="lg"
+                              >
+                                <ShoppingCart className="h-4 w-4 mr-2" />
+                                {isProcessing ? "Processing..." : `Purchase Full Course - $${pricing.fullCourse}`}
+                              </Button>
+                            )
                           )}
                           {hasFullAccess && (
                             <div className="flex items-center justify-center gap-2 text-green-600">
@@ -591,8 +632,21 @@ const Courses = () => {
                               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                                 <span className="text-sm font-medium">Module Price:</span>
                                 <div className="flex items-center gap-2">
-                                  <DollarSign className="h-4 w-4 text-primary" />
-                                  <span className="text-xl font-bold text-primary">${modulePrice}</span>
+                                  {isVIP ? (
+                                    <div className="text-right">
+                                      <Badge className="bg-gradient-spiritual text-primary-foreground">
+                                        VIP - FREE
+                                      </Badge>
+                                      <div className="text-xs text-muted-foreground line-through mt-1">
+                                        Regular: ${modulePrice}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <DollarSign className="h-4 w-4 text-primary" />
+                                      <span className="text-xl font-bold text-primary">${modulePrice}</span>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -606,21 +660,30 @@ const Courses = () => {
 
                             <div className="flex gap-3">
                               {!isPurchased && !locked ? (
-                                <Button
-                                  onClick={() => handlePurchase(
-                                    category.id,
-                                    category.title,
-                                    level.level,
-                                    level.title,
-                                    'module'
-                                  )}
-                                  disabled={isProcessing}
-                                  className="flex-1"
-                                  variant="default"
-                                >
-                                  <ShoppingCart className="h-4 w-4 mr-2" />
-                                  {isProcessing ? "Processing..." : `Purchase Module - $${modulePrice}`}
-                                </Button>
+                                isVIP ? (
+                                  <Button
+                                    onClick={() => enrollInCourse(category.id, level.level)}
+                                    className="flex-1 bg-gradient-spiritual"
+                                  >
+                                    Start Course (VIP Access)
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    onClick={() => handlePurchase(
+                                      category.id,
+                                      category.title,
+                                      level.level,
+                                      level.title,
+                                      'module'
+                                    )}
+                                    disabled={isProcessing}
+                                    className="flex-1"
+                                    variant="default"
+                                  >
+                                    <ShoppingCart className="h-4 w-4 mr-2" />
+                                    {isProcessing ? "Processing..." : `Purchase Module - $${modulePrice}`}
+                                  </Button>
+                                )
                               ) : isPurchased ? (
                                 <Button
                                   disabled={locked}

@@ -29,6 +29,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import PrayerJournal from "./pages/PrayerJournal";
 import Testimonies from "./pages/Testimonies";
+import VIPBenefits from "./pages/VIPBenefits";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/prayer-journal" element={<PrayerJournal />} />
           <Route path="/testimonies" element={<Testimonies />} />
+          <Route path="/vip-benefits" element={<VIPBenefits />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>

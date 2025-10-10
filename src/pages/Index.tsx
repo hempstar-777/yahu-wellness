@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { VIPCounter } from "@/components/VIPCounter";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -118,7 +119,12 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </header>
+     </header>
+
+      {/* VIP Early Access Banner */}
+      <div className="container mx-auto px-4 py-8">
+        <VIPCounter />
+      </div>
 
       {/* Safety Notice */}
       <div className="container mx-auto px-4 py-8">

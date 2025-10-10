@@ -264,16 +264,48 @@ export type Database = {
           },
         ]
       }
+      vip_users: {
+        Row: {
+          granted_at: string
+          id: string
+          is_active: boolean
+          user_id: string
+          vip_number: number
+        }
+        Insert: {
+          granted_at?: string
+          id?: string
+          is_active?: boolean
+          user_id: string
+          vip_number: number
+        }
+        Update: {
+          granted_at?: string
+          id?: string
+          is_active?: boolean
+          user_id?: string
+          vip_number?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_vip_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_vip_user: {
+        Args: { user_id_input: string }
         Returns: boolean
       }
     }
