@@ -707,7 +707,11 @@ const Courses = () => {
                                 </Button>
                               )}
                               {isPurchased && !completed && (
-                                <Button variant="outline" disabled={locked}>
+                                <Button 
+                                  variant="outline" 
+                                  disabled={locked}
+                                  onClick={() => navigate(`/course-exam?courseId=${category.id}&level=${level.level}&courseName=${encodeURIComponent(category.title)}&levelName=${encodeURIComponent(level.title)}`)}
+                                >
                                   <Award className="h-4 w-4 mr-2" />
                                   Take Exam
                                 </Button>

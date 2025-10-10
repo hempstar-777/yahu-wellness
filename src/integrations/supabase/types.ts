@@ -235,6 +235,88 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          badge_category: string | null
+          badge_data: Json | null
+          badge_level: number | null
+          badge_type: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_category?: string | null
+          badge_data?: Json | null
+          badge_level?: number | null
+          badge_type: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_category?: string | null
+          badge_data?: Json | null
+          badge_level?: number | null
+          badge_type?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_certificates: {
+        Row: {
+          certificate_data: Json | null
+          certificate_type: string
+          course_id: string
+          course_name: string
+          id: string
+          issued_at: string
+          level_index: number | null
+          level_name: string | null
+          user_id: string
+        }
+        Insert: {
+          certificate_data?: Json | null
+          certificate_type: string
+          course_id: string
+          course_name: string
+          id?: string
+          issued_at?: string
+          level_index?: number | null
+          level_name?: string | null
+          user_id: string
+        }
+        Update: {
+          certificate_data?: Json | null
+          certificate_type?: string
+          course_id?: string
+          course_name?: string
+          id?: string
+          issued_at?: string
+          level_index?: number | null
+          level_name?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

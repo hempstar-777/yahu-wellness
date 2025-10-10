@@ -30,6 +30,8 @@ import Dashboard from "./pages/Dashboard";
 import PrayerJournal from "./pages/PrayerJournal";
 import Testimonies from "./pages/Testimonies";
 import VIPBenefits from "./pages/VIPBenefits";
+import Achievements from "./pages/Achievements";
+import CourseExam from "./pages/CourseExam";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,8 @@ const App = () => (
           <Route path="/prayer-journal" element={<PrayerJournal />} />
           <Route path="/testimonies" element={<Testimonies />} />
           <Route path="/vip-benefits" element={<VIPBenefits />} />
+          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/course-exam" element={<CourseExam />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>

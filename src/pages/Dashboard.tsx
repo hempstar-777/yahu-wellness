@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { VIPStatus } from '@/components/VIPStatus';
+import { UserBadge } from '@/components/UserBadge';
 import { 
   ClipboardCheck, 
   GraduationCap, 
@@ -12,7 +13,8 @@ import {
   MessageSquare, 
   TrendingUp,
   ChevronLeft,
-  Calendar
+  Calendar,
+  Award
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -54,6 +56,7 @@ const Dashboard = () => {
   const [courseProgress, setCourseProgress] = useState<CourseProgress[]>([]);
   const [prayers, setPrayers] = useState<PrayerEntry[]>([]);
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
+  const [badges, setBadges] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -107,6 +110,16 @@ const Dashboard = () => {
 
       if (testimonyData) setTestimonies(testimonyData);
 
+      // Fetch badges
+      const { data: badgeData } = await supabase
+        .from('user_badges' as any)
+        .select('*')
+        .eq('user_id', user.id)
+        .order('earned_at', { ascending: false })
+        .limit(5);
+
+      if (badgeData) setBadges(badgeData);
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -153,6 +166,37 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-8">
           {/* VIP Status */}
           <VIPStatus />
+
+          {/* Badges */}
+          {badges.length > 0 && (
+            <Card className="mt-6">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Your Badges
+                  </CardTitle>
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/achievements">View All</Link>
+                  </Button>
+                </div>
+                <CardDescription>Recent achievements and accomplishments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {badges.map((badge) => (
+                    <UserBadge
+                      key={badge.id}
+                      badgeType={badge.badge_type}
+                      badgeCategory={badge.badge_category}
+                      badgeLevel={badge.badge_level}
+                      badgeData={badge.badge_data}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           {/* Stats Overview */}
           <div className="grid md:grid-cols-4 gap-4 mb-8 mt-6">
