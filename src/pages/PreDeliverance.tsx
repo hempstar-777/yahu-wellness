@@ -38,7 +38,7 @@ const PreDeliverance = () => {
           "Break fast gently with light foods",
           "Increase Bible reading and prayer during fast",
           "Expect spiritual breakthrough on day 3",
-          "Medical conditions: consult physician first"
+          "Medical conditions: Always consult a physician before fasting - this is spiritual guidance, not medical advice"
         ],
         scripture: "Matthew 17:21 - This kind does not go out except by prayer and fasting"
       }
@@ -83,7 +83,7 @@ Thank you Yahusha for setting me free.`,
           "**Eastern Mysticism** - Yoga (not just exercise), transcendental meditation, chakras, kundalini, reiki",
           "**New Age** - Crystals, sage smudging, vision boards, law of attraction, astral projection",
           "**Astrology** - Horoscopes, zodiac signs, birth charts, planetary alignments",
-          "**False Religions** - Freemasonry, Mormonism, Jehovah's Witnesses, Islam, Buddhism, Hinduism",
+          "**Non-Messianic Teachings & Secret Societies** - Freemasonry, Mormonism, Jehovah's Witnesses, Eastern philosophies, mystery religions, syncretism",
           "**Entertainment** - Horror movies, occult video games, heavy metal music with demonic themes",
           "**Secret Societies** - Skull & Bones, Eastern Star, Shriners, fraternities/sororities with rituals"
         ],

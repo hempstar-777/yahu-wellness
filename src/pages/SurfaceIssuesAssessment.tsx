@@ -206,13 +206,18 @@ const SurfaceIssuesAssessment = () => {
         <Card className="max-w-4xl mx-auto p-6 border-primary/20 shadow-elevated">
           <h2 className="font-serif text-xl font-semibold mb-3">Instructions</h2>
           <p className="text-foreground/80 leading-relaxed mb-4">
-            This is a basic checklist for common sins and bondages. Be honest with yourself as you go through each category. 
-            Check all items that apply to your life, past or present. These will form your personalized renunciation list.
+            This is a spiritual assessment checklist for common areas requiring deliverance prayer. Be honest with yourself as you go through each category. 
+            Check all items that apply to your life, past or present. These will form your personalized prayer focus list.
           </p>
+          <div className="bg-destructive/10 rounded-lg p-4 mb-4 border border-destructive/30">
+            <p className="text-sm text-destructive font-semibold">
+              <strong>Medical Disclaimer:</strong> This spiritual assessment is NOT medical treatment and does not diagnose or cure addiction, mental health conditions, or medical issues. If you struggle with substance abuse, eating disorders, self-harm, or suicidal thoughts, please seek professional medical and mental health care immediately (988 Lifeline or 911).
+            </p>
+          </div>
           <div className="bg-accent/50 rounded-lg p-4">
             <p className="text-sm text-accent-foreground">
-              <strong>Tip:</strong> If your list becomes very long, you can "lump items under unrighteousness" when praying, 
-              or you can pray through each item individually for deeper breakthrough.
+              <strong>Tip:</strong> If your list becomes very long, you can address items by category when praying, 
+              or you can pray through each item individually for deeper spiritual breakthrough.
             </p>
           </div>
         </Card>

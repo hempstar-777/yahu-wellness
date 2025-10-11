@@ -1,12 +1,13 @@
 {
   "name": "Spiritual Freedom & Deliverance",
   "short_name": "Deliverance",
-  "description": "Your complete spiritual freedom journey companion",
+  "description": "Messianic spiritual guidance for deliverance and freedom - NOT medical treatment. Companion app for biblical healing journey with assessments, prayers, and teachings.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
   "orientation": "portrait",
+  "categories": ["lifestyle", "education"],
   "icons": [
     {
       "src": "/favicon.ico",

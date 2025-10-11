@@ -152,11 +152,16 @@ const TraumaAssessment = () => {
                 <CheckCircle className="w-5 h-5" />
                 Important Note
               </h3>
-              <p className="text-sm text-accent-foreground/80">
-                This assessment addresses trauma and abuse. Remember: Even if you were victimized
-                non-consensually, you may have made agreements with spirits of trauma, shame, or
-                bitterness. Focus on breaking these agreements, not blaming yourself. Forgiveness
-                of perpetrators is key to your freedom.
+              <p className="text-sm text-accent-foreground/80 space-y-2">
+                <span className="block">
+                  <strong>Content Warning:</strong> This assessment addresses trauma and abuse. If you are in crisis, please contact professional help immediately (988 Lifeline, 911, or RAINN 1-800-656-4673).
+                </span>
+                <span className="block">
+                  This spiritual assessment helps identify areas for prayer and deliverance. Remember: Even if you were victimized non-consensually, you may have made agreements with spirits of trauma, shame, or bitterness. Focus on breaking these spiritual agreements, not blaming yourself. Forgiveness of perpetrators is key to your spiritual freedom.
+                </span>
+                <span className="block font-semibold">
+                  Important: This is NOT medical treatment. Trauma recovery often requires professional therapy alongside spiritual healing.
+                </span>
               </p>
             </div>
 

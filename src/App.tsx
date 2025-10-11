@@ -42,6 +42,7 @@ import PrayerVideos from "./pages/PrayerVideos";
 import GroupPrayer from "./pages/GroupPrayer";
 import Forums from "./pages/Forums";
 import MinisterToolkit from "./pages/MinisterToolkit";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +91,7 @@ const App = () => (
           <Route path="/group-prayer" element={<GroupPrayer />} />
           <Route path="/forums" element={<Forums />} />
           <Route path="/minister-toolkit" element={<MinisterToolkit />} />
+          <Route path="/terms" element={<TermsOfService />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>

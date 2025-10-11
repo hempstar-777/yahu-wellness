@@ -130,11 +130,30 @@ const Index = () => {
       </div>
 
       {/* Safety Notice */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 space-y-4">
         <Alert className="max-w-4xl mx-auto border-secondary/30 bg-secondary/5">
           <AlertCircle className="h-5 w-5 text-secondary" />
           <AlertDescription className="text-sm leading-relaxed">
             <strong>{t('home.safetyNotice')}</strong> {t('home.safetyText')}
+          </AlertDescription>
+        </Alert>
+        
+        <Alert className="max-w-4xl mx-auto border-destructive/30 bg-destructive/5">
+          <AlertCircle className="h-5 w-5 text-destructive" />
+          <AlertDescription className="text-sm leading-relaxed space-y-2">
+            <p>
+              <strong>Medical Disclaimer:</strong> This app provides spiritual guidance based on Messianic teachings and is NOT a substitute for professional medical care, psychiatric treatment, or licensed therapy. If you are experiencing a mental health crisis, suicidal thoughts, severe trauma, or serious medical symptoms, please seek immediate professional help.
+            </p>
+            <p className="font-semibold">Crisis Support Resources:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>National Suicide Prevention Lifeline: 988 or 1-800-273-8255</li>
+              <li>Crisis Text Line: Text HOME to 741741</li>
+              <li>RAINN Sexual Assault Hotline: 1-800-656-4673</li>
+              <li>For emergencies: Call 911 or visit your nearest emergency room</li>
+            </ul>
+            <p>
+              Our guidance supports your spiritual journey toward healing that your body and soul are designed by Yahuah to experience. This process works alongside, not instead of, professional medical and mental health care when needed.
+            </p>
           </AlertDescription>
         </Alert>
       </div>
@@ -229,6 +248,11 @@ const Index = () => {
             <p className="text-xs">
               {t('home.footerDisclaimer')}
             </p>
+            <div className="flex justify-center gap-4 text-xs">
+              <Link to="/terms" className="hover:underline">Terms of Service</Link>
+              <span>•</span>
+              <a href="mailto:support@spiritualfreedom.app" className="hover:underline">Contact Support</a>
+            </div>
           </div>
         </div>
       </footer>

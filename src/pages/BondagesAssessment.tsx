@@ -77,10 +77,10 @@ const BondagesAssessment = () => {
       "Blood pacts",
       "Satanic rituals"
     ],
-    "False Religions & Spiritual Systems": [
-      "Buddhism",
-      "Hinduism",
-      "Islam",
+    "Non-Messianic Teachings & Secret Societies": [
+      "Buddhist practices",
+      "Hindu practices",
+      "Islamic practices",
       "Mormonism",
       "Jehovah's Witness",
       "Scientology",
@@ -230,13 +230,18 @@ const BondagesAssessment = () => {
         <Card className="max-w-4xl mx-auto p-6 border-primary/20 shadow-elevated">
           <h2 className="font-serif text-xl font-semibold mb-3">Instructions</h2>
           <p className="text-foreground/80 leading-relaxed mb-4">
-            This assessment dives deeper into patterns like pharmakia, illicit relationships, and addictive behaviors. 
-            Be thorough and honest. Remember, confession is the first step to freedom (1 John 1:9).
+            This spiritual assessment identifies deeper patterns requiring deliverance prayer. 
+            Be thorough and honest. Remember, confession is the first step to spiritual freedom (1 John 1:9).
           </p>
+          <div className="bg-destructive/10 rounded-lg p-4 mb-4 border border-destructive/30">
+            <p className="text-sm text-destructive font-semibold">
+              <strong>Medical Disclaimer:</strong> This is spiritual guidance, NOT medical treatment. Addictions (drugs, alcohol, eating disorders), self-harm, and mental health issues require professional medical care. Call 988 (Lifeline) or 911 for emergencies. RAINN: 1-800-656-4673 for sexual assault support.
+            </p>
+          </div>
           <div className="bg-accent/50 rounded-lg p-4 space-y-2">
             <p className="text-sm text-accent-foreground">
               <strong>Important:</strong> For items involving trauma or non-consensual experiences, focus on breaking 
-              victim agreements and renouncing any spirits that entered through those doorways—not on confessing as if you sinned.
+              spiritual victim agreements and renouncing spirits that entered—not on confessing as if you sinned.
             </p>
             <p className="text-sm text-accent-foreground">
               These results will be added to any previous assessment results you've saved.
