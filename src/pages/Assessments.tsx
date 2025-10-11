@@ -76,6 +76,16 @@ const Assessments = () => {
       available: true,
       path: "/assessments/doorways",
     },
+    {
+      id: 8,
+      title: "Altars & Evil Dedications",
+      description: "Identify spiritual altars and demonic dedication points requiring demolition.",
+      icon: Sparkles,
+      difficulty: "Advanced",
+      duration: "15-20 min",
+      available: true,
+      path: "/assessments/altars",
+    },
   ];
 
   return (

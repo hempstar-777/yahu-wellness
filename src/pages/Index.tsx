@@ -116,6 +116,9 @@ const Index = () => {
             <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
               <Link to="/courses">Spiritual University</Link>
             </Button>
+            <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Link to="/intercession">Intercession Hub</Link>
+            </Button>
           </div>
         </div>
       </div>

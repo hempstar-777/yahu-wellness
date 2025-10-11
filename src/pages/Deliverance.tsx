@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, MessageSquare, RotateCcw, Ban, Link2, Zap } from "lucide-react";
+import { ChevronLeft, MessageSquare, RotateCcw, Ban, Link2, Zap, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -86,6 +86,74 @@ const Deliverance = () => {
             </AlertDescription>
           </Alert>
         </div>
+      </section>
+
+      {/* Strongman Identification */}
+      <section className="container mx-auto px-4 py-8">
+        <Card className="max-w-4xl mx-auto p-8 bg-gradient-divine text-primary-foreground shadow-glow">
+          <div className="flex items-start gap-4">
+            <Shield className="w-10 h-10 flex-shrink-0" />
+            <div className="space-y-4">
+              <h3 className="font-serif text-2xl font-bold">Step 0: Identify the Strongman</h3>
+              <p className="text-primary-foreground/90 leading-relaxed">
+                <strong>Mark 3:27</strong> - "No one can enter a strong man's house and plunder his goods, unless he first binds 
+                the strong man. Then indeed he may plunder his house."
+              </p>
+              <p className="text-sm text-primary-foreground/80">
+                Before the 5 steps, identify the <strong>chief demon</strong> (strongman) ruling over your primary issue. 
+                This spirit oversees lesser demons and must be bound first for effective deliverance.
+              </p>
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4 space-y-3">
+                <h4 className="font-semibold text-lg">Common Strongmen:</h4>
+                <div className="grid md:grid-cols-2 gap-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Fear</strong> - anxiety, phobias, panic</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Infirmity</strong> - chronic illness, disease</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Addiction</strong> - substances, behaviors</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Perversion</strong> - sexual bondage, lust</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Heaviness</strong> - depression, despair</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Divination</strong> - witchcraft, occult</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Pride</strong> - arrogance, rebellion</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary-foreground">•</span>
+                    <span><strong>Spirit of Rejection</strong> - wounds, bitterness</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-4">
+                <p className="text-sm font-semibold mb-2">Prayer to Bind the Strongman:</p>
+                <p className="text-xs font-mono italic">
+                  "I identify the strongman over my life as [SPIRIT NAME]. By the authority of Yahusha Ha Mashiach, 
+                  I bind you in chains and fetters of iron. Your authority is REVOKED. I command you SILENT and POWERLESS 
+                  while I dismantle your entire house. In Yahusha's name!"
+                </p>
+              </div>
+              <p className="text-xs text-primary-foreground/70">
+                <strong>Tip:</strong> Ask the Ruach HaKodesh to reveal the strongman's name through prayer, Scripture, or inner knowing.
+              </p>
+            </div>
+          </div>
+        </Card>
       </section>
 
       {/* 5 Steps */}

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink } from "lucide-react";
+import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink, Heart, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import BibleAudioPlayer from "@/components/BibleAudioPlayer";
@@ -99,6 +99,45 @@ const Resources = () => {
             </p>
           </div>
           <HebrewNamesGlossary />
+        </div>
+      </section>
+
+      {/* Quick Links to New Features */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+          <Card className="p-6 hover:shadow-elevated transition-all border-primary/20">
+            <Link to="/intercession" className="block space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-gradient-spiritual text-primary-foreground">
+                  <Heart className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-xl font-semibold">Intercession Hub</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Learn strategic prayer, warfare intercession, and standing in the gap for others
+              </p>
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary-glow">
+                Explore Intercession →
+              </Button>
+            </Link>
+          </Card>
+
+          <Card className="p-6 hover:shadow-elevated transition-all border-primary/20">
+            <Link to="/assessments/altars" className="block space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-gradient-divine text-primary-foreground">
+                  <Flame className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-xl font-semibold">Altars Assessment</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Identify and demolish spiritual altars giving demons legal access to your life
+              </p>
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary-glow">
+                Take Assessment →
+              </Button>
+            </Link>
+          </Card>
         </div>
       </section>
 

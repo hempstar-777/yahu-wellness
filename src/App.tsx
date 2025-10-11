@@ -19,6 +19,8 @@ import NaturalHealingResources from "./pages/NaturalHealingResources";
 import SpiritualTraumaResources from "./pages/SpiritualTraumaResources";
 import Deliverance from "./pages/Deliverance";
 import PreDeliverance from "./pages/PreDeliverance";
+import AltarsAssessment from "./pages/AltarsAssessment";
+import IntercessionHub from "./pages/IntercessionHub";
 import StayingFree from "./pages/StayingFree";
 import Prayers from "./pages/Prayers";
 import Resources from "./pages/Resources";
@@ -66,6 +68,8 @@ const App = () => (
           <Route path="/spiritual-trauma" element={<SpiritualTraumaResources />} />
           <Route path="/deliverance" element={<Deliverance />} />
           <Route path="/pre-deliverance" element={<PreDeliverance />} />
+          <Route path="/assessments/altars" element={<AltarsAssessment />} />
+          <Route path="/intercession" element={<IntercessionHub />} />
           <Route path="/staying-free" element={<StayingFree />} />
           <Route path="/prayers" element={<Prayers />} />
           <Route path="/resources" element={<Resources />} />
