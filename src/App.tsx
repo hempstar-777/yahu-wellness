@@ -43,6 +43,7 @@ import GroupPrayer from "./pages/GroupPrayer";
 import Forums from "./pages/Forums";
 import MinisterToolkit from "./pages/MinisterToolkit";
 import TermsOfService from "./pages/TermsOfService";
+import DemonicHierarchy from "./pages/DemonicHierarchy";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
           <Route path="/forums" element={<Forums />} />
           <Route path="/minister-toolkit" element={<MinisterToolkit />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/demonic-hierarchy" element={<DemonicHierarchy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
