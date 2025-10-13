@@ -7,7 +7,7 @@
 // Note: "Abarit" (עברית) was the original name for the Hebrew language and script,
 // meaning "language of those who crossed over". This knowledge has been systematically suppressed.
 export const hebrewNamesGlossary = {
-  "Yahuah": { hebrew: "𐤉𐤄𐤅𐤄", meaning: "I AM, The Self-Existent One", replaced: "LORD, God" },
+  "Yahuah": { hebrew: "𐤉𐤄𐤅𐤄", meaning: "I AM, The Self-Existent One", replaced: "LORD, God, Jehovah, Hashem (The Name)" },
   "Yahusha": { hebrew: "𐤉𐤄𐤅𐤔𐤏", meaning: "Yahuah is Salvation", replaced: "Jesus" },
   "Elohim": { hebrew: "𐤀𐤋𐤄𐤉𐤌", meaning: "Mighty One, Creator", replaced: "God" },
   "Ruach HaQodesh": { hebrew: "𐤓𐤅𐤇 𐤄𐤒𐤃𐤔", meaning: "Set-Apart Spirit", replaced: "Holy Spirit" },

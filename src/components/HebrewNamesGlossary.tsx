@@ -23,14 +23,34 @@ const HebrewNamesGlossary = () => {
           </div>
         </div>
 
+        <Alert className="border-red-500/30 bg-red-500/5">
+          <AlertCircle className="h-4 w-4 text-red-500" />
+          <AlertDescription className="text-xs leading-relaxed space-y-2">
+            <p>
+              <strong className="text-red-600">The Letter J Deception:</strong> The letter "J" didn't exist until the 1500s! 
+              The letters V and W were also created after Paleo Hebrew. So how did Yahuah (𐤉𐤄𐤅𐤄) become "Jehovah"? 
+              This is systematic suppression! They replaced His name with "LORD," "God," or the Jewish tradition of 
+              saying "Hashem" (The Name) - as if we're not supposed to know and call our Father by His actual name!
+            </p>
+            <p>
+              <strong className="text-red-600">Ridiculous Maneuverings of the Devil:</strong> These changes weren't 
+              accidental - they were designed to make us forget and strip away the vibrational energy and power in the 
+              original names. There is spiritual authority in calling on the true name Yahuah (𐤉𐤄𐤅𐤄)!
+            </p>
+            <p className="font-bold text-foreground">
+              "I want the truth of The Most High, not the truth of men. Greater is He that is in me than he that 
+              is in the world!" - 1 John 4:4
+            </p>
+          </AlertDescription>
+        </Alert>
+
         <Alert className="border-amber-500/30 bg-amber-500/5">
           <AlertCircle className="h-4 w-4 text-amber-500" />
           <AlertDescription className="text-xs leading-relaxed">
             <strong>About Abarit (עברית):</strong> The original name for Hebrew was "Abarit," meaning 
             "language of those who crossed over." This knowledge has been systematically suppressed and 
             dismissed as taboo. In Paleo Hebrew (ancient pictographic script), every letter is a picture 
-            with meaning. When combined, these pictures tell the story behind each word. The sacred name 
-            Yahuah (𐤉𐤄𐤅𐤄) was replaced with "LORD" or "God", and names should be{" "}
+            with meaning. When combined, these pictures tell the story behind each word. Names should be{" "}
             <strong>transliterated</strong> (phonetic spelling) not <strong>translated</strong>.
           </AlertDescription>
         </Alert>
