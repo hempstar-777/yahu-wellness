@@ -44,6 +44,8 @@ import Forums from "./pages/Forums";
 import MinisterToolkit from "./pages/MinisterToolkit";
 import TermsOfService from "./pages/TermsOfService";
 import DemonicHierarchy from "./pages/DemonicHierarchy";
+import FastingGuide from "./pages/FastingGuide";
+import SpiritualWarfareTraining from "./pages/SpiritualWarfareTraining";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +96,8 @@ const App = () => (
           <Route path="/minister-toolkit" element={<MinisterToolkit />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/demonic-hierarchy" element={<DemonicHierarchy />} />
+          <Route path="/fasting-guide" element={<FastingGuide />} />
+          <Route path="/spiritual-warfare-training" element={<SpiritualWarfareTraining />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>

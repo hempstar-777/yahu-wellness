@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap, LogOut, User } from "lucide-react";
+import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap, LogOut, User, Info, Coffee, Swords } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslation } from "react-i18next";
