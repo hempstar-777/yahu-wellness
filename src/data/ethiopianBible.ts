@@ -3,11 +3,14 @@
 // Using original Hebrew names (transliterated, not translated)
 
 // Hebrew Names Glossary with meanings
+// Written in Paleo Hebrew (Ancient Abarit Script)
+// Note: "Abarit" (עברית) was the original name for the Hebrew language and script,
+// meaning "language of those who crossed over". This knowledge has been systematically suppressed.
 export const hebrewNamesGlossary = {
   "Yahuah": { hebrew: "𐤉𐤄𐤅𐤄", meaning: "I AM, The Self-Existent One", replaced: "LORD, God" },
   "Yahusha": { hebrew: "𐤉𐤄𐤅𐤔𐤏", meaning: "Yahuah is Salvation", replaced: "Jesus" },
   "Elohim": { hebrew: "𐤀𐤋𐤄𐤉𐤌", meaning: "Mighty One, Creator", replaced: "God" },
-  "Ruach HaKodesh": { hebrew: "𐤓𐤅𐤇 𐤄𐤒𐤃𐤔", meaning: "Set-Apart Spirit", replaced: "Holy Spirit" },
+  "Ruach HaQodesh": { hebrew: "𐤓𐤅𐤇 𐤄𐤒𐤃𐤔", meaning: "Set-Apart Spirit", replaced: "Holy Spirit" },
   "Mashiach": { hebrew: "𐤌𐤔𐤉𐤇", meaning: "Anointed One", replaced: "Messiah, Christ" },
   "Yahuchanon": { hebrew: "𐤉𐤄𐤅𐤇𐤍𐤍", meaning: "Yahuah is Gracious", replaced: "John" },
   "Ya'akov": { hebrew: "𐤉𐤏𐤒𐤁", meaning: "Heel Holder, Supplanter", replaced: "James, Jacob, Jacques" },
@@ -21,6 +24,24 @@ export const hebrewNamesGlossary = {
   "Yirmeyahu": { hebrew: "𐤉𐤓𐤌𐤉𐤄𐤅", meaning: "Yahuah Lifts Up", replaced: "Jeremiah" },
   "Daniy'el": { hebrew: "𐤃𐤍𐤉𐤀𐤋", meaning: "Yahuah is My Judge", replaced: "Daniel" },
   "Yahudah": { hebrew: "𐤉𐤄𐤅𐤃𐤄", meaning: "Praise Yahuah", replaced: "Judah, Judas, Jude" }
+};
+
+// Bible Book Names in Paleo Hebrew (Abarit Script)
+// Each name carries deep meaning in the ancient pictographic script
+export const bibleBookNames = {
+  "Bereshith": { hebrew: "𐤁𐤓𐤀𐤔𐤉𐤕", meaning: "In the Beginning", replaced: "Genesis" },
+  "Shemoth": { hebrew: "𐤔𐤌𐤅𐤕", meaning: "Names", replaced: "Exodus" },
+  "Wayiqra": { hebrew: "𐤅𐤉𐤒𐤓𐤀", meaning: "And He Called", replaced: "Leviticus" },
+  "Bamidbar": { hebrew: "𐤁𐤌𐤃𐤁𐤓", meaning: "In the Wilderness", replaced: "Numbers" },
+  "Debarim": { hebrew: "𐤃𐤁𐤓𐤉𐤌", meaning: "Words", replaced: "Deuteronomy" },
+  "Yahusha": { hebrew: "𐤉𐤄𐤅𐤔𐤏", meaning: "Yahuah is Salvation", replaced: "Joshua" },
+  "Shophetim": { hebrew: "𐤔𐤅𐤐𐤈𐤉𐤌", meaning: "Judges", replaced: "Judges" },
+  "Tehillim": { hebrew: "𐤕𐤄𐤋𐤉𐤌", meaning: "Praises", replaced: "Psalms" },
+  "Mishle": { hebrew: "𐤌𐤔𐤋𐤉", meaning: "Proverbs", replaced: "Proverbs" },
+  "Qoheleth": { hebrew: "𐤒𐤄𐤋𐤕", meaning: "The Gatherer/Preacher", replaced: "Ecclesiastes" },
+  "Shir HaShirim": { hebrew: "𐤔𐤉𐤓 𐤄𐤔𐤉𐤓𐤉𐤌", meaning: "Song of Songs", replaced: "Song of Solomon" },
+  "Chanok": { hebrew: "𐤇𐤍𐤅𐤊", meaning: "Dedicated/Initiated", replaced: "Enoch" },
+  "Yobel": { hebrew: "𐤉𐤅𐤁𐤋", meaning: "Jubilee/Ram's Horn", replaced: "Jubilees" }
 };
 
 export const ethiopianBibleVerses = [
