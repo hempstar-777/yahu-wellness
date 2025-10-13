@@ -28,7 +28,7 @@ export const hebrewNamesGlossary = {
 
 // Bible Book Names in Paleo Hebrew (Abarit Script)
 // Each name carries deep meaning in the ancient pictographic script
-export const bibleBookNames = {
+export const bibleBookNames: Record<string, { hebrew: string; meaning: string; replaced: string }> = {
   "Bereshith": { hebrew: "𐤁𐤓𐤀𐤔𐤉𐤕", meaning: "In the Beginning", replaced: "Genesis" },
   "Shemoth": { hebrew: "𐤔𐤌𐤅𐤕", meaning: "Names", replaced: "Exodus" },
   "Wayiqra": { hebrew: "𐤅𐤉𐤒𐤓𐤀", meaning: "And He Called", replaced: "Leviticus" },
