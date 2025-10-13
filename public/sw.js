@@ -1,5 +1,5 @@
-const CACHE_NAME = 'deliverance-app-v1';
-const urlsToCache = [
+const CACHE_NAME = 'deliverance-app-v3';
+const CORE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json'
@@ -8,11 +8,9 @@ const urlsToCache = [
 // Install event - cache essential resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(CORE_ASSETS);
+    })
   );
   self.skipWaiting();
 });
@@ -20,58 +18,60 @@ self.addEventListener('install', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames.map((cacheName) =>
+          cacheName !== CACHE_NAME ? caches.delete(cacheName) : undefined
+        )
+      )
+    )
   );
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Network-first for navigations to always get latest deploy
+async function networkFirst(event) {
+  try {
+    const fresh = await fetch(event.request, { cache: 'no-store' });
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(event.request, fresh.clone());
+    return fresh;
+  } catch (_) {
+    // Fallback to cached index when offline
+    return caches.match('/index.html');
+  }
+}
+
+// Stale-while-revalidate for static assets
+async function staleWhileRevalidate(event) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(event.request);
+  const networkPromise = fetch(event.request)
+    .then((response) => {
+      if (response && response.status === 200) {
+        cache.put(event.request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => cached);
+  return cached || networkPromise;
+}
+
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+  const req = event.request;
+
+  // Never cache the service worker itself
+  if (new URL(req.url).pathname === '/sw.js') return;
+
+  // Use network-first for navigation/documents (ensures new deploy is visible)
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    event.respondWith(networkFirst(event));
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+  // Skip cross-origin requests
+  if (!req.url.startsWith(self.location.origin)) return;
 
-        return fetch(event.request).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // Clone response
-          const responseToCache = response.clone();
-
-          // Cache for offline use
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-
-          return response;
-        });
-      })
-      .catch(() => {
-        // Offline fallback
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
-      })
-  );
+  // Use SWR for other same-origin requests
+  event.respondWith(staleWhileRevalidate(event));
 });
