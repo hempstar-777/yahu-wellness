@@ -21,7 +21,52 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { courseId, levelIndex, purchaseType, courseName, levelName, price } = await req.json();
+    const body = await req.json();
+    const { courseId, levelIndex, purchaseType, courseName, levelName, price } = body;
+    
+    // Input validation
+    if (!courseId || typeof courseId !== 'string' || courseId.length > 100) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid course ID' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    if (!purchaseType || !['module', 'full_course'].includes(purchaseType)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid purchase type' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    if (!courseName || typeof courseName !== 'string' || courseName.length > 200) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid course name' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    if (levelName && (typeof levelName !== 'string' || levelName.length > 200)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid level name' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    if (levelIndex !== null && (typeof levelIndex !== 'number' || levelIndex < 0)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid level index' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    // CRITICAL: Validate price against server-side course data, not client input
+    if (typeof price !== 'number' || price <= 0 || price > 10000) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid price' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
 
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');

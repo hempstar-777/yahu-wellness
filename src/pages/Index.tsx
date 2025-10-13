@@ -122,6 +122,12 @@ const Index = () => {
             <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
               <Link to="/demonic-hierarchy">Demonic Hierarchy</Link>
             </Button>
+            <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Link to="/fasting-guide">Fasting Guide</Link>
+            </Button>
+            <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Link to="/spiritual-warfare">Spiritual Warfare</Link>
+            </Button>
           </div>
         </div>
       </div>

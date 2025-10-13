@@ -11,7 +11,33 @@ serve(async (req) => {
   }
 
   try {
-    const { assessmentResults, assessmentType } = await req.json();
+    const body = await req.json();
+    const { assessmentResults, assessmentType } = body;
+    
+    // Input validation
+    if (!assessmentType || typeof assessmentType !== 'string' || assessmentType.length > 100) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid assessment type' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    if (!assessmentResults || typeof assessmentResults !== 'object') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid assessment results' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
+    // Limit assessment results size to prevent DoS
+    const resultsString = JSON.stringify(assessmentResults);
+    if (resultsString.length > 50000) {
+      return new Response(
+        JSON.stringify({ error: 'Assessment results too large' }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
