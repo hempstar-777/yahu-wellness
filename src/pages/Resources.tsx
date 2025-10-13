@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink, Heart, Flame } from "lucide-react";
+import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink, Heart, Flame, Apple } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import BibleAudioPlayer from "@/components/BibleAudioPlayer";
@@ -104,7 +104,7 @@ const Resources = () => {
 
       {/* Quick Links to New Features */}
       <section className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
           <Card className="p-6 hover:shadow-elevated transition-all border-primary/20">
             <Link to="/intercession" className="block space-y-3">
               <div className="flex items-center gap-3">
@@ -135,6 +135,23 @@ const Resources = () => {
               </p>
               <Button variant="ghost" size="sm" className="text-primary hover:text-primary-glow">
                 Take Assessment →
+              </Button>
+            </Link>
+          </Card>
+
+          <Card className="p-6 hover:shadow-elevated transition-all border-amber-500/20">
+            <Link to="/biblical-diet" className="block space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Apple className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-xl font-semibold">Biblical Diet</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                What to eat according to Torah, modern food corruption, and true biblical feasts
+              </p>
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary-glow">
+                Learn Truth →
               </Button>
             </Link>
           </Card>
