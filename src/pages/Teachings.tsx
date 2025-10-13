@@ -359,7 +359,7 @@ const Teachings = () => {
                     </div>
                     <div className="bg-muted/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2">Drives Out Demons</h4>
-                      <p className="text-sm">Jesus cast out demons by the Spirit of God (Matthew 12:28). The Holy Spirit gives power and authority over evil spirits.</p>
+                      <p className="text-sm">Yahusha cast out demons by the Spirit of God (Matthew 12:28). The Holy Spirit gives power and authority over evil spirits.</p>
                     </div>
                     <div className="bg-muted/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2">Fills Empty Places</h4>
@@ -385,7 +385,7 @@ const Teachings = () => {
                     <p>Fill my mind with Your thoughts, my will with Your desires, my emotions with Your joy.</p>
                     <p>Holy Spirit, I yield to You completely. Have Your way in me.</p>
                     <p>Release Your gifts, Your fruit, and Your power through my life.</p>
-                    <p>I receive You now in Jesus' name. Amen."</p>
+                    <p>I receive You now in Yahusha's name. Amen."</p>
                   </div>
                 </div>
 
@@ -472,7 +472,7 @@ const Teachings = () => {
                           They blind minds to the gospel and promote false worldviews.
                         </p>
                         <p className="text-sm">
-                          <strong>Examples:</strong> Spirit of Antichrist (opposes Jesus), Spirit of the Age (worldliness), 
+                          <strong>Examples:</strong> Spirit of Antichrist (opposes Yahusha), Spirit of the Age (worldliness), 
                           Strongman spirits over families (generational bondage), Mind-binding spirits (intellectual pride).
                         </p>
                         <p className="text-sm">
@@ -512,16 +512,16 @@ const Teachings = () => {
                     experiencing freedom, and fulfilling Kingdom purposes.</p>
                     <p><strong>Legal Rights:</strong> They can only operate where they have legal ground—sin, unforgiveness, 
                     trauma, occult involvement, curses, and generational iniquity.</p>
-                    <p><strong>Limited Authority:</strong> They are defeated foes (Colossians 2:15). Jesus stripped them of 
+                    <p><strong>Limited Authority:</strong> They are defeated foes (Colossians 2:15). Yahusha stripped them of 
                     power at the cross. They only have the authority you give them through agreement.</p>
-                    <p><strong>Eviction Process:</strong> Remove legal grounds → Revoke agreements → Exercise authority in Jesus' name → They must leave!</p>
+                    <p><strong>Eviction Process:</strong> Remove legal grounds → Revoke agreements → Exercise authority in Yahusha's name → They must leave!</p>
                   </div>
                 </div>
 
                 <div className="border-l-4 border-primary pl-4">
                   <p className="italic text-muted-foreground">
                     "The higher the rank, the more strategic the warfare. Personal demons flee quickly. 
-                    Principalities require sustained prayer. But remember—Jesus has defeated them ALL. 
+                    Principalities require sustained prayer. But remember—Yahusha has defeated them ALL. 
                     You're not fighting FOR victory; you're enforcing the victory already won!"
                   </p>
                 </div>
@@ -647,7 +647,7 @@ const Teachings = () => {
                     </div>
                     <div className="bg-background/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2">2. Spiritual Deliverance</h4>
-                      <p className="text-sm">Identify and remove spirits of infirmity through the 5-step process. Command them to leave in Jesus' name.</p>
+                      <p className="text-sm">Identify and remove spirits of infirmity through the 5-step process. Command them to leave in Yahusha's name.</p>
                     </div>
                     <div className="bg-background/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2">3. Soul Healing</h4>
@@ -662,7 +662,7 @@ const Teachings = () => {
 
                 <div className="border-l-4 border-primary pl-4">
                   <p className="italic text-muted-foreground text-sm">
-                    "Jesus healed the woman bent over for 18 years by casting out a spirit of infirmity (Luke 13). 
+                    "Yahusha healed the woman bent over for 18 years by casting out a spirit of infirmity (Luke 13). 
                     He didn't give her physical therapy—He addressed the spiritual root. When demons of sickness are removed, 
                     the body often heals spontaneously. Don't neglect the spiritual dimension of health!"
                   </p>
@@ -707,7 +707,7 @@ const Teachings = () => {
                       <p className="text-sm">Your primary legal defense and weapon. Plead it, apply it, declare it over every situation.</p>
                     </div>
                     <div className="bg-muted/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">The Name of Jesus</h4>
+                      <h4 className="font-semibold mb-2">The Name of Yahusha</h4>
                       <p className="text-sm">Demons flee at His name. Use it with authority and faith in every command.</p>
                     </div>
                     <div className="bg-muted/50 p-4 rounded-lg">
@@ -732,7 +732,7 @@ const Teachings = () => {
                 <div className="bg-accent/30 p-6 rounded-lg">
                   <h3 className="font-semibold text-xl mb-3">Strategic Warfare Principles</h3>
                   <ul className="space-y-2 text-sm list-decimal list-inside">
-                    <li><strong>Know Your Authority:</strong> You have the same authority Jesus gave His disciples (Luke 10:19)</li>
+                    <li><strong>Know Your Authority:</strong> You have the same authority Yahusha gave His disciples (Luke 10:19)</li>
                     <li><strong>Identify the Enemy:</strong> Discern what specific spirits are operating before engaging</li>
                     <li><strong>Remove Legal Grounds:</strong> Confess and repent of anything giving the enemy legal access</li>
                     <li><strong>Speak Audibly:</strong> Warfare happens in the spoken word, not just thoughts</li>
@@ -747,11 +747,11 @@ const Teachings = () => {
                   <h3 className="font-semibold text-xl mb-3">Daily Warfare Declaration</h3>
                   <div className="text-sm space-y-2 font-mono bg-background/50 p-4 rounded-lg">
                     <p>"I declare that I am seated with Christ in heavenly places, far above all principalities and powers.</p>
-                    <p>I put on the full armor of God and stand firm in the authority of Jesus.</p>
+                    <p>I put on the full armor of God and stand firm in the authority of Yahusha.</p>
                     <p>I plead the Blood of Yahusha over my life, family, home, and assignments.</p>
                     <p>I bind every evil spirit assigned against me and command you to leave now.</p>
                     <p>I cancel every assignment, curse, hex, vex, spell, and witchcraft prayer spoken against me.</p>
-                    <p>I break every soul tie and ungodly covenant in Jesus' name.</p>
+                    <p>I break every soul tie and ungodly covenant in Yahusha's name.</p>
                     <p>I declare that no weapon formed against me shall prosper.</p>
                     <p>I am more than a conqueror through Christ who loves me. I walk in victory today!"</p>
                   </div>
@@ -854,7 +854,7 @@ const Teachings = () => {
                       <li><strong>Forgive:</strong> Release all offenders to break demonic access through unforgiveness</li>
                       <li><strong>Renounce:</strong> Break all agreements with sins, spirits, and strongholds</li>
                       <li><strong>Bind:</strong> Bind every evil spirit with chains of spiritual authority</li>
-                      <li><strong>Cast Out:</strong> Command all spirits to leave in Jesus' mighty name</li>
+                      <li><strong>Cast Out:</strong> Command all spirits to leave in Yahusha's mighty name</li>
                       <li><strong>Cleanse:</strong> Physical parasite cleanse if needed for complete healing</li>
                       <li><strong>Fill:</strong> Invite Holy Spirit to fill every area—spirit, soul, body</li>
                       <li><strong>Heal:</strong> Receive inner healing for soul wounds and trauma</li>

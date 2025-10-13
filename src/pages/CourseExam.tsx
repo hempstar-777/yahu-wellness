@@ -34,7 +34,7 @@ const CourseExam = () => {
       id: 1,
       question: "What is the most important preparation for deliverance ministry?",
       options: [
-        "Personal relationship with Jesus Christ",
+        "Personal relationship with Yahusha Ha Mashiach",
         "Advanced theological training",
         "Natural counseling skills",
         "Many years of experience"

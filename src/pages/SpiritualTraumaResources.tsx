@@ -20,14 +20,14 @@ const SpiritualTraumaResources = () => {
             details: [
               'Declare your identity as a child of God (Galatians 3:26)',
               'Put on the full armor of God (Ephesians 6:10-18)',
-              'Claim your blood covenant rights through Jesus',
+              'Claim your blood covenant rights through Yahusha',
               'Take authority over the enemy (Luke 10:19)'
             ]
           },
           {
             title: '2. Courts of Heaven - Present Your Case',
             details: [
-              'Enter the Courts of Heaven through the blood of Jesus (Hebrews 10:19-22)',
+              'Enter the Courts of Heaven through the blood of Yahusha (Hebrews 10:19-22)',
               'Acknowledge any sin or iniquity that gives Satan legal access',
               'Repent and receive forgiveness - remove Satan\'s legal claims',
               'Ask the Holy Spirit to act as your Advocate (1 John 2:1)',
@@ -41,7 +41,7 @@ const SpiritualTraumaResources = () => {
               'Renounce and break all generational curses back to 10 generations (Exodus 20:5)',
               'Cancel every demonic assignment inherited through bloodline',
               'Declare: "I break every curse, vow, and dedication made by my ancestors that affects me"',
-              'Ask God to seal the break with the blood of Jesus'
+              'Ask God to seal the break with the blood of Yahusha'
             ]
           }
         ]
@@ -57,7 +57,7 @@ const SpiritualTraumaResources = () => {
               'Address rejection in the womb (unwanted pregnancy, considered abortion)',
               'Break fear, anxiety, and trauma absorbed from mother during pregnancy',
               'Cancel words spoken over you before birth ("I don\'t want this baby", etc.)',
-              'Ask Jesus to show you His perspective of your conception - you were wanted by Him',
+              'Ask Yahusha to show you His perspective of your conception - you were wanted by Him',
               'Receive the Father\'s love: "Before I formed you in the womb I knew you" (Jeremiah 1:5)'
             ]
           },
@@ -68,7 +68,7 @@ const SpiritualTraumaResources = () => {
               'Heal from early abandonment (adoption, absent parents, orphanhood)',
               'Break the orphan spirit - receive the spirit of adoption (Romans 8:15)',
               'Minister to your inner child through Holy Spirit-led visualization',
-              'Ask Jesus to show you where He was during your early trauma'
+              'Ask Yahusha to show you where He was during your early trauma'
             ]
           }
         ]
@@ -91,9 +91,9 @@ const SpiritualTraumaResources = () => {
             title: '7. Deliverance Ministry Process',
             details: [
               'Confess and renounce all sin that opened doors to the enemy',
-              'Command demons to leave by name: "Spirit of [fear/rejection/etc.], I command you to leave NOW in Jesus\' name"',
+              'Command demons to leave by name: "Spirit of [fear/rejection/etc.], I command you to leave NOW in Yahusha\'s name"',
               'Break ungodly soul ties: "I break every soul tie with [person] that was formed through [trauma/abuse]"',
-              'Close all demonic doorways with the blood of Jesus',
+              'Close all demonic doorways with the blood of Yahusha',
               'Fill the void with the Holy Spirit - invite His presence to dwell where demons lived',
               'Note: Severe cases require trained deliverance ministers and prayer covering'
             ]
@@ -109,8 +109,8 @@ const SpiritualTraumaResources = () => {
             details: [
               'Invite the Holy Spirit to surface traumatic memories that need healing',
               'Don\'t force memories - let the Spirit lead at His pace',
-              'Ask Jesus: "Where were You when this happened to me?"',
-              'Allow Jesus to minister His presence and truth into the memory',
+              'Ask Yahusha: "Where were You when this happened to me?"',
+              'Allow Yahusha to minister His presence and truth into the memory',
               'Replace lies with God\'s truth (e.g., "I am worthless" → "I am fearfully and wonderfully made")',
               'Forgive those who hurt you by the power of the Holy Spirit'
             ]
@@ -119,7 +119,7 @@ const SpiritualTraumaResources = () => {
             title: '9. Emotional Healing & Restoration',
             details: [
               'Give yourself permission to feel and grieve',
-              'Bring suppressed emotions to Jesus (anger, sadness, fear)',
+              'Bring suppressed emotions to Yahusha (anger, sadness, fear)',
               'Break off emotional numbness and dissociation',
               'Ask the Holy Spirit to heal emotional wounds layer by layer',
               'Receive God\'s comfort for every painful memory (2 Corinthians 1:3-4)'
@@ -252,7 +252,7 @@ const SpiritualTraumaResources = () => {
         {
           title: 'Church Hurt & Religious Trauma',
           description: 'Healing from spiritual abuse, legalism, manipulation, and toxic church environments',
-          healing: 'Distinguish between God\'s character and people\'s failures; rebuild trust in the true Jesus'
+          healing: 'Distinguish between God\'s character and people\'s failures; rebuild trust in the true Yahusha'
         },
         {
           title: 'Rejection & Abandonment',

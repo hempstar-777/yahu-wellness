@@ -395,12 +395,12 @@ const EmotionsDictionary = () => {
     },
     {
       name: "Admiration",
-      spiritual: "Looking unto Jesus (Hebrews 12:2). Transforms into His image",
+      spiritual: "Looking unto Yahusha (Hebrews 12:2). Transforms into His image",
       mind: "Positive role modeling, inspiration, aspiration",
       body: "Releases positive hormones, motivates improvement",
       soul: "Becomes like what we behold, draws us higher",
       herbs: "Gotu Kola for clarity of vision",
-      practice: "Studying heroes of faith, looking to Jesus, honoring mentors"
+      practice: "Studying heroes of faith, looking to Yahusha, honoring mentors"
     },
     {
       name: "Affection",
@@ -467,7 +467,7 @@ const EmotionsDictionary = () => {
     },
     {
       name: "Calmness",
-      spiritual: "Peace, be still (Mark 4:39). Jesus' authority over storms",
+      spiritual: "Peace, be still (Mark 4:39). Yahusha's authority over storms",
       mind: "Composed mind, emotional stability",
       body: "Low cortisol, relaxed muscles, steady heart rate",
       soul: "Inner stillness, unmoved by circumstances",
@@ -733,7 +733,7 @@ const EmotionsDictionary = () => {
       body: "Parasympathetic activation, muscle relaxation",
       soul: "Burden lifted, tension released",
       herbs: "Chamomile, Passionflower for relief",
-      practice: "Casting cares on Jesus, releasing control"
+      practice: "Casting cares on Yahusha, releasing control"
     },
     {
       name: "Respect",
@@ -773,7 +773,7 @@ const EmotionsDictionary = () => {
     },
     {
       name: "Sympathy",
-      spiritual: "Touched with the feeling of our infirmities (Hebrews 4:15). Jesus sympathizes",
+      spiritual: "Touched with the feeling of our infirmities (Hebrews 4:15). Yahusha sympathizes",
       mind: "Feeling for another's pain, compassionate understanding",
       body: "Empathic mirroring, tender feelings",
       soul: "Shares in others' suffering, offers comfort",
@@ -1014,7 +1014,7 @@ const EmotionsDictionary = () => {
       doorway: "Legal ground for condemnation, self-hatred, self-harm spirits",
       parasites: "Chronic stress from shame weakens immunity, allows infections",
       herbs: "Milky Oats, Tulsi, Rose for nervous system repair and self-love",
-      deliverance: "Receive Jesus' finished work, break shame off bloodline, renounce self-condemnation"
+      deliverance: "Receive Yahusha's finished work, break shame off bloodline, renounce self-condemnation"
     },
     {
       name: "Anxiety/Worry",
@@ -1025,7 +1025,7 @@ const EmotionsDictionary = () => {
       doorway: "Opens to spirits of fear, control, insomnia, torment",
       parasites: "Anxiety depletes magnesium, creating environment for parasites",
       herbs: "Ashwagandha, Holy Basil, Lemon Balm for stress adaptation",
-      deliverance: "Cast cares on Jesus, renounce worry, break spirit of anxiety"
+      deliverance: "Cast cares on Yahusha, renounce worry, break spirit of anxiety"
     },
     {
       name: "Bitterness/Unforgiveness",

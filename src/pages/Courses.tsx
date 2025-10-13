@@ -393,14 +393,14 @@ const Courses = () => {
         {
           level: 1,
           title: 'Introduction to Heavenly Courts',
-          topics: ['Biblical basis for courts', 'Understanding legal realms', 'The accuser\'s role', 'Your advocate Jesus', 'Basic court protocol'],
+          topics: ['Biblical basis for courts', 'Understanding legal realms', 'The accuser\'s role', 'Your advocate Yahusha', 'Basic court protocol'],
           duration: '5 weeks',
           difficulty: 'Beginner'
         },
         {
           level: 2,
           title: 'Presenting Your Case',
-          topics: ['Identifying accusations', 'Gathering evidence', 'The blood of Jesus', 'Repentance and restitution', 'Receiving verdicts'],
+          topics: ['Identifying accusations', 'Gathering evidence', 'The blood of Yahusha', 'Repentance and restitution', 'Receiving verdicts'],
           duration: '7 weeks',
           difficulty: 'Intermediate'
         },

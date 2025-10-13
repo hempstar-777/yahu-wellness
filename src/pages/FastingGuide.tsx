@@ -289,7 +289,7 @@ const FastingGuide = () => {
             </div>
             <div className="bg-background/50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">❌ Broadcasting your fast</h4>
-              <p className="text-muted-foreground">Jesus said to fast in secret (Matthew 6). Pride cancels the spiritual benefit.</p>
+              <p className="text-muted-foreground">Yahusha said to fast in secret (Matthew 6). Pride cancels the spiritual benefit.</p>
             </div>
             <div className="bg-background/50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">❌ Unrealistic expectations</h4>

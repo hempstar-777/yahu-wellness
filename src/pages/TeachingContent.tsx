@@ -10,7 +10,7 @@ const teachings = {
     content: [
       {
         section: "The Power of the Blood",
-        text: "The blood of Yahusha (Jesus) is the most powerful weapon in spiritual warfare. It's not symbolic—it's the actual life force that purchased our redemption. Leviticus 17:11 declares that 'the life of the flesh is in the blood.' When Messiah shed His blood, He released divine life that defeats every work of darkness."
+        text: "The blood of Yahusha is the most powerful weapon in spiritual warfare. It's not symbolic—it's the actual life force that purchased our redemption. Leviticus 17:11 declares that 'the life of the flesh is in the blood.' When Messiah shed His blood, He released divine life that defeats every work of darkness."
       },
       {
         section: "What the Blood Accomplishes",
@@ -56,7 +56,7 @@ const teachings = {
       },
       {
         section: "Fire Purifies Believers",
-        text: "The fire of the Spirit doesn't harm believers—it purifies us. Malachi 3:2-3 describes Yahweh as a 'refiner's fire' that purifies like gold and silver. The fire burns away sin, shame, wounds, and defilement. What emerges is pure, holy, and powerful. Pray: 'Let Your fire purge everything that isn't of You.'"
+        text: "The fire of the Spirit doesn't harm believers—it purifies us. Malachi 3:2-3 describes Yahuah as a 'refiner's fire' that purifies like gold and silver. The fire burns away sin, shame, wounds, and defilement. What emerges is pure, holy, and powerful. Pray: 'Let Your fire purge everything that isn't of You.'"
       },
       {
         section: "Fire as Protection",
@@ -114,7 +114,7 @@ const teachings = {
       },
       {
         section: "When NOT to Fast",
-        text: "Don't fast if you're pregnant, nursing, diabetic, or have eating disorders without medical guidance. Fasting should be Spirit-led, not legalistic. If you cannot do a food fast, fast from media, entertainment, or other distractions. The heart posture matters more than the method. Seek Yahweh's face with whatever fast you can offer."
+        text: "Don't fast if you're pregnant, nursing, diabetic, or have eating disorders without medical guidance. Fasting should be Spirit-led, not legalistic. If you cannot do a food fast, fast from media, entertainment, or other distractions. The heart posture matters more than the method. Seek Yahuah's face with whatever fast you can offer."
       },
       {
         section: "Corporate Fasting Power",

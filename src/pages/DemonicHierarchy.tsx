@@ -216,7 +216,7 @@ const DemonicHierarchy = () => {
         <Alert className="border-secondary/30 bg-secondary/5">
           <Shield className="h-5 w-5 text-secondary" />
           <AlertDescription className="text-sm leading-relaxed">
-            <strong>Remember:</strong> All demons are subject to Jesus' authority (Philippians 2:9-11; Mark 16:17). No demon is invincible—light always overcomes darkness (John 1:5). In deliverance, start by addressing lower levels (they often hold "ground" for higher ones), confess sins, forgive, and command out in Jesus' name. Stronger ones may need fasting or team ministry.
+            <strong>Remember:</strong> All demons are subject to Yahusha's authority (Philippians 2:9-11; Mark 16:17). No demon is invincible—light always overcomes darkness (John 1:5). In deliverance, start by addressing lower levels (they often hold "ground" for higher ones), confess sins, forgive, and command out in Yahusha's name. Stronger ones may need fasting or team ministry.
           </AlertDescription>
         </Alert>
 
@@ -279,13 +279,13 @@ const DemonicHierarchy = () => {
               <strong>Strategic Order:</strong> Start by addressing lower-level spirits first, as they often hold "ground" for higher ones. Once the foot soldiers are removed, stronger spirits lose their support structure.
             </p>
             <p>
-              <strong>Essential Steps:</strong> Confess the specific sins that opened the door, genuinely repent (turn away), verbally renounce the spirit and its works in Jesus' name, forgive yourself and others involved, and command it to leave.
+              <strong>Essential Steps:</strong> Confess the specific sins that opened the door, genuinely repent (turn away), verbally renounce the spirit and its works in Yahusha's name, forgive yourself and others involved, and command it to leave.
             </p>
             <p>
               <strong>For Stronger Spirits:</strong> Higher-ranking demons (danger level 6+) may require fasting, extended prayer, prophetic insight, or ministry from an experienced deliverance team. They often retaliate or resist longer.
             </p>
             <p>
-              <strong>Authority in Christ:</strong> Remember that you operate in Jesus' authority, not your own strength. His name, His blood, and His finished work on the cross have already defeated every demonic power (Colossians 2:15).
+              <strong>Authority in Mashiach:</strong> Remember that you operate in Yahusha's authority, not your own strength. His name, His blood, and His finished work on the cross have already defeated every demonic power (Colossians 2:15).
             </p>
           </div>
         </Card>
