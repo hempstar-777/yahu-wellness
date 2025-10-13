@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import YahuahBanner from "@/components/YahuahBanner";
 import Index from "./pages/Index";
 import Assessments from "./pages/Assessments";
 import SurfaceIssuesAssessment from "./pages/SurfaceIssuesAssessment";
@@ -56,6 +57,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <YahuahBanner />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/assessments" element={<Assessments />} />
