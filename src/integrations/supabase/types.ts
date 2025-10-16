@@ -562,6 +562,51 @@ export type Database = {
         }
         Relationships: []
       }
+      teachings_content: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          is_vip_only: boolean | null
+          published_at: string | null
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          is_vip_only?: boolean | null
+          published_at?: string | null
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          is_vip_only?: boolean | null
+          published_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       testimonies: {
         Row: {
           content: string

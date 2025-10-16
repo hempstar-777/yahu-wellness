@@ -45,6 +45,36 @@ serve(async (req) => {
 
       const { userId, courseId, levelIndex, purchaseType } = metadata;
 
+      // SECURITY: Validate metadata fields
+      if (!userId || !courseId || !purchaseType) {
+        console.error('Missing required metadata fields');
+        return new Response('Invalid metadata', { status: 400 });
+      }
+
+      // SECURITY: Verify user exists and customer email matches
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('id', userId)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('User not found:', userId);
+        return new Response('Invalid user', { status: 400 });
+      }
+
+      // SECURITY: Verify customer email matches user profile
+      if (session.customer_email && session.customer_email !== profile.email) {
+        console.error('Email mismatch - potential fraud attempt');
+        return new Response('Email mismatch', { status: 400 });
+      }
+
+      // SECURITY: Validate purchaseType enum
+      if (!['full_course', 'single_level'].includes(purchaseType)) {
+        console.error('Invalid purchase type');
+        return new Response('Invalid purchase type', { status: 400 });
+      }
+
       // Record the purchase
       const { error: purchaseError } = await supabase
         .from('course_purchases')
