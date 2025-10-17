@@ -13,9 +13,36 @@ export const XP_REWARDS = {
 export const awardXP = async (activityType: keyof typeof XP_REWARDS, metadata: Record<string, any> = {}) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) return { success: false, error: 'No authenticated user' };
 
     const xpEarned = XP_REWARDS[activityType];
+    
+    // For one-time activities, check if already awarded
+    const oneTimeActivities = ['complete_assessment', 'first_prayer', 'complete_course_level'];
+    if (oneTimeActivities.includes(activityType)) {
+      const activityKey = metadata.activityKey || activityType;
+      
+      const { data: existing } = await supabase
+        .from('xp_activity_tracking')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('activity_type', activityType)
+        .eq('activity_key', activityKey)
+        .maybeSingle();
+      
+      if (existing) {
+        return { success: false, error: 'XP already awarded for this activity' };
+      }
+      
+      // Track this one-time award
+      await supabase
+        .from('xp_activity_tracking')
+        .insert({
+          user_id: user.id,
+          activity_type: activityType,
+          activity_key: activityKey
+        });
+    }
 
     // Record the XP activity
     await supabase.from('xp_activities').insert({

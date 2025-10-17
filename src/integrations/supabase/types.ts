@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_rate_limits: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          request_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          request_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          request_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       assessment_results: {
         Row: {
           assessment_type: string
@@ -843,6 +870,30 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_activity_tracking: {
+        Row: {
+          activity_key: string
+          activity_type: string
+          awarded_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activity_key: string
+          activity_type: string
+          awarded_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activity_key?: string
+          activity_type?: string
+          awarded_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -851,6 +902,10 @@ export type Database = {
       calculate_level: {
         Args: { total_xp: number }
         Returns: number
+      }
+      cleanup_old_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       get_vip_count: {
         Args: Record<PropertyKey, never>

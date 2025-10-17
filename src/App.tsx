@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import SecurityHeaders from "@/components/SecurityHeaders";
 import YahuahBanner from "@/components/YahuahBanner";
 import Index from "./pages/Index";
 import Assessments from "./pages/Assessments";
@@ -54,6 +55,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <SecurityHeaders />
       <Toaster />
       <Sonner />
       <BrowserRouter>

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +12,66 @@ serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Extract user ID from JWT
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid authentication' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Rate limiting: 20 requests per hour per user
+    const windowStart = new Date();
+    windowStart.setMinutes(0, 0, 0);
+    
+    const { data: rateLimitData, error: rateLimitError } = await supabase
+      .from('ai_rate_limits')
+      .select('request_count')
+      .eq('user_id', user.id)
+      .eq('function_name', 'ai-deliverance-chat')
+      .gte('window_start', windowStart.toISOString())
+      .maybeSingle();
+
+    if (rateLimitError && rateLimitError.code !== 'PGRST116') {
+      console.error('Rate limit check error:', rateLimitError);
+    }
+
+    const currentCount = rateLimitData?.request_count || 0;
+    if (currentCount >= 20) {
+      return new Response(JSON.stringify({ 
+        error: 'Rate limit exceeded. Please try again in an hour.' 
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Update rate limit counter
+    await supabase
+      .from('ai_rate_limits')
+      .upsert({
+        user_id: user.id,
+        function_name: 'ai-deliverance-chat',
+        window_start: windowStart.toISOString(),
+        request_count: currentCount + 1
+      }, {
+        onConflict: 'user_id,function_name,window_start'
+      });
+
     const body = await req.json();
     const { messages } = body;
     
