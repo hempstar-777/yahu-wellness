@@ -129,6 +129,22 @@ const Index = () => {
               <Link to="/spiritual-warfare">Spiritual Warfare</Link>
             </Button>
           </div>
+          
+          {/* Support & VIP CTA */}
+          <div className="flex flex-wrap gap-3 justify-center pt-6">
+            <Button asChild size="lg" variant="outline" className="gap-2 border-primary/50 hover:bg-primary/10">
+              <Link to="/vip-benefits">
+                <Swords className="h-5 w-5" />
+                VIP Benefits - First 500 Free!
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="gap-2 border-accent/50 hover:bg-accent/10">
+              <Link to="/donate">
+                <Coffee className="h-5 w-5" />
+                Support Development
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
      </header>
@@ -257,8 +273,14 @@ const Index = () => {
             <p className="text-xs">
               {t('home.footerDisclaimer')}
             </p>
-            <div className="flex justify-center gap-4 text-xs">
+            <div className="flex flex-wrap justify-center gap-3 text-xs">
               <Link to="/terms" className="hover:underline">Terms of Service</Link>
+              <span>•</span>
+              <Link to="/vip-benefits" className="hover:underline">VIP Program</Link>
+              <span>•</span>
+              <Link to="/courses" className="hover:underline">Courses</Link>
+              <span>•</span>
+              <Link to="/donate" className="hover:underline">Donate</Link>
               <span>•</span>
               <a href="mailto:support@spiritualfreedom.app" className="hover:underline">Contact Support</a>
             </div>
