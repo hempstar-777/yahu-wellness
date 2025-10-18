@@ -19,6 +19,8 @@ const PrayerAudioPlayer = () => {
   const audioQueueRef = useRef<string[]>([]);
   const isProcessingRef = useRef(false);
   const ttsInFlightRef = useRef(false);
+  const failureCountRef = useRef(0);
+  const lastToastAtRef = useRef(0);
 
   const deliverancePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach. 
     I confess all unrighteousness and sin. I repent and receive your grace. 
@@ -98,20 +100,56 @@ const PrayerAudioPlayer = () => {
       
       audioQueueRef.current.push(audioUrl);
       
+      // Reset failure counter on success
+      failureCountRef.current = 0;
+      
       if (!isProcessingRef.current) {
         playNextInQueue();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to generate speech:', error);
-      const errorMessage = String(error?.message || 'Unknown error');
-      
-      if (errorMessage.includes('quota') || errorMessage.includes('credits remaining')) {
-        toast.error('ElevenLabs quota exceeded. Please add more credits to your account or try again later.');
+      const msg = String(error?.message || 'Unknown error');
+
+      // If likely out of credits/quota
+      if (/quota|credits? remaining|payment required/i.test(msg)) {
+        const now = Date.now();
+        if (now - lastToastAtRef.current > 5000) {
+          toast.error('Voice service out of credits. Please top up ElevenLabs or try again later.');
+          lastToastAtRef.current = now;
+        }
         stopPrayer();
         return;
       }
-      
-      toast.error('Failed to generate prayer audio. Please try again.');
+
+      // Rate limiting/backoff handling
+      const isRateLimited = (error?.status === 429) || /429|Too many concurrent|rate limit/i.test(msg);
+      if (isRateLimited) {
+        const now = Date.now();
+        if (now - lastToastAtRef.current > 5000) {
+          toast.info('Voice service is busy. Retrying shortly...');
+          lastToastAtRef.current = now;
+        }
+        if (isPlayingRef.current) {
+          const delay = 2500 + Math.floor(Math.random() * 1500);
+          setTimeout(() => { if (isPlayingRef.current) startPrayerLoop(); }, delay);
+        }
+        return;
+      }
+
+      // General failure: limit retries and avoid toast spam
+      failureCountRef.current += 1;
+      const now = Date.now();
+      if (now - lastToastAtRef.current > 5000) {
+        const retrying = failureCountRef.current < 2 ? ' Retrying...' : '';
+        toast.error('Failed to generate prayer audio.' + retrying);
+        lastToastAtRef.current = now;
+      }
+
+      if (failureCountRef.current >= 2) {
+        stopPrayer();
+        return;
+      }
+
       if (isPlayingRef.current) {
         setTimeout(() => startPrayerLoop(), 2000);
       }

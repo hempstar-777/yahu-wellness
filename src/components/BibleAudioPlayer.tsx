@@ -24,6 +24,8 @@ const BibleAudioPlayer = () => {
   const audioQueueRef = useRef<string[]>([]);
   const isProcessingRef = useRef(false);
   const ttsInFlightRef = useRef(false);
+  const failureCountRef = useRef(0);
+  const lastToastAtRef = useRef(0);
 
   const bibleVerses = ethiopianBibleVerses;
 
@@ -107,6 +109,9 @@ const BibleAudioPlayer = () => {
       const audioUrl = URL.createObjectURL(audioBlob);
       audioQueueRef.current.push(audioUrl);
 
+      // Reset failure counter on success
+      failureCountRef.current = 0;
+
       if (!isProcessingRef.current) {
         playNextInQueue();
       }
@@ -115,30 +120,54 @@ const BibleAudioPlayer = () => {
       console.error('Failed to generate speech:', error);
       ttsInFlightRef.current = false;
       const msg = String(error?.message || 'Failed to generate speech');
-      
-      if (msg.includes('quota') || msg.includes('credits remaining')) {
-        toast.error('ElevenLabs quota exceeded. Please add more credits to your account or try again later.');
+
+      // If likely out of credits/quota
+      if (/quota|credits? remaining|payment required/i.test(msg)) {
+        const now = Date.now();
+        if (now - lastToastAtRef.current > 5000) {
+          toast.error('Voice service out of credits. Please top up ElevenLabs or try again later.');
+          lastToastAtRef.current = now;
+        }
         stopBibleReading();
         return;
       }
-      
+
+      // Rate limiting/backoff handling
       const isRateLimited = (error?.status === 429) || /429|Too many concurrent|rate limit/i.test(msg);
       if (isRateLimited) {
-        toast.info('Voice service is busy. Retrying shortly...');
+        const now = Date.now();
+        if (now - lastToastAtRef.current > 5000) {
+          toast.info('Voice service is busy. Retrying shortly...');
+          lastToastAtRef.current = now;
+        }
         if (isPlayingRef.current) {
           const delay = 2500 + Math.floor(Math.random() * 1500);
           setTimeout(() => {
             if (isPlayingRef.current) startBibleReading();
           }, delay);
         }
-      } else {
-        toast.error('Failed to generate Bible audio. Please try again.');
-        if (isPlayingRef.current) {
-          setTimeout(() => {
-            currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
-            startBibleReading();
-          }, 2000);
-        }
+        return;
+      }
+
+      // General failure: limit retries and avoid toast spam
+      failureCountRef.current += 1;
+      const now = Date.now();
+      if (now - lastToastAtRef.current > 5000) {
+        const retrying = failureCountRef.current < 2 ? ' Retrying...' : '';
+        toast.error('Failed to generate Bible audio.' + retrying);
+        lastToastAtRef.current = now;
+      }
+
+      if (failureCountRef.current >= 2) {
+        stopBibleReading();
+        return;
+      }
+
+      if (isPlayingRef.current) {
+        setTimeout(() => {
+          currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+          startBibleReading();
+        }, 2000);
       }
     }
   };
