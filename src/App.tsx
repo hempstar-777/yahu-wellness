@@ -50,6 +50,7 @@ import DemonicHierarchy from "./pages/DemonicHierarchy";
 import FastingGuide from "./pages/FastingGuide";
 import SpiritualWarfareTraining from "./pages/SpiritualWarfareTraining";
 import BiblicalDietaryLaws from "./pages/BiblicalDietaryLaws";
+import Donate from "./pages/Donate";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,7 @@ const App = () => (
           <Route path="/fasting-guide" element={<FastingGuide />} />
           <Route path="/spiritual-warfare-training" element={<SpiritualWarfareTraining />} />
           <Route path="/biblical-diet" element={<BiblicalDietaryLaws />} />
+          <Route path="/donate" element={<Donate />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
