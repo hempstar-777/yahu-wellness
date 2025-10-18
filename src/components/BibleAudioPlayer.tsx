@@ -17,6 +17,7 @@ const BibleAudioPlayer = () => {
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
   const [bibleLanguage, setBibleLanguage] = useState('en');
+  const [voiceId, setVoiceId] = useState('goT3UYdM9bhm0n2lmKQx'); // Edward (British male) - Official
   const isPlayingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -24,7 +25,6 @@ const BibleAudioPlayer = () => {
   const isProcessingRef = useRef(false);
 
   const bibleVerses = ethiopianBibleVerses;
-  const VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'; // George - British voice
 
   const playNextInQueue = async () => {
     if (isProcessingRef.current || audioQueueRef.current.length === 0 || !isPlayingRef.current) {
@@ -88,7 +88,7 @@ const BibleAudioPlayer = () => {
       const text = bibleVerses[currentIndexRef.current];
       
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text, voiceId: VOICE_ID }
+        body: { text, voiceId }
       });
 
       if (error) throw error;
@@ -183,6 +183,25 @@ const BibleAudioPlayer = () => {
                 <SelectItem value="ar">{t('languages.ar')}</SelectItem>
                 <SelectItem value="he">{t('languages.he')}</SelectItem>
                 <SelectItem value="arc">{t('languages.arc')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Voice Selection</label>
+            <Select value={voiceId} onValueChange={setVoiceId} disabled={isPlaying}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="goT3UYdM9bhm0n2lmKQx">Edward (British Male) - Official</SelectItem>
+                <SelectItem value="DLsHlh26Ugcm6ELvS0qi">Miss Walker (Female)</SelectItem>
+                <SelectItem value="JBFqnCBsd6RMkjVDRZzb">George (British Male)</SelectItem>
+                <SelectItem value="nPczCjzI2devNBz1zQrb">Brian (Male)</SelectItem>
+                <SelectItem value="9BWtsMINqrJLrRacOk9x">Aria (Female)</SelectItem>
+                <SelectItem value="EXAVITQu4vr4xnSDxMaL">Sarah (Female)</SelectItem>
+                <SelectItem value="onwK4e9ZLuTAKqWW03F9">Daniel (Male)</SelectItem>
+                <SelectItem value="XB0fDUnXU5powFXDhCwa">Charlotte (Female)</SelectItem>
               </SelectContent>
             </Select>
           </div>

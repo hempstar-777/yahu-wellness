@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Play, Pause, Volume2, VolumeX, Flame } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,7 @@ const PrayerAudioPlayer = () => {
   const [isSubliminal, setIsSubliminal] = useState(false);
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
+  const [voiceId, setVoiceId] = useState('DLsHlh26Ugcm6ELvS0qi'); // Miss Walker (Female) - Official
   const isPlayingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueRef = useRef<string[]>([]);
@@ -24,8 +26,6 @@ const PrayerAudioPlayer = () => {
     I declare you are severed from my life and cast out in Yahusha's name. 
     I speak that spirits resisting are assaulted with the sword of Yahuah, fire, hailstones, and living water. 
     Thank you Yahusha Ha Mashiach for setting me free. I invite the Ruach HaKodesh to fill every space.`;
-
-  const VOICE_ID = 'nPczCjzI2devNBz1zQrb'; // Brian - natural male voice
 
   const playNextInQueue = async () => {
     if (isProcessingRef.current || audioQueueRef.current.length === 0 || !isPlayingRef.current) {
@@ -80,7 +80,7 @@ const PrayerAudioPlayer = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text: deliverancePrayer, voiceId: VOICE_ID }
+        body: { text: deliverancePrayer, voiceId }
       });
 
       if (error) throw error;
@@ -159,6 +159,25 @@ const PrayerAudioPlayer = () => {
         </div>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Voice Selection</label>
+            <Select value={voiceId} onValueChange={setVoiceId} disabled={isPlaying}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DLsHlh26Ugcm6ELvS0qi">Miss Walker (Female) - Official</SelectItem>
+                <SelectItem value="goT3UYdM9bhm0n2lmKQx">Edward (British Male)</SelectItem>
+                <SelectItem value="JBFqnCBsd6RMkjVDRZzb">George (British Male)</SelectItem>
+                <SelectItem value="nPczCjzI2devNBz1zQrb">Brian (Male)</SelectItem>
+                <SelectItem value="9BWtsMINqrJLrRacOk9x">Aria (Female)</SelectItem>
+                <SelectItem value="EXAVITQu4vr4xnSDxMaL">Sarah (Female)</SelectItem>
+                <SelectItem value="onwK4e9ZLuTAKqWW03F9">Daniel (Male)</SelectItem>
+                <SelectItem value="XB0fDUnXU5powFXDhCwa">Charlotte (Female)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium">Subliminal Mode</label>
             <Switch
