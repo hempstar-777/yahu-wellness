@@ -16,53 +16,77 @@ const BibleAudioPlayer = () => {
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
   const [bibleLanguage, setBibleLanguage] = useState('en');
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const isPlayingRef = useRef(false);
+  const currentIndexRef = useRef(0);
 
   const bibleVerses = ethiopianBibleVerses;
 
   const startBibleReading = () => {
-    if ('speechSynthesis' in window) {
-      speechRef.current = new SpeechSynthesisUtterance();
-      speechRef.current.rate = 0.9;
-      speechRef.current.pitch = 1;
-      speechRef.current.lang = bibleLanguage === 'he' ? 'he-IL' : bibleLanguage === 'arc' ? 'ar-SA' : bibleLanguage;
+    if (!('speechSynthesis' in window)) {
+      toast.error(t('biblePlayer.notSupported'));
+      return;
+    }
+
+    // Wait for voices to load
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      window.speechSynthesis.addEventListener('voiceschanged', startBibleReading, { once: true });
+      return;
+    }
+
+    isPlayingRef.current = true;
+    
+    const readNextVerse = () => {
+      if (!isPlayingRef.current) return;
+
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = bibleVerses[currentIndexRef.current];
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.lang = bibleLanguage === 'he' ? 'he-IL' : bibleLanguage === 'arc' ? 'ar-SA' : bibleLanguage;
       
-      // Set volume based on subliminal mode
+      // Set volume
       if (isSubliminal) {
-        speechRef.current.volume = 0.05; // Very low for subliminal
+        utterance.volume = 0.05;
       } else {
-        speechRef.current.volume = volume[0] / 100;
+        utterance.volume = isMuted ? 0 : volume[0] / 100;
       }
 
-      // Loop through verses
-      let currentIndex = 0;
-      const readNextVerse = () => {
-        if (speechRef.current) {
-          speechRef.current.text = bibleVerses[currentIndex];
-          window.speechSynthesis.speak(speechRef.current);
-          
-          speechRef.current.onend = () => {
-            if (isPlaying) {
-              currentIndex = (currentIndex + 1) % bibleVerses.length;
-              setTimeout(readNextVerse, 1000);
-            }
-          };
+      utterance.onend = () => {
+        if (isPlayingRef.current) {
+          currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+          setTimeout(readNextVerse, 1000);
         }
       };
 
-      readNextVerse();
-      toast.success(t('biblePlayer.started'));
-    } else {
-      toast.error(t('biblePlayer.notSupported'));
-    }
+      utterance.onerror = (error) => {
+        console.error('Speech synthesis error:', error);
+        if (isPlayingRef.current) {
+          setTimeout(readNextVerse, 2000);
+        }
+      };
+
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (error) {
+        console.error('Failed to speak:', error);
+        toast.error('Failed to start reading');
+        setIsPlaying(false);
+        isPlayingRef.current = false;
+      }
+    };
+
+    readNextVerse();
+    toast.success(t('biblePlayer.started'));
   };
 
   const stopBibleReading = () => {
+    isPlayingRef.current = false;
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
+    currentIndexRef.current = 0;
     toast.info(t('biblePlayer.stopped'));
   };
 
@@ -76,40 +100,25 @@ const BibleAudioPlayer = () => {
   };
 
   useEffect(() => {
-    if (isPlaying && speechRef.current) {
-      // Update volume when slider changes
-      const newVolume = isSubliminal ? 0.05 : volume[0] / 100;
-      if (window.speechSynthesis.speaking) {
-        stopBibleReading();
-        setTimeout(() => {
-          setIsPlaying(true);
-          startBibleReading();
-        }, 100);
-      }
+    if (isPlaying) {
+      // Restart with new settings when volume or subliminal changes
+      stopBibleReading();
+      setTimeout(() => {
+        setIsPlaying(true);
+        startBibleReading();
+      }, 100);
     }
-  }, [volume, isSubliminal]);
+  }, [volume, isSubliminal, isMuted]);
 
   useEffect(() => {
-    // Handle page visibility to keep audio playing
-    const handleVisibilityChange = () => {
-      if (document.hidden && isPlaying) {
-        // Keep playing even when tab is hidden
-        console.log('Tab hidden but keeping audio playing');
-      } else if (!document.hidden && isPlaying && !window.speechSynthesis.speaking) {
-        // Resume if stopped when tab becomes visible
-        startBibleReading();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
+    // Cleanup on unmount
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      isPlayingRef.current = false;
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [isPlaying]);
+  }, []);
 
   return (
     <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">

@@ -11,7 +11,7 @@ const PrayerAudioPlayer = () => {
   const [isSubliminal, setIsSubliminal] = useState(false);
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const isPlayingRef = useRef(false);
 
   const deliverancePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach. 
     I confess all unrighteousness and sin. I repent and receive your grace. 
@@ -22,38 +22,64 @@ const PrayerAudioPlayer = () => {
     Thank you Yahusha Ha Mashiach for setting me free. I invite the Ruach HaKodesh to fill every space.`;
 
   const startPrayerLoop = () => {
-    if ('speechSynthesis' in window) {
-      speechRef.current = new SpeechSynthesisUtterance();
-      speechRef.current.rate = 0.8;
-      speechRef.current.pitch = 1;
+    if (!('speechSynthesis' in window)) {
+      toast.error("Text-to-speech not supported in this browser");
+      return;
+    }
+
+    // Wait for voices to load
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      window.speechSynthesis.addEventListener('voiceschanged', startPrayerLoop, { once: true });
+      return;
+    }
+
+    isPlayingRef.current = true;
+
+    const playPrayer = () => {
+      if (!isPlayingRef.current) return;
+
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = deliverancePrayer;
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
       
+      // Set volume
       if (isSubliminal) {
-        speechRef.current.volume = 0.05;
+        utterance.volume = 0.05;
       } else {
-        speechRef.current.volume = volume[0] / 100;
+        utterance.volume = isMuted ? 0 : volume[0] / 100;
       }
 
-      const playPrayer = () => {
-        if (speechRef.current && isPlaying) {
-          speechRef.current.text = deliverancePrayer;
-          window.speechSynthesis.speak(speechRef.current);
-          
-          speechRef.current.onend = () => {
-            if (isPlaying) {
-              setTimeout(playPrayer, 2000);
-            }
-          };
+      utterance.onend = () => {
+        if (isPlayingRef.current) {
+          setTimeout(playPrayer, 2000);
         }
       };
 
-      playPrayer();
-      toast.success("Deliverance prayer loop started");
-    } else {
-      toast.error("Text-to-speech not supported");
-    }
+      utterance.onerror = (error) => {
+        console.error('Speech synthesis error:', error);
+        if (isPlayingRef.current) {
+          setTimeout(playPrayer, 2000);
+        }
+      };
+
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (error) {
+        console.error('Failed to speak:', error);
+        toast.error('Failed to start prayer loop');
+        setIsPlaying(false);
+        isPlayingRef.current = false;
+      }
+    };
+
+    playPrayer();
+    toast.success("Deliverance prayer loop started");
   };
 
   const stopPrayer = () => {
+    isPlayingRef.current = false;
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
@@ -71,39 +97,25 @@ const PrayerAudioPlayer = () => {
   };
 
   useEffect(() => {
-    if (isPlaying && speechRef.current) {
-      const newVolume = isSubliminal ? 0.05 : volume[0] / 100;
-      if (window.speechSynthesis.speaking) {
-        stopPrayer();
-        setTimeout(() => {
-          setIsPlaying(true);
-          startPrayerLoop();
-        }, 100);
-      }
+    if (isPlaying) {
+      // Restart with new settings when volume or subliminal changes
+      stopPrayer();
+      setTimeout(() => {
+        setIsPlaying(true);
+        startPrayerLoop();
+      }, 100);
     }
-  }, [volume, isSubliminal]);
+  }, [volume, isSubliminal, isMuted]);
 
   useEffect(() => {
-    // Handle page visibility to keep audio playing
-    const handleVisibilityChange = () => {
-      if (document.hidden && isPlaying) {
-        // Keep playing even when tab is hidden
-        console.log('Tab hidden but keeping audio playing');
-      } else if (!document.hidden && isPlaying && !window.speechSynthesis.speaking) {
-        // Resume if stopped when tab becomes visible
-        startPrayerLoop();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
+    // Cleanup on unmount
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      isPlayingRef.current = false;
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [isPlaying]);
+  }, []);
 
   return (
     <Card className="p-6 bg-gradient-to-br from-destructive/5 to-primary/5 border-primary/20">
