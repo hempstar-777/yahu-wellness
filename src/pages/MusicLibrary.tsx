@@ -60,52 +60,78 @@ const MusicLibrary = () => {
       return;
     }
 
+    // Stop any existing audio
     if (audioElement) {
-      audioElement.pause();
+      try { audioElement.pause(); } catch {}
     }
 
     console.log("Playing track:", track.title, "URL:", track.file_url);
-    const audio = new Audio(track.file_url);
-    
-    audio.onerror = (e) => {
-      console.error("Audio playback error:", e);
-      toast({
-        title: "Playback error",
-        description: "Failed to play this track",
-        variant: "destructive",
+
+    const tryDirect = async (): Promise<HTMLAudioElement> => {
+      const a = new Audio();
+      a.preload = "auto";
+      a.crossOrigin = "anonymous";
+      a.src = track.file_url;
+
+      return new Promise((resolve, reject) => {
+        a.oncanplay = async () => {
+          try {
+            await a.play();
+            resolve(a);
+          } catch (e) {
+            reject(e);
+          }
+        };
+        a.onerror = () => reject(new Error("direct_source_failed"));
       });
-      setCurrentlyPlaying(null);
     };
 
-    audio.onloadeddata = () => {
-      console.log("Audio loaded successfully");
+    const tryFetchBlob = async (): Promise<HTMLAudioElement> => {
+      const res = await fetch(track.file_url);
+      if (!res.ok) throw new Error("fetch_failed");
+      const buf = await res.arrayBuffer();
+      const blob = new Blob([buf], { type: "audio/mpeg" });
+      const objectUrl = URL.createObjectURL(blob);
+      const a = new Audio();
+      a.preload = "auto";
+      a.src = objectUrl;
+      a.onended = () => URL.revokeObjectURL(objectUrl);
+      await a.play();
+      return a;
     };
 
     try {
-      await audio.play();
-      setAudioElement(audio);
+      const a = await tryDirect().catch(async (err) => {
+        console.warn("Direct play failed, trying blob fallback:", err);
+        return await tryFetchBlob();
+      });
+
+      setAudioElement(a);
       setCurrentlyPlaying(track.id);
-    } catch (error) {
-      console.error("Play error:", error);
+
+      a.onended = () => {
+        setCurrentlyPlaying(null);
+      };
+
+      // Increment play count after a successful start
+      try {
+        await supabase.rpc("increment_play_count", { track_id: track.id });
+        setTracks((prev) =>
+          prev.map((t) =>
+            t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t
+          )
+        );
+      } catch (e) {
+        console.error("Error incrementing play count:", e);
+      }
+    } catch (e) {
+      console.error("Playback error (after fallback):", e);
       toast({
         title: "Playback error",
-        description: "Failed to play this track",
+        description: "This file couldn't be played. Try re-uploading as MP3.",
         variant: "destructive",
       });
-    }
-
-    audio.onended = () => {
       setCurrentlyPlaying(null);
-    };
-
-    // Increment play count
-    try {
-      await supabase.rpc("increment_play_count", { track_id: track.id });
-      setTracks(prev =>
-        prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t)
-      );
-    } catch (error) {
-      console.error("Error incrementing play count:", error);
     }
   };
 
