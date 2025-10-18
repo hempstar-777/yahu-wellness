@@ -79,6 +79,9 @@ const PrayerAudioPlayer = () => {
       toast.success("Deliverance prayer loop started");
     }
 
+    // Stop any browser TTS fallback if it's speaking
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {}
+
     try {
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
         body: { text: deliverancePrayer, voiceId }
@@ -118,6 +121,9 @@ const PrayerAudioPlayer = () => {
   const stopPrayer = () => {
     isPlayingRef.current = false;
     isProcessingRef.current = false;
+
+    // Also cancel any browser TTS that might be speaking
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {}
     
     if (audioRef.current) {
       audioRef.current.pause();

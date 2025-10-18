@@ -85,6 +85,9 @@ const BibleAudioPlayer = () => {
       toast.success(t('biblePlayer.started'));
     }
 
+    // Stop any browser TTS fallback if it's speaking
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {}
+
     try {
       if (ttsInFlightRef.current) return;
       ttsInFlightRef.current = true;
@@ -143,6 +146,9 @@ const BibleAudioPlayer = () => {
   const stopBibleReading = () => {
     isPlayingRef.current = false;
     isProcessingRef.current = false;
+
+    // Also cancel any browser TTS that might be speaking
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch {}
     
     if (audioRef.current) {
       audioRef.current.pause();
