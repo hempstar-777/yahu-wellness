@@ -51,7 +51,11 @@ serve(async (req) => {
       let message = 'ElevenLabs API error';
       try {
         const parsed = JSON.parse(error);
-        message = parsed?.detail?.message || message;
+        message = parsed?.detail?.message || parsed?.error || message;
+        // Pass through quota/credit messages clearly
+        if (message.includes('quota') || message.includes('credits')) {
+          message = `ElevenLabs ${message}`;
+        }
       } catch {}
       return new Response(
         JSON.stringify({ error: message }),

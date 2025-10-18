@@ -100,7 +100,15 @@ const PrayerAudioPlayer = () => {
       }
     } catch (error) {
       console.error('Failed to generate speech:', error);
-      toast.error('Failed to generate prayer audio');
+      const errorMessage = String(error?.message || 'Unknown error');
+      
+      if (errorMessage.includes('quota') || errorMessage.includes('credits remaining')) {
+        toast.error('ElevenLabs quota exceeded. Please add more credits to your account or try again later.');
+        stopPrayer();
+        return;
+      }
+      
+      toast.error('Failed to generate prayer audio. Please try again.');
       if (isPlayingRef.current) {
         setTimeout(() => startPrayerLoop(), 2000);
       }

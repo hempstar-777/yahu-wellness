@@ -112,6 +112,13 @@ const BibleAudioPlayer = () => {
       console.error('Failed to generate speech:', error);
       ttsInFlightRef.current = false;
       const msg = String(error?.message || 'Failed to generate speech');
+      
+      if (msg.includes('quota') || msg.includes('credits remaining')) {
+        toast.error('ElevenLabs quota exceeded. Please add more credits to your account or try again later.');
+        stopBibleReading();
+        return;
+      }
+      
       const isRateLimited = (error?.status === 429) || /429|Too many concurrent|rate limit/i.test(msg);
       if (isRateLimited) {
         toast.info('Voice service is busy. Retrying shortly...');
@@ -122,7 +129,7 @@ const BibleAudioPlayer = () => {
           }, delay);
         }
       } else {
-        toast.error('Failed to generate speech');
+        toast.error('Failed to generate Bible audio. Please try again.');
         if (isPlayingRef.current) {
           setTimeout(() => {
             currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
