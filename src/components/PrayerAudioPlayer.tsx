@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Play, Pause, Volume2, VolumeX, Flame } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const PrayerAudioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,6 +13,9 @@ const PrayerAudioPlayer = () => {
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
   const isPlayingRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioQueueRef = useRef<string[]>([]);
+  const isProcessingRef = useRef(false);
 
   const deliverancePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach. 
     I confess all unrighteousness and sin. I repent and receive your grace. 
@@ -21,68 +25,95 @@ const PrayerAudioPlayer = () => {
     I speak that spirits resisting are assaulted with the sword of Yahuah, fire, hailstones, and living water. 
     Thank you Yahusha Ha Mashiach for setting me free. I invite the Ruach HaKodesh to fill every space.`;
 
-  const startPrayerLoop = () => {
-    if (!('speechSynthesis' in window)) {
-      toast.error("Text-to-speech not supported in this browser");
+  const VOICE_ID = 'nPczCjzI2devNBz1zQrb'; // Brian - natural male voice
+
+  const playNextInQueue = async () => {
+    if (isProcessingRef.current || audioQueueRef.current.length === 0 || !isPlayingRef.current) {
+      isProcessingRef.current = false;
       return;
     }
 
-    // Wait for voices to load
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length === 0) {
-      window.speechSynthesis.addEventListener('voiceschanged', startPrayerLoop, { once: true });
-      return;
-    }
+    isProcessingRef.current = true;
+    const audioUrl = audioQueueRef.current.shift()!;
 
-    isPlayingRef.current = true;
+    try {
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+      }
 
-    const playPrayer = () => {
-      if (!isPlayingRef.current) return;
-
-      const utterance = new SpeechSynthesisUtterance();
-      utterance.text = deliverancePrayer;
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
+      audioRef.current.src = audioUrl;
+      audioRef.current.volume = isMuted ? 0 : isSubliminal ? 0.05 : volume[0] / 100;
       
-      // Set volume
-      if (isSubliminal) {
-        utterance.volume = 0.05;
-      } else {
-        utterance.volume = isMuted ? 0 : volume[0] / 100;
-      }
-
-      utterance.onend = () => {
+      audioRef.current.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        isProcessingRef.current = false;
+        
         if (isPlayingRef.current) {
-          setTimeout(playPrayer, 2000);
+          setTimeout(() => startPrayerLoop(), 2000);
         }
       };
 
-      utterance.onerror = (error) => {
-        console.error('Speech synthesis error:', error);
+      audioRef.current.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        isProcessingRef.current = false;
         if (isPlayingRef.current) {
-          setTimeout(playPrayer, 2000);
+          setTimeout(() => startPrayerLoop(), 2000);
         }
       };
 
-      try {
-        window.speechSynthesis.speak(utterance);
-      } catch (error) {
-        console.error('Failed to speak:', error);
-        toast.error('Failed to start prayer loop');
-        setIsPlaying(false);
-        isPlayingRef.current = false;
+      await audioRef.current.play();
+    } catch (error) {
+      console.error('Audio playback error:', error);
+      URL.revokeObjectURL(audioUrl);
+      isProcessingRef.current = false;
+      if (isPlayingRef.current) {
+        setTimeout(() => startPrayerLoop(), 2000);
       }
-    };
+    }
+  };
 
-    playPrayer();
-    toast.success("Deliverance prayer loop started");
+  const startPrayerLoop = async () => {
+    if (!isPlayingRef.current) {
+      isPlayingRef.current = true;
+      toast.success("Deliverance prayer loop started");
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: { text: deliverancePrayer, voiceId: VOICE_ID }
+      });
+
+      if (error) throw error;
+
+      const audioBlob = new Blob([data], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      audioQueueRef.current.push(audioUrl);
+      
+      if (!isProcessingRef.current) {
+        playNextInQueue();
+      }
+    } catch (error) {
+      console.error('Failed to generate speech:', error);
+      toast.error('Failed to generate prayer audio');
+      if (isPlayingRef.current) {
+        setTimeout(() => startPrayerLoop(), 2000);
+      }
+    }
   };
 
   const stopPrayer = () => {
     isPlayingRef.current = false;
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    isProcessingRef.current = false;
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
     }
+    
+    audioQueueRef.current.forEach(url => URL.revokeObjectURL(url));
+    audioQueueRef.current = [];
+    
     setIsPlaying(false);
     toast.info("Prayer loop stopped");
   };
@@ -97,23 +128,20 @@ const PrayerAudioPlayer = () => {
   };
 
   useEffect(() => {
-    if (isPlaying) {
-      // Restart with new settings when volume or subliminal changes
-      stopPrayer();
-      setTimeout(() => {
-        setIsPlaying(true);
-        startPrayerLoop();
-      }, 100);
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : isSubliminal ? 0.05 : volume[0] / 100;
     }
   }, [volume, isSubliminal, isMuted]);
 
   useEffect(() => {
-    // Cleanup on unmount
     return () => {
       isPlayingRef.current = false;
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+      isProcessingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
       }
+      audioQueueRef.current.forEach(url => URL.revokeObjectURL(url));
+      audioQueueRef.current = [];
     };
   }, []);
 

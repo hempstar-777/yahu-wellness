@@ -8,6 +8,7 @@ import { Play, Pause, Volume2, VolumeX, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { ethiopianBibleVerses } from "@/data/ethiopianBible";
+import { supabase } from "@/integrations/supabase/client";
 
 const BibleAudioPlayer = () => {
   const { t } = useTranslation();
@@ -18,73 +19,112 @@ const BibleAudioPlayer = () => {
   const [bibleLanguage, setBibleLanguage] = useState('en');
   const isPlayingRef = useRef(false);
   const currentIndexRef = useRef(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioQueueRef = useRef<string[]>([]);
+  const isProcessingRef = useRef(false);
 
   const bibleVerses = ethiopianBibleVerses;
+  const VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'; // George - British voice
 
-  const startBibleReading = () => {
-    if (!('speechSynthesis' in window)) {
-      toast.error(t('biblePlayer.notSupported'));
+  const playNextInQueue = async () => {
+    if (isProcessingRef.current || audioQueueRef.current.length === 0 || !isPlayingRef.current) {
+      isProcessingRef.current = false;
       return;
     }
 
-    // Wait for voices to load
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length === 0) {
-      window.speechSynthesis.addEventListener('voiceschanged', startBibleReading, { once: true });
-      return;
-    }
+    isProcessingRef.current = true;
+    const audioUrl = audioQueueRef.current.shift()!;
 
-    isPlayingRef.current = true;
-    
-    const readNextVerse = () => {
-      if (!isPlayingRef.current) return;
-
-      const utterance = new SpeechSynthesisUtterance();
-      utterance.text = bibleVerses[currentIndexRef.current];
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      utterance.lang = bibleLanguage === 'he' ? 'he-IL' : bibleLanguage === 'arc' ? 'ar-SA' : bibleLanguage;
-      
-      // Set volume
-      if (isSubliminal) {
-        utterance.volume = 0.05;
-      } else {
-        utterance.volume = isMuted ? 0 : volume[0] / 100;
+    try {
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
       }
 
-      utterance.onend = () => {
+      audioRef.current.src = audioUrl;
+      audioRef.current.volume = isMuted ? 0 : isSubliminal ? 0.05 : volume[0] / 100;
+      
+      audioRef.current.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        isProcessingRef.current = false;
+        
         if (isPlayingRef.current) {
           currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
-          setTimeout(readNextVerse, 1000);
+          startBibleReading();
         }
       };
 
-      utterance.onerror = (error) => {
-        console.error('Speech synthesis error:', error);
+      audioRef.current.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        isProcessingRef.current = false;
         if (isPlayingRef.current) {
-          setTimeout(readNextVerse, 2000);
+          setTimeout(() => {
+            currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+            startBibleReading();
+          }, 1000);
         }
       };
 
-      try {
-        window.speechSynthesis.speak(utterance);
-      } catch (error) {
-        console.error('Failed to speak:', error);
-        toast.error('Failed to start reading');
-        setIsPlaying(false);
-        isPlayingRef.current = false;
+      await audioRef.current.play();
+    } catch (error) {
+      console.error('Audio playback error:', error);
+      URL.revokeObjectURL(audioUrl);
+      isProcessingRef.current = false;
+      if (isPlayingRef.current) {
+        setTimeout(() => {
+          currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+          startBibleReading();
+        }, 1000);
       }
-    };
+    }
+  };
 
-    readNextVerse();
-    toast.success(t('biblePlayer.started'));
+  const startBibleReading = async () => {
+    if (!isPlayingRef.current) {
+      isPlayingRef.current = true;
+      toast.success(t('biblePlayer.started'));
+    }
+
+    try {
+      const text = bibleVerses[currentIndexRef.current];
+      
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: { text, voiceId: VOICE_ID }
+      });
+
+      if (error) throw error;
+
+      const audioBlob = new Blob([data], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      audioQueueRef.current.push(audioUrl);
+      
+      if (!isProcessingRef.current) {
+        playNextInQueue();
+      }
+    } catch (error) {
+      console.error('Failed to generate speech:', error);
+      toast.error('Failed to generate speech');
+      if (isPlayingRef.current) {
+        setTimeout(() => {
+          currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+          startBibleReading();
+        }, 2000);
+      }
+    }
   };
 
   const stopBibleReading = () => {
     isPlayingRef.current = false;
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    isProcessingRef.current = false;
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
     }
+    
+    audioQueueRef.current.forEach(url => URL.revokeObjectURL(url));
+    audioQueueRef.current = [];
+    
     setIsPlaying(false);
     currentIndexRef.current = 0;
     toast.info(t('biblePlayer.stopped'));
@@ -100,23 +140,20 @@ const BibleAudioPlayer = () => {
   };
 
   useEffect(() => {
-    if (isPlaying) {
-      // Restart with new settings when volume or subliminal changes
-      stopBibleReading();
-      setTimeout(() => {
-        setIsPlaying(true);
-        startBibleReading();
-      }, 100);
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : isSubliminal ? 0.05 : volume[0] / 100;
     }
   }, [volume, isSubliminal, isMuted]);
 
   useEffect(() => {
-    // Cleanup on unmount
     return () => {
       isPlayingRef.current = false;
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+      isProcessingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
       }
+      audioQueueRef.current.forEach(url => URL.revokeObjectURL(url));
+      audioQueueRef.current = [];
     };
   }, []);
 
