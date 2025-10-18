@@ -47,7 +47,16 @@ serve(async (req) => {
     if (!response.ok) {
       const error = await response.text();
       console.error('ElevenLabs API error:', error);
-      throw new Error(`ElevenLabs API error: ${response.status}`);
+      const status = response.status;
+      let message = 'ElevenLabs API error';
+      try {
+        const parsed = JSON.parse(error);
+        message = parsed?.detail?.message || message;
+      } catch {}
+      return new Response(
+        JSON.stringify({ error: message }),
+        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const audioBuffer = await response.arrayBuffer();

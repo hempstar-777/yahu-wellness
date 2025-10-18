@@ -18,6 +18,7 @@ const PrayerAudioPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueRef = useRef<string[]>([]);
   const isProcessingRef = useRef(false);
+  const ttsInFlightRef = useRef(false);
 
   const deliverancePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach. 
     I confess all unrighteousness and sin. I repent and receive your grace. 
@@ -137,6 +138,7 @@ const PrayerAudioPlayer = () => {
     return () => {
       isPlayingRef.current = false;
       isProcessingRef.current = false;
+      ttsInFlightRef.current = false;
       if (audioRef.current) {
         audioRef.current.pause();
       }

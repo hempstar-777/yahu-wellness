@@ -23,6 +23,7 @@ const BibleAudioPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioQueueRef = useRef<string[]>([]);
   const isProcessingRef = useRef(false);
+  const ttsInFlightRef = useRef(false);
 
   const bibleVerses = ethiopianBibleVerses;
 
@@ -85,30 +86,45 @@ const BibleAudioPlayer = () => {
     }
 
     try {
+      if (ttsInFlightRef.current) return;
+      ttsInFlightRef.current = true;
+
       const text = bibleVerses[currentIndexRef.current];
-      
       const { data, error } = await supabase.functions.invoke('text-to-speech', {
         body: { text, voiceId }
       });
 
-      if (error) throw error;
+      if (error) throw error as any;
 
       const audioBlob = new Blob([data], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);
-      
       audioQueueRef.current.push(audioUrl);
-      
+
       if (!isProcessingRef.current) {
         playNextInQueue();
       }
-    } catch (error) {
+      ttsInFlightRef.current = false;
+    } catch (error: any) {
       console.error('Failed to generate speech:', error);
-      toast.error('Failed to generate speech');
-      if (isPlayingRef.current) {
-        setTimeout(() => {
-          currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
-          startBibleReading();
-        }, 2000);
+      ttsInFlightRef.current = false;
+      const msg = String(error?.message || 'Failed to generate speech');
+      const isRateLimited = (error?.status === 429) || /429|Too many concurrent|rate limit/i.test(msg);
+      if (isRateLimited) {
+        toast.info('Voice service is busy. Retrying shortly...');
+        if (isPlayingRef.current) {
+          const delay = 2500 + Math.floor(Math.random() * 1500);
+          setTimeout(() => {
+            if (isPlayingRef.current) startBibleReading();
+          }, delay);
+        }
+      } else {
+        toast.error('Failed to generate speech');
+        if (isPlayingRef.current) {
+          setTimeout(() => {
+            currentIndexRef.current = (currentIndexRef.current + 1) % bibleVerses.length;
+            startBibleReading();
+          }, 2000);
+        }
       }
     }
   };
@@ -149,6 +165,7 @@ const BibleAudioPlayer = () => {
     return () => {
       isPlayingRef.current = false;
       isProcessingRef.current = false;
+      ttsInFlightRef.current = false;
       if (audioRef.current) {
         audioRef.current.pause();
       }
