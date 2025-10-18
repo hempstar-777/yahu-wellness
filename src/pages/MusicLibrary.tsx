@@ -13,6 +13,7 @@ interface MusicTrack {
   artist: string | null;
   description: string | null;
   file_url: string;
+  cover_url: string | null;
   play_count: number;
   download_count: number;
   created_at: string;
@@ -63,10 +64,35 @@ const MusicLibrary = () => {
       audioElement.pause();
     }
 
+    console.log("Playing track:", track.title, "URL:", track.file_url);
     const audio = new Audio(track.file_url);
-    audio.play();
-    setAudioElement(audio);
-    setCurrentlyPlaying(track.id);
+    
+    audio.onerror = (e) => {
+      console.error("Audio playback error:", e);
+      toast({
+        title: "Playback error",
+        description: "Failed to play this track",
+        variant: "destructive",
+      });
+      setCurrentlyPlaying(null);
+    };
+
+    audio.onloadeddata = () => {
+      console.log("Audio loaded successfully");
+    };
+
+    try {
+      await audio.play();
+      setAudioElement(audio);
+      setCurrentlyPlaying(track.id);
+    } catch (error) {
+      console.error("Play error:", error);
+      toast({
+        title: "Playback error",
+        description: "Failed to play this track",
+        variant: "destructive",
+      });
+    }
 
     audio.onended = () => {
       setCurrentlyPlaying(null);
@@ -172,9 +198,17 @@ const MusicLibrary = () => {
               <Card key={track.id} className="p-6">
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Music className="h-8 w-8 text-primary" />
-                    </div>
+                    {track.cover_url ? (
+                      <img
+                        src={track.cover_url}
+                        alt={track.title}
+                        className="h-16 w-16 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Music className="h-8 w-8 text-primary" />
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex-grow min-w-0">

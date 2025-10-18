@@ -494,6 +494,7 @@ export type Database = {
       music_tracks: {
         Row: {
           artist: string | null
+          cover_url: string | null
           created_at: string
           description: string | null
           download_count: number | null
@@ -509,6 +510,7 @@ export type Database = {
         }
         Insert: {
           artist?: string | null
+          cover_url?: string | null
           created_at?: string
           description?: string | null
           download_count?: number | null
@@ -524,6 +526,7 @@ export type Database = {
         }
         Update: {
           artist?: string | null
+          cover_url?: string | null
           created_at?: string
           description?: string | null
           download_count?: number | null

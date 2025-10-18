@@ -16,6 +16,8 @@ const MusicUpload = () => {
   const [artist, setArtist] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -59,6 +61,41 @@ const MusicUpload = () => {
     }
   };
 
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      // Validate file type
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+      if (!validTypes.includes(selectedFile.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload an image file (JPG, PNG, or WEBP)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (5MB max for images)
+      if (selectedFile.size > 5242880) {
+        toast({
+          title: "File too large",
+          description: "Maximum image size is 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setCoverImage(selectedFile);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreview(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -83,33 +120,74 @@ const MusicUpload = () => {
     setUploading(true);
 
     try {
-      // Upload file to storage
+      // Upload audio file to storage
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `tracks/${fileName}`;
 
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      console.log("Uploading audio file:", filePath);
+      const { error: uploadError } = await supabase.storage
         .from("music")
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Audio upload error:", uploadError);
+        throw uploadError;
+      }
 
-      // Get public URL
+      // Get public URL for audio
       const { data: { publicUrl } } = supabase.storage
         .from("music")
         .getPublicUrl(filePath);
+      
+      console.log("Audio public URL:", publicUrl);
+
+      // Upload cover image if provided
+      let coverUrl = null;
+      if (coverImage) {
+        const coverExt = coverImage.name.split(".").pop();
+        const coverFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${coverExt}`;
+        const coverPath = `covers/${coverFileName}`;
+
+        console.log("Uploading cover image:", coverPath);
+        const { error: coverUploadError } = await supabase.storage
+          .from("music-covers")
+          .upload(coverPath, coverImage);
+
+        if (coverUploadError) {
+          console.error("Cover upload error:", coverUploadError);
+          // Don't throw, just log and continue without cover
+        } else {
+          const { data: { publicUrl: coverPublicUrl } } = supabase.storage
+            .from("music-covers")
+            .getPublicUrl(coverPath);
+          coverUrl = coverPublicUrl;
+          console.log("Cover public URL:", coverUrl);
+        }
+      }
 
       // Create database record
-      const { error: dbError } = await supabase.from("music_tracks").insert({
-        title: title.trim(),
-        artist: artist.trim() || null,
-        description: description.trim() || null,
-        file_url: publicUrl,
-        file_name: fileName,
-        file_size: file.size,
-      });
+      console.log("Creating database record...");
+      const { error: dbError, data: insertedData } = await supabase
+        .from("music_tracks")
+        .insert({
+          title: title.trim(),
+          artist: artist.trim() || null,
+          description: description.trim() || null,
+          file_url: publicUrl,
+          file_name: fileName,
+          file_size: file.size,
+          cover_url: coverUrl,
+          uploaded_by: (await supabase.auth.getUser()).data.user?.id,
+        })
+        .select();
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error("Database insert error:", dbError);
+        throw dbError;
+      }
+
+      console.log("Successfully inserted track:", insertedData);
 
       toast({
         title: "Upload successful",
@@ -121,6 +199,8 @@ const MusicUpload = () => {
       setArtist("");
       setDescription("");
       setFile(null);
+      setCoverImage(null);
+      setCoverPreview(null);
       
       // Navigate to music library
       navigate("/music-library");
@@ -158,6 +238,42 @@ const MusicUpload = () => {
 
         <Card className="p-8">
           <form onSubmit={handleUpload} className="space-y-6">
+            <div>
+              <Label htmlFor="cover">Cover Image (Optional)</Label>
+              <div className="mt-2">
+                <label
+                  htmlFor="cover"
+                  className="flex items-center justify-center w-full h-48 px-4 transition border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 border-muted-foreground/25"
+                >
+                  {coverPreview ? (
+                    <img
+                      src={coverPreview}
+                      alt="Cover preview"
+                      className="h-full w-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Click to upload cover image
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        JPG, PNG, WEBP (max 5MB)
+                      </p>
+                    </div>
+                  )}
+                  <input
+                    id="cover"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleCoverChange}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="file">Audio File *</Label>
               <div className="mt-2">
