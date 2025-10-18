@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import SecurityHeaders from "@/components/SecurityHeaders";
 import YahuahBanner from "@/components/YahuahBanner";
+import AICustodian from "@/components/AICustodian";
 import Index from "./pages/Index";
 import Assessments from "./pages/Assessments";
 import SurfaceIssuesAssessment from "./pages/SurfaceIssuesAssessment";
@@ -61,6 +62,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <YahuahBanner />
+          <AICustodian />
           <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/assessments" element={<Assessments />} />

@@ -3,6 +3,9 @@ project_id = "vnhnmkjxhmsylrznxckj"
 [functions.ai-deliverance-chat]
 verify_jwt = true
 
+[functions.ai-custodian]
+verify_jwt = true
+
 [functions.create-checkout]
 verify_jwt = true
 
