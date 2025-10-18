@@ -101,12 +101,19 @@ const BibleAudioPlayer = () => {
 
       if (error) throw error as any;
 
-      const audioBase64 = (data as any)?.audioContent || (data as any)?.audio;
-      if (!audioBase64 || typeof audioBase64 !== 'string') {
-        throw new Error('No audio returned');
+      // Handle both URL (from storage) and base64 (newly generated)
+      let audioUrl: string;
+      if ((data as any)?.audioUrl) {
+        audioUrl = (data as any).audioUrl;
+        console.log('Using stored audio:', (data as any).cached ? 'cached' : 'newly generated');
+      } else {
+        const audioBase64 = (data as any)?.audioContent || (data as any)?.audio;
+        if (!audioBase64 || typeof audioBase64 !== 'string') {
+          throw new Error('No audio returned');
+        }
+        const audioBlob = await (await fetch(`data:audio/mpeg;base64,${audioBase64}`)).blob();
+        audioUrl = URL.createObjectURL(audioBlob);
       }
-      const audioBlob = await (await fetch(`data:audio/mpeg;base64,${audioBase64}`)).blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
       audioQueueRef.current.push(audioUrl);
 
       // Reset failure counter on success

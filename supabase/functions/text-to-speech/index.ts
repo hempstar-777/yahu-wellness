@@ -1,13 +1,23 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Simple in-memory cache: key = `${text}:${voiceId}`, value = base64 audio
-const audioCache = new Map<string, string>();
-const CACHE_MAX_SIZE = 50; // Limit cache size
+// Initialize Supabase client for storage
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+// Create a hash for caching
+async function generateHash(text: string, voiceId: string): Promise<string> {
+  const data = new TextEncoder().encode(`${text}:${voiceId}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -21,12 +31,26 @@ serve(async (req) => {
       throw new Error('Text and voiceId are required');
     }
 
-    // Check cache first
-    const cacheKey = `${text.substring(0, 100)}:${voiceId}`;
-    const cached = audioCache.get(cacheKey);
-    if (cached) {
-      console.log('Returning cached audio');
-      return new Response(JSON.stringify({ audioContent: cached, cached: true }), {
+    // Generate unique hash for this text+voice combination
+    const audioHash = await generateHash(text, voiceId);
+    const storagePath = `${audioHash}.mp3`;
+
+    // Check if audio already exists in permanent storage
+    const { data: existingFile } = await supabase.storage
+      .from('audio-cache')
+      .list('', { search: audioHash });
+
+    if (existingFile && existingFile.length > 0) {
+      console.log('Returning permanently cached audio from storage');
+      const { data: publicUrlData } = supabase.storage
+        .from('audio-cache')
+        .getPublicUrl(storagePath);
+      
+      return new Response(JSON.stringify({ 
+        audioUrl: publicUrlData.publicUrl,
+        cached: true,
+        source: 'storage'
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -119,17 +143,39 @@ serve(async (req) => {
       throw new Error('No TTS provider available or all failed');
     }
 
-    // Cache the result (manage cache size)
-    if (audioCache.size >= CACHE_MAX_SIZE) {
-      const firstKey = audioCache.keys().next().value;
-      if (firstKey) audioCache.delete(firstKey);
+    // Store in permanent storage
+    const audioBuffer = Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0));
+    
+    const { error: uploadError } = await supabase.storage
+      .from('audio-cache')
+      .upload(storagePath, audioBuffer, {
+        contentType: 'audio/mpeg',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('Storage upload error:', uploadError);
+      // Still return the audio even if storage fails
+      return new Response(JSON.stringify({ 
+        audioContent: base64Audio, 
+        provider: usedProvider,
+        cached: false 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
-    audioCache.set(cacheKey, base64Audio);
+
+    console.log(`Audio stored permanently: ${storagePath}`);
+    
+    const { data: publicUrlData } = supabase.storage
+      .from('audio-cache')
+      .getPublicUrl(storagePath);
 
     return new Response(JSON.stringify({ 
-      audioContent: base64Audio, 
+      audioUrl: publicUrlData.publicUrl,
       provider: usedProvider,
-      cached: false 
+      cached: false,
+      source: 'generated'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
