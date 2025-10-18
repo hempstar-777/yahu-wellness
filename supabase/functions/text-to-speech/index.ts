@@ -60,12 +60,12 @@ serve(async (req) => {
     }
 
     const audioBuffer = await response.arrayBuffer();
-    
-    return new Response(audioBuffer, {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'audio/mpeg',
-      },
+
+    // Convert to base64 to ensure supabase.functions.invoke handles payload reliably
+    const base64Audio = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+
+    return new Response(JSON.stringify({ audioContent: base64Audio }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in text-to-speech function:', error);

@@ -96,7 +96,11 @@ const BibleAudioPlayer = () => {
 
       if (error) throw error as any;
 
-      const audioBlob = new Blob([data], { type: 'audio/mpeg' });
+      const audioBase64 = (data as any)?.audioContent || (data as any)?.audio;
+      if (!audioBase64 || typeof audioBase64 !== 'string') {
+        throw new Error('No audio returned');
+      }
+      const audioBlob = await (await fetch(`data:audio/mpeg;base64,${audioBase64}`)).blob();
       const audioUrl = URL.createObjectURL(audioBlob);
       audioQueueRef.current.push(audioUrl);
 
