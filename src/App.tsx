@@ -51,6 +51,9 @@ import FastingGuide from "./pages/FastingGuide";
 import SpiritualWarfareTraining from "./pages/SpiritualWarfareTraining";
 import BiblicalDietaryLaws from "./pages/BiblicalDietaryLaws";
 import Donate from "./pages/Donate";
+import MusicLibrary from "./pages/MusicLibrary";
+import MusicUpload from "./pages/MusicUpload";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +111,8 @@ const App = () => (
           <Route path="/spiritual-warfare-training" element={<SpiritualWarfareTraining />} />
           <Route path="/biblical-diet" element={<BiblicalDietaryLaws />} />
           <Route path="/donate" element={<Donate />} />
+          <Route path="/music-library" element={<MusicLibrary />} />
+          <Route path="/music-upload" element={<ProtectedRoute><MusicUpload /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>

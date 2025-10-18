@@ -491,6 +491,54 @@ export type Database = {
           },
         ]
       }
+      music_tracks: {
+        Row: {
+          artist: string | null
+          created_at: string
+          description: string | null
+          download_count: number | null
+          duration: number | null
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          play_count: number | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          artist?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          duration?: number | null
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          play_count?: number | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          artist?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          duration?: number | null
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          play_count?: number | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       prayer_journal: {
         Row: {
           content: string
@@ -917,6 +965,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_download_count: {
+        Args: { track_id: string }
+        Returns: undefined
+      }
+      increment_play_count: {
+        Args: { track_id: string }
+        Returns: undefined
       }
       is_vip_user: {
         Args: { user_id_input: string }

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap, LogOut, User, Info, Coffee, Swords } from "lucide-react";
+import { ClipboardCheck, BookOpen, Shield, Heart, TrendingUp, AlertCircle, Brain, GraduationCap, LogOut, User, Info, Coffee, Swords, Music } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslation } from "react-i18next";
@@ -142,6 +142,12 @@ const Index = () => {
               <Link to="/donate">
                 <Coffee className="h-5 w-5" />
                 Support Development
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="gap-2 border-secondary/50 hover:bg-secondary/10">
+              <Link to="/music-library">
+                <Music className="h-5 w-5" />
+                Music Library
               </Link>
             </Button>
           </div>
