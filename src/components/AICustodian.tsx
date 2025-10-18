@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+
 
 interface Message {
   role: "user" | "assistant";
@@ -191,13 +191,7 @@ const AICustodian = () => {
                     : "bg-muted"
                 }`}
               >
-                {msg.role === "assistant" ? (
-                  <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none">
-                    {msg.content}
-                  </ReactMarkdown>
-                ) : (
-                  <p className="text-sm">{msg.content}</p>
-                )}
+                <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
               </div>
             </div>
           ))}
