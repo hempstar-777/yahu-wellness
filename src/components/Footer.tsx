@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -8,6 +9,9 @@ const Footer = () => {
     <footer className="border-t border-border/50 bg-muted/30">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto text-center text-sm text-muted-foreground space-y-4">
+          <div className="flex justify-center mb-4">
+            <img src={logo} alt="App Logo" className="h-16 w-auto" />
+          </div>
           <p>
             {t('home.footerInspired')}
           </p>
