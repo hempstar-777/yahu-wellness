@@ -8,6 +8,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { VIPCounter } from "@/components/VIPCounter";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -46,6 +47,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-light">
+      {/* Logo Banner */}
+      <div className="w-full py-8 flex justify-center border-b border-border/30 bg-gradient-to-r from-background via-accent/5 to-background">
+        <img src={logo} alt="App Logo" className="h-32 w-auto" />
+      </div>
+      
       {/* Hero Section */}
       <header className="relative overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 bg-gradient-spiritual opacity-5" />
@@ -265,34 +271,6 @@ const Index = () => {
           </p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border/50 bg-muted/30">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto text-center text-sm text-muted-foreground space-y-3">
-            <p>
-              {t('home.footerInspired')}
-            </p>
-            <p>
-              {t('home.footerMission')}
-            </p>
-            <p className="text-xs">
-              {t('home.footerDisclaimer')}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 text-xs">
-              <Link to="/terms" className="hover:underline">Terms of Service</Link>
-              <span>•</span>
-              <Link to="/vip-benefits" className="hover:underline">VIP Program</Link>
-              <span>•</span>
-              <Link to="/courses" className="hover:underline">Courses</Link>
-              <span>•</span>
-              <Link to="/donate" className="hover:underline">Donate</Link>
-              <span>•</span>
-              <a href="mailto:support@spiritualfreedom.app" className="hover:underline">Contact Support</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

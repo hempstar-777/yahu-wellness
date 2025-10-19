@@ -54,6 +54,7 @@ import Donate from "./pages/Donate";
 import MusicLibrary from "./pages/MusicLibrary";
 import MusicUpload from "./pages/MusicUpload";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
+          <Footer />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
