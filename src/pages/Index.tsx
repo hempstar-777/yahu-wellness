@@ -8,7 +8,6 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { VIPCounter } from "@/components/VIPCounter";
-import logo from "@/assets/logo.png";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -47,10 +46,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-light">
-      {/* Logo Banner */}
-      <div className="w-full py-8 flex justify-center border-b border-border/30 bg-gradient-to-r from-background via-accent/5 to-background">
-        <img src={logo} alt="App Logo" className="h-32 w-auto" />
-      </div>
       
       {/* Hero Section */}
       <header className="relative overflow-hidden border-b border-border/50">
