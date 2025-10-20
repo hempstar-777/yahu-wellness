@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useHowlerPlayer } from "@/hooks/useHowlerPlayer";
 
 interface MusicTrack {
   id: string;
@@ -33,12 +34,12 @@ const MusicLibrary = () => {
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; track: MusicTrack | null }>({ open: false, track: null });
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { playOrToggle } = useHowlerPlayer();
 
   useEffect(() => {
     fetchTracks();
@@ -66,112 +67,27 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
-    const el = audioRef.current;
-
-    if (currentlyPlaying === track.id) {
-      el?.pause();
-      setCurrentlyPlaying(null);
-      return;
-    }
-
-    // Stop any existing audio
-    if (el) {
-      try { el.pause(); } catch {}
-      try { el.src = ""; } catch {}
-    }
-
-    const audioUrl = track.file_url;
-
-    const playFromSrc = (src: string) => new Promise<void>((resolve, reject) => {
-      const audio = audioRef.current;
-      if (!audio) {
-        reject(new Error("no_audio_element"));
-        return;
-      }
-
-      // Clean previous source and stop
-      try { audio.pause(); } catch {}
-      try { audio.currentTime = 0; } catch {}
-      // Remove any previous <source> children to ensure proper MIME negotiation
-      while (audio.firstChild) {
-        audio.removeChild(audio.firstChild);
-      }
-
-      audio.preload = "auto";
-      (audio as any).playsInline = true;
-
-      const sourceEl = document.createElement('source');
-      sourceEl.src = src;
-      sourceEl.type = 'audio/mpeg';
-      audio.appendChild(sourceEl);
-
-      const cleanup = () => {
-        audio.removeEventListener('canplay', onCanPlay as any);
-        audio.removeEventListener('error', onError as any);
-      };
-      const onCanPlay = async () => {
-        cleanup();
-        try {
-          await audio.play();
-          setAudioElement(audio);
-          setCurrentlyPlaying(track.id);
-          audio.onended = () => setCurrentlyPlaying(null);
-          resolve();
-        } catch (e) {
-          reject(e as any);
-        }
-      };
-      const onError = () => {
-        cleanup();
-        reject(new Error('media_error'));
-      };
-
-      audio.addEventListener('canplay', onCanPlay as any, { once: true });
-      audio.addEventListener('error', onError as any, { once: true });
-      // Force the browser to re-evaluate sources
-      try { audio.load(); } catch {}
-      // Safety timeout in case events don't fire
-      window.setTimeout(() => {
-        cleanup();
-        reject(new Error('timeout_waiting_canplay'));
-      }, 6000);
-    });
-
     try {
-      // Try direct URL first
-      await playFromSrc(audioUrl);
-
-      void supabase
-        .rpc("increment_play_count", { track_id: track.id })
-        .then(() => setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t)));
-    } catch (err) {
-      console.warn("Direct play failed, attempting blob fallback:", err);
-      try {
-        const res = await fetch(audioUrl, { cache: "no-store" });
-        if (!res.ok) throw new Error(`fetch_failed_${res.status}`);
-        const buffer = await res.arrayBuffer();
-        const blob = new Blob([buffer], { type: "audio/mpeg" });
-        const objUrl = URL.createObjectURL(blob);
-        await playFromSrc(objUrl);
-        // Revoke when ended
-        if (audioRef.current) {
-          audioRef.current.onended = () => {
-            URL.revokeObjectURL(objUrl);
-            setCurrentlyPlaying(null);
-          };
-        }
+      const result = await playOrToggle(track.file_url, track.id);
+      if (result === "played") {
+        setCurrentlyPlaying(track.id);
         void supabase
           .rpc("increment_play_count", { track_id: track.id })
-          .then(() => setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t)));
-      } catch (e) {
-        console.error("Playback error (after blob fallback):", e);
-        toast({
-          title: "Playback error",
-          description: "We couldn't start this audio on your device. We'll investigate.",
-          variant: "destructive",
-        });
+          .then(() =>
+            setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
+          );
+      } else {
         setCurrentlyPlaying(null);
       }
+    } catch (e) {
+      console.error("Playback error:", e);
+      toast({
+        title: "Playback error",
+        description: "We couldn't start this audio on your device. Opening in a new tab.",
+        variant: "destructive",
+      });
+      try { window.open(track.file_url, "_blank"); } catch {}
+      setCurrentlyPlaying(null);
     }
   };
 
@@ -359,7 +275,7 @@ const MusicLibrary = () => {
             ))}
           </div>
         )}
-        <audio ref={audioRef} className="hidden" preload="none" playsInline />
+        {/* using Howler for audio playback */}
       </div>
 
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, track: null })}>
