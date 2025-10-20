@@ -50,7 +50,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Resolve a fresh, playable URL for Supabase Storage objects
+    // Download the audio file as a blob to bypass CORS issues
     const resolvePlayableUrl = async (url: string): Promise<string> => {
       try {
         const match = url.match(/\/storage\/v1\/object\/(public|sign)\/([^/]+)\/(.+)/);
@@ -58,27 +58,25 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
           console.log("🎵 URL doesn't match Supabase pattern, using as-is:", url);
           return url;
         }
-        const [, visibility, bucket, path] = match;
-        console.log("🎵 Resolving Supabase URL:", { visibility, bucket, path });
+        const [, , bucket, path] = match;
+        console.log("🎵 Downloading audio file from:", { bucket, path });
         
-        if (visibility === "public") {
-          const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-          console.log("🎵 Generated public URL:", data.publicUrl);
-          return data.publicUrl;
-        } else {
-          const { data, error } = await supabase.storage
-            .from(bucket)
-            .createSignedUrl(path, 60 * 60);
-          if (!error && data?.signedUrl) {
-            console.log("🎵 Generated signed URL");
-            return data.signedUrl;
-          }
-          console.error("🎵 Failed to create signed URL:", error);
+        // Download the file as a blob
+        const { data, error } = await supabase.storage.from(bucket).download(path);
+        
+        if (error || !data) {
+          console.error("🎵 Failed to download audio file:", error);
+          return url;
         }
+        
+        // Create an object URL from the blob
+        const objectUrl = URL.createObjectURL(data);
+        console.log("🎵 Created object URL for audio playback");
+        return objectUrl;
       } catch (e) {
-        console.warn("resolvePlayableUrl: falling back to provided URL", e);
+        console.error("🎵 Error resolving playable URL:", e);
+        return url;
       }
-      return url;
     };
 
     const src = await resolvePlayableUrl(track.file_url);
