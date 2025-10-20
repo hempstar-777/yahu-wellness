@@ -29,6 +29,9 @@ interface MusicTrack {
   play_count: number;
   download_count: number;
   created_at: string;
+  // resolved fields for playback
+  resolved_url?: string;
+  mime_type?: string;
 }
 
 const MusicLibrary = () => {
@@ -43,72 +46,108 @@ const MusicLibrary = () => {
     fetchTracks();
   }, []);
 
-  const fetchTracks = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("music_tracks")
-        .select("*")
-        .order("created_at", { ascending: false });
+const fetchTracks = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("music_tracks")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setTracks(data || []);
-    } catch (error) {
-      console.error("Error fetching tracks:", error);
-      toast({
-        title: "Error loading music",
-        description: "Failed to load music tracks",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (error) throw error;
 
-  const getAudioUrl = (track: MusicTrack): string => {
-    const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
-    const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
-    const { data } = supabase.storage.from('music').getPublicUrl(pathInBucket);
-    return data.publicUrl;
-  };
+    const enhanced = await Promise.all((data || []).map(async (t: MusicTrack) => {
+      const path = getPathInBucket(t);
+      const name = (t.file_name || '').toLowerCase();
+      const mime = name.endsWith('.mp3')
+        ? 'audio/mpeg'
+        : name.endsWith('.m4a')
+        ? 'audio/mp4'
+        : name.endsWith('.wav')
+        ? 'audio/wav'
+        : name.endsWith('.ogg')
+        ? 'audio/ogg'
+        : 'audio/mpeg';
+
+      let url: string | undefined;
+      try {
+        const { data: signed, error: signErr } = await supabase.storage
+          .from('music')
+          .createSignedUrl(path, 60 * 60 * 6); // 6 hours
+        if (!signErr && signed?.signedUrl) url = signed.signedUrl;
+      } catch (_) {}
+
+      if (!url) {
+        const { data: pub } = supabase.storage.from('music').getPublicUrl(path);
+        url = pub.publicUrl;
+      }
+
+      return { ...t, resolved_url: url, mime_type: mime } as MusicTrack;
+    }));
+
+    setTracks(enhanced);
+  } catch (error) {
+    console.error("Error fetching tracks:", error);
+    toast({
+      title: "Error loading music",
+      description: "Failed to load music tracks",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+const getPathInBucket = (track: MusicTrack): string => {
+  const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
+  return match ? match[1] : `tracks/${track.file_name}`;
+};
+
+const getAudioUrl = (track: MusicTrack): string => {
+  if (track.resolved_url) return track.resolved_url;
+  const { data } = supabase.storage.from('music').getPublicUrl(getPathInBucket(track));
+  return data.publicUrl;
+};
 
   const handlePlayCount = async (trackId: string) => {
     await supabase.rpc("increment_play_count", { track_id: trackId });
     setTracks(prev => prev.map(t => t.id === trackId ? { ...t, play_count: t.play_count + 1 } : t));
   };
 
-  const handleDownload = async (track: MusicTrack) => {
-    try {
-      const downloadUrl = getAudioUrl(track);
-      const response = await fetch(downloadUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${track.title}.mp3`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+const handleDownload = async (track: MusicTrack) => {
+  try {
+    const path = getPathInBucket(track);
+    const { data, error } = await supabase.storage.from('music').download(path);
+    if (error || !data) throw error || new Error('Download failed');
 
-      // Increment download count
-      await supabase.rpc("increment_download_count", { track_id: track.id });
-      setTracks(prev =>
-        prev.map(t => t.id === track.id ? { ...t, download_count: t.download_count + 1 } : t)
-      );
+    const ext = (track.file_name.split('.').pop() || 'mp3');
+    const url = window.URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${track.title}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
 
-      toast({
-        title: "Download started",
-        description: `Downloading ${track.title}`,
-      });
-    } catch (error) {
-      console.error("Error downloading track:", error);
-      toast({
-        title: "Download failed",
-        description: "Failed to download the track",
-        variant: "destructive",
-      });
-    }
-  };
+    // Increment download count
+    await supabase.rpc("increment_download_count", { track_id: track.id });
+    setTracks(prev =>
+      prev.map(t => t.id === track.id ? { ...t, download_count: t.download_count + 1 } : t)
+    );
+
+    toast({
+      title: "Download started",
+      description: `Downloading ${track.title}`,
+    });
+  } catch (error) {
+    console.error("Error downloading track:", error);
+    toast({
+      title: "Download failed",
+      description: "Failed to download the track",
+      variant: "destructive",
+    });
+  }
+};
 
   const handleDelete = async (track: MusicTrack) => {
     try {
@@ -245,40 +284,45 @@ const MusicLibrary = () => {
                         </Button>
                       )}
                     </div>
-                    <audio
-                      controls
-                      className="w-full"
-                      crossOrigin="anonymous"
-                      preload="metadata"
-                      playsInline
-                      onPlay={() => handlePlayCount(track.id)}
-                      onError={(e) => {
-                        console.error("Audio failed to play", {
-                          error: (e as any).currentTarget?.error,
-                          src: (e as any).currentTarget?.currentSrc,
-                        });
-                        toast({
-                          title: "Playback failed",
-                          description: "We couldn't play this track. Try the Download button.",
-                          variant: "destructive",
-                        });
-                      }}
-                      controlsList="nodownload"
-                    >
-                      <source
-                        src={getAudioUrl(track)}
-                        type={`${track.file_name.toLowerCase().endsWith('.mp3')
-                          ? 'audio/mpeg'
-                          : track.file_name.toLowerCase().endsWith('.m4a')
-                          ? 'audio/mp4'
-                          : track.file_name.toLowerCase().endsWith('.wav')
-                          ? 'audio/wav'
-                          : track.file_name.toLowerCase().endsWith('.ogg')
-                          ? 'audio/ogg'
-                          : 'audio/mpeg'}`}
-                      />
-                      Your browser does not support the audio element.
-                    </audio>
+<audio
+  controls
+  className="w-full"
+  crossOrigin="anonymous"
+  preload="metadata"
+  playsInline
+  onPlay={() => handlePlayCount(track.id)}
+  onError={async (e) => {
+    const audioEl = e.currentTarget as HTMLAudioElement;
+    try {
+      const path = getPathInBucket(track);
+      const { data } = await supabase.storage.from('music').download(path);
+      if (data) {
+        const objectUrl = URL.createObjectURL(data);
+        audioEl.src = objectUrl;
+        await audioEl.play();
+        return;
+      }
+    } catch (err) {
+      console.error("Audio failed to play", {
+        error: (e as any).currentTarget?.error,
+        src: (e as any).currentTarget?.currentSrc,
+        err,
+      });
+    }
+    toast({
+      title: "Playback failed",
+      description: "We couldn't play this track. Try the Download button.",
+      variant: "destructive",
+    });
+  }}
+  controlsList="nodownload"
+>
+  <source
+    src={track.resolved_url || getAudioUrl(track)}
+    type={track.mime_type || 'audio/mpeg'}
+  />
+  Your browser does not support the audio element.
+</audio>
                   </div>
                 </div>
               </Card>
