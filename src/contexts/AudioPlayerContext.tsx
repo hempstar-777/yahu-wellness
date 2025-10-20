@@ -14,6 +14,7 @@ interface AudioPlayerContextType {
   play: (track: Track) => Promise<void>;
   pause: () => void;
   toggle: () => void;
+  audioElement: HTMLAudioElement | null;
 }
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | null>(null);
@@ -26,9 +27,13 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const play = async (track: Track) => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
+      audioRef.current.crossOrigin = "anonymous";
       audioRef.current.preload = "metadata";
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
-      audioRef.current.addEventListener("error", () => setIsPlaying(false));
+      audioRef.current.addEventListener("error", (e) => {
+        console.error("Audio error:", e);
+        setIsPlaying(false);
+      });
     }
 
     const audio = audioRef.current;
@@ -40,6 +45,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     }
 
     audio.src = track.file_url;
+    audio.load();
     setCurrentTrack(track);
     
     try {
@@ -69,7 +75,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, play, pause, toggle }}>
+    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, play, pause, toggle, audioElement: audioRef.current }}>
       {children}
     </AudioPlayerContext.Provider>
   );

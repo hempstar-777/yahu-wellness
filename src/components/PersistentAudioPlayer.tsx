@@ -2,9 +2,42 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Music, Play, Pause, X } from "lucide-react";
 import { useAudioPlayer } from "@/contexts/AudioPlayerContext";
+import { useState, useEffect } from "react";
 
 export function PersistentAudioPlayer() {
-  const { currentTrack, isPlaying, toggle, pause } = useAudioPlayer();
+  const { currentTrack, isPlaying, toggle, pause, audioElement } = useAudioPlayer();
+  const [duration, setDuration] = useState<string>("--:--");
+  const [currentTime, setCurrentTime] = useState<string>("0:00");
+
+  useEffect(() => {
+    if (!audioElement) return;
+
+    const updateTime = () => {
+      const current = Math.floor(audioElement.currentTime);
+      const minutes = Math.floor(current / 60);
+      const seconds = current % 60;
+      setCurrentTime(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+    };
+
+    const updateDuration = () => {
+      if (audioElement.duration && !isNaN(audioElement.duration)) {
+        const total = Math.floor(audioElement.duration);
+        const minutes = Math.floor(total / 60);
+        const seconds = total % 60;
+        setDuration(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+      }
+    };
+
+    audioElement.addEventListener("timeupdate", updateTime);
+    audioElement.addEventListener("loadedmetadata", updateDuration);
+    audioElement.addEventListener("durationchange", updateDuration);
+
+    return () => {
+      audioElement.removeEventListener("timeupdate", updateTime);
+      audioElement.removeEventListener("loadedmetadata", updateDuration);
+      audioElement.removeEventListener("durationchange", updateDuration);
+    };
+  }, [currentTrack, audioElement]);
 
   if (!currentTrack) return null;
 
@@ -33,6 +66,9 @@ export function PersistentAudioPlayer() {
                 {currentTrack.artist}
               </p>
             )}
+            <p className="text-xs text-muted-foreground">
+              {currentTime} / {duration}
+            </p>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
