@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Track {
   id: string;
@@ -31,20 +32,43 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audioRef.current.preload = "metadata";
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
       audioRef.current.addEventListener("error", (e) => {
-        console.error("Audio error:", e);
+        console.error("Audio error:", e, audioRef.current?.error);
         setIsPlaying(false);
       });
     }
 
-    const audio = audioRef.current;
+    const audio = audioRef.current!;
 
+    // Toggle pause if same track is already playing
     if (currentTrack?.id === track.id && !audio.paused) {
       audio.pause();
       setIsPlaying(false);
       return;
     }
 
-    audio.src = track.file_url;
+    // Resolve a fresh, playable URL for Supabase Storage objects
+    const resolvePlayableUrl = async (url: string): Promise<string> => {
+      try {
+        const match = url.match(/\/storage\/v1\/object\/(public|sign)\/([^/]+)\/(.+)/);
+        if (!match) return url;
+        const [, visibility, bucket, path] = match;
+        if (visibility === "public") {
+          const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+          return data.publicUrl;
+        } else {
+          const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(path, 60 * 60);
+          if (!error && data?.signedUrl) return data.signedUrl;
+        }
+      } catch (e) {
+        console.warn("resolvePlayableUrl: falling back to provided URL", e);
+      }
+      return url;
+    };
+
+    const src = await resolvePlayableUrl(track.file_url);
+    audio.src = src;
     audio.load();
     setCurrentTrack(track);
     
