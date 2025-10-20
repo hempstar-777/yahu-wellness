@@ -32,10 +32,19 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       console.log("🎵 Creating new Audio element");
       audioRef.current = new Audio();
       audioRef.current.crossOrigin = "anonymous";
-      audioRef.current.preload = "metadata";
+      audioRef.current.preload = "auto";
+      // Mobile-friendly playback settings
+      // @ts-expect-error playsInline is supported in modern browsers
+      audioRef.current.playsInline = true;
+      audioRef.current.muted = false;
+      audioRef.current.volume = 1;
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
       audioRef.current.addEventListener("error", (e) => {
-        console.error("Audio error:", e, audioRef.current?.error);
+        console.error("Audio error:", e, audioRef.current?.error, {
+          src: audioRef.current?.src,
+          networkState: audioRef.current?.networkState,
+          readyState: audioRef.current?.readyState,
+        });
         setIsPlaying(false);
       });
     }
@@ -48,6 +57,25 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audio.pause();
       setIsPlaying(false);
       return;
+    }
+
+    // Fast path for public storage URLs: set src and play immediately (preserves user gesture on mobile)
+    try {
+      const publicMatch = track.file_url.match(/\/storage\/v1\/object\/(public)\/([^/]+)\/(.+)/);
+      if (publicMatch) {
+        const [, , bucket, path] = publicMatch;
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        const fastSrc = data.publicUrl;
+        console.log("🎵 Fast public URL play:", { bucket, path, fastSrc });
+        audio.src = fastSrc;
+        audio.load();
+        setCurrentTrack(track);
+        await audio.play();
+        setIsPlaying(true);
+        return;
+      }
+    } catch (e) {
+      console.warn("🎵 Fast path failed, falling back to blob download", e);
     }
 
     // Download the audio file as a blob to bypass CORS issues
