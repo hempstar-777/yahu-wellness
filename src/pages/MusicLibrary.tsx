@@ -24,6 +24,7 @@ interface MusicTrack {
   artist: string | null;
   description: string | null;
   file_url: string;
+  file_name: string;
   cover_url: string | null;
   play_count: number;
   download_count: number;
@@ -67,9 +68,8 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
-    console.log("🎵 Native UI: Play clicked for", track.title, track.file_url);
+    console.log("🎵 Play clicked for", track.title);
     try {
-      setSelectedTrack(track);
       const audio = audioRef.current;
       if (!audio) return;
 
@@ -80,22 +80,31 @@ const MusicLibrary = () => {
         return;
       }
 
-      if (audio.src !== track.file_url) {
-        audio.src = track.file_url;
+      // Get fresh public URL from storage
+      const { data: { publicUrl } } = supabase.storage
+        .from('music')
+        .getPublicUrl(track.file_name);
+
+      console.log("🎵 Using public URL:", publicUrl);
+
+      setSelectedTrack(track);
+      
+      if (audio.src !== publicUrl) {
+        audio.src = publicUrl;
         audio.load();
       }
 
       await audio.play();
       setIsNativePlaying(true);
 
-      // Increment play count (fire-and-forget)
+      // Increment play count
       void supabase
         .rpc("increment_play_count", { track_id: track.id })
         .then(() =>
           setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
         );
     } catch (e) {
-      console.error("🎵 Native play failed:", e);
+      console.error("🎵 Play failed:", e);
       toast({
         title: "Playback error",
         description: "Try tapping Play again or use Download.",
@@ -106,8 +115,12 @@ const MusicLibrary = () => {
 
   const handleDownload = async (track: MusicTrack) => {
     try {
-      // Use the file_url directly since it's already a complete public URL
-      const response = await fetch(track.file_url);
+      // Get fresh public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('music')
+        .getPublicUrl(track.file_name);
+
+      const response = await fetch(publicUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
