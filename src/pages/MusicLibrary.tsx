@@ -66,15 +66,11 @@ const MusicLibrary = () => {
     }
 
     try {
-      // Get the public URL from Supabase storage
-      const { data: urlData } = supabase.storage
-        .from('music')
-        .getPublicUrl(track.file_url);
+      // Use the file_url directly since it's already a complete public URL
+      const audioUrl = track.file_url;
+      console.log("Playing track:", track.title, "URL:", audioUrl);
 
-      const publicUrl = urlData.publicUrl;
-      console.log("Playing track:", track.title, "URL:", publicUrl);
-
-      const audio = new Audio(publicUrl);
+      const audio = new Audio(audioUrl);
       audio.crossOrigin = "anonymous";
       
       await audio.play();
@@ -110,12 +106,8 @@ const MusicLibrary = () => {
 
   const handleDownload = async (track: MusicTrack) => {
     try {
-      // Get the public URL from Supabase storage
-      const { data: urlData } = supabase.storage
-        .from('music')
-        .getPublicUrl(track.file_url);
-
-      const response = await fetch(urlData.publicUrl);
+      // Use the file_url directly since it's already a complete public URL
+      const response = await fetch(track.file_url);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
