@@ -4,8 +4,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Music, Download, Play, Pause, Upload, ArrowLeft } from "lucide-react";
+import { Music, Download, Play, Pause, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface MusicTrack {
   id: string;
@@ -24,6 +34,7 @@ const MusicLibrary = () => {
   const [loading, setLoading] = useState(true);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; track: MusicTrack | null }>({ open: false, track: null });
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -158,6 +169,33 @@ const MusicLibrary = () => {
     }
   };
 
+  const handleDelete = async (track: MusicTrack) => {
+    try {
+      const { error } = await supabase
+        .from("music_tracks")
+        .delete()
+        .eq("id", track.id);
+
+      if (error) throw error;
+
+      setTracks(prev => prev.filter(t => t.id !== track.id));
+      
+      toast({
+        title: "Track deleted",
+        description: `${track.title} has been removed`,
+      });
+      
+      setDeleteDialog({ open: false, track: null });
+    } catch (error) {
+      console.error("Error deleting track:", error);
+      toast({
+        title: "Delete failed",
+        description: "Failed to delete the track",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
@@ -266,6 +304,15 @@ const MusicLibrary = () => {
                     >
                       <Download className="h-5 w-5" />
                     </Button>
+                    {isAdmin && (
+                      <Button
+                        onClick={() => setDeleteDialog({ open: true, track })}
+                        size="lg"
+                        variant="destructive"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -274,6 +321,26 @@ const MusicLibrary = () => {
         )}
         <audio ref={audioRef} className="hidden" preload="none" playsInline />
       </div>
+
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, track: null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this track?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deleteDialog.track?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialog.track && handleDelete(deleteDialog.track)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
