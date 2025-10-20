@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useHowlerPlayer } from "@/hooks/useHowlerPlayer";
 
 interface MusicTrack {
   id: string;
@@ -39,7 +38,7 @@ const MusicLibrary = () => {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { playOrToggle } = useHowlerPlayer();
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     fetchTracks();
@@ -67,26 +66,37 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // If same track is playing, pause it
+    if (currentlyPlaying === track.id) {
+      audio.pause();
+      setCurrentlyPlaying(null);
+      return;
+    }
+
+    // Stop and reset audio
+    audio.pause();
+    audio.currentTime = 0;
+    audio.src = track.file_url;
+
     try {
-      const result = await playOrToggle(track.file_url, track.id);
-      if (result === "played") {
-        setCurrentlyPlaying(track.id);
-        void supabase
-          .rpc("increment_play_count", { track_id: track.id })
-          .then(() =>
-            setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
-          );
-      } else {
-        setCurrentlyPlaying(null);
-      }
-    } catch (e) {
-      console.error("Playback error:", e);
+      await audio.play();
+      setCurrentlyPlaying(track.id);
+      
+      void supabase
+        .rpc("increment_play_count", { track_id: track.id })
+        .then(() =>
+          setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
+        );
+    } catch (err) {
+      console.error("Play error:", err);
       toast({
-        title: "Playback error",
-        description: "We couldn't start this audio on your device. Opening in a new tab.",
-        variant: "destructive",
+        title: "Can't play on this device",
+        description: "Opening the file in a new tab instead.",
       });
-      try { window.open(track.file_url, "_blank"); } catch {}
+      window.open(track.file_url, "_blank");
       setCurrentlyPlaying(null);
     }
   };
@@ -275,7 +285,14 @@ const MusicLibrary = () => {
             ))}
           </div>
         )}
-        {/* using Howler for audio playback */}
+        <audio 
+          ref={audioRef}
+          preload="metadata"
+          playsInline
+          onEnded={() => setCurrentlyPlaying(null)}
+          onError={() => setCurrentlyPlaying(null)}
+          style={{ display: "none" }}
+        />
       </div>
 
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, track: null })}>
