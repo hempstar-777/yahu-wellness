@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Music, Download, Play, Pause, Upload, ArrowLeft, Trash2 } from "lucide-react";
+import { Music, Download, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 import {
@@ -38,9 +38,6 @@ const MusicLibrary = () => {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
-  const [isNativePlaying, setIsNativePlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     fetchTracks();
@@ -67,101 +64,21 @@ const MusicLibrary = () => {
     }
   };
 
-  const handlePlay = async (track: MusicTrack) => {
-    console.log("🎵 Play clicked for", track.title);
-    try {
-      const audio = audioRef.current;
-      if (!audio) return;
+  const getAudioUrl = (track: MusicTrack): string => {
+    const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
+    const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
+    const { data } = supabase.storage.from('music').getPublicUrl(pathInBucket);
+    return data.publicUrl;
+  };
 
-      // If same track and currently playing, toggle pause
-      if (selectedTrack?.id === track.id && !audio.paused) {
-        audio.pause();
-        setIsNativePlaying(false);
-        return;
-      }
-
-      // Resolve a playable URL robustly (public first, then signed)
-      const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
-      const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
-      let playableUrl: string;
-
-      // Start with a public URL based on the path
-      const { data: pub } = supabase.storage
-        .from('music')
-        .getPublicUrl(pathInBucket);
-      playableUrl = pub.publicUrl;
-
-      // Verify accessibility; if not accessible, fall back to a signed URL (7 days)
-      try {
-        const head = await fetch(playableUrl, { method: 'HEAD' });
-        if (!head.ok) {
-          const { data: signed } = await supabase.storage
-            .from('music')
-            .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
-          if (signed?.signedUrl) playableUrl = signed.signedUrl;
-        }
-      } catch {
-        const { data: signed } = await supabase.storage
-          .from('music')
-          .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
-        if (signed?.signedUrl) playableUrl = signed.signedUrl;
-      }
-
-      console.log("🎵 Using resolved URL:", playableUrl);
-
-      setSelectedTrack(track);
-      
-      if (audio.src !== playableUrl) {
-        audio.src = playableUrl;
-        audio.load();
-      }
-
-      await audio.play();
-      setIsNativePlaying(true);
-
-      // Increment play count
-      void supabase
-        .rpc("increment_play_count", { track_id: track.id })
-        .then(() =>
-          setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
-        );
-    } catch (e) {
-      console.error("🎵 Play failed:", e);
-      toast({
-        title: "Playback error",
-        description: "Try tapping Play again or use Download.",
-        variant: "destructive",
-      });
-    }
+  const handlePlayCount = async (trackId: string) => {
+    await supabase.rpc("increment_play_count", { track_id: trackId });
+    setTracks(prev => prev.map(t => t.id === trackId ? { ...t, play_count: t.play_count + 1 } : t));
   };
 
   const handleDownload = async (track: MusicTrack) => {
     try {
-      // Resolve a downloadable URL (public first, signed fallback)
-      const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
-      const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
-      let downloadUrl: string;
-
-      const { data: pub } = supabase.storage
-        .from('music')
-        .getPublicUrl(pathInBucket);
-      downloadUrl = pub.publicUrl;
-
-      try {
-        const head = await fetch(downloadUrl, { method: 'HEAD' });
-        if (!head.ok) {
-          const { data: signed } = await supabase.storage
-            .from('music')
-            .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
-          if (signed?.signedUrl) downloadUrl = signed.signedUrl;
-        }
-      } catch {
-        const { data: signed } = await supabase.storage
-          .from('music')
-          .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
-        if (signed?.signedUrl) downloadUrl = signed.signedUrl;
-      }
-
+      const downloadUrl = getAudioUrl(track);
       const response = await fetch(downloadUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -309,34 +226,32 @@ const MusicLibrary = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Button
-                      onClick={() => handlePlay(track)}
-                      size="lg"
-                      variant={selectedTrack?.id === track.id && isNativePlaying ? "secondary" : "default"}
-                    >
-                      {selectedTrack?.id === track.id && isNativePlaying ? (
-                        <Pause className="h-5 w-5" />
-                      ) : (
-                        <Play className="h-5 w-5" />
-                      )}
-                    </Button>
-                    <Button
-                      onClick={() => handleDownload(track)}
-                      size="lg"
-                      variant="outline"
-                    >
-                      <Download className="h-5 w-5" />
-                    </Button>
-                    {isAdmin && (
+                  <div className="flex flex-col gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-2">
                       <Button
-                        onClick={() => setDeleteDialog({ open: true, track })}
+                        onClick={() => handleDownload(track)}
                         size="lg"
-                        variant="destructive"
+                        variant="outline"
                       >
-                        <Trash2 className="h-5 w-5" />
+                        <Download className="h-5 w-5" />
                       </Button>
-                    )}
+                      {isAdmin && (
+                        <Button
+                          onClick={() => setDeleteDialog({ open: true, track })}
+                          size="lg"
+                          variant="destructive"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      )}
+                    </div>
+                    <audio
+                      controls
+                      className="w-full"
+                      src={getAudioUrl(track)}
+                      onPlay={() => handlePlayCount(track.id)}
+                      controlsList="nodownload"
+                    />
                   </div>
                 </div>
               </Card>
@@ -364,55 +279,6 @@ const MusicLibrary = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Simple native audio player (from scratch) */}
-      <div className={selectedTrack ? "fixed bottom-0 left-0 right-0 border-t rounded-none bg-background" : "hidden"}>
-        <div className="container mx-auto px-4 py-3 max-w-6xl">
-          <Card className="p-3 rounded-lg shadow-md">
-            <div className="flex items-center gap-3">
-              {selectedTrack?.cover_url ? (
-                <img src={selectedTrack.cover_url} alt={selectedTrack.title} className="h-10 w-10 rounded object-cover" />
-              ) : (
-                <div className="h-10 w-10 rounded bg-primary/10 flex items-center justify-center">
-                  <Music className="h-5 w-5 text-primary" />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium truncate">{selectedTrack?.title}</div>
-                <div className="text-xs text-muted-foreground truncate">{selectedTrack?.artist || ""}</div>
-              </div>
-              <audio
-                ref={audioRef}
-                controls
-                className="w-full max-w-md"
-                crossOrigin="anonymous"
-                preload="metadata"
-                onPlay={() => setIsNativePlaying(true)}
-                onPause={() => setIsNativePlaying(false)}
-                onEnded={() => setIsNativePlaying(false)}
-                onError={() => {
-                  setIsNativePlaying(false);
-                  toast({
-                    title: "Playback error",
-                    description: "File URL may be inaccessible. Try Download.",
-                    variant: "destructive",
-                  });
-                }}
-              />
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  if (audioRef.current) audioRef.current.pause();
-                  setIsNativePlaying(false);
-                  setSelectedTrack(null);
-                }}
-              >
-                <Trash2 className="h-5 w-5" />
-              </Button>
-            </div>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 };
