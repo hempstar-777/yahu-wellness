@@ -98,7 +98,6 @@ const MusicLibrary = () => {
       }
 
       audio.preload = "auto";
-      audio.crossOrigin = "anonymous";
       (audio as any).playsInline = true;
 
       const sourceEl = document.createElement('source');
