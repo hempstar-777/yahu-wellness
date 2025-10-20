@@ -80,17 +80,39 @@ const MusicLibrary = () => {
         return;
       }
 
-      // Get fresh public URL from storage
-      const { data: { publicUrl } } = supabase.storage
-        .from('music')
-        .getPublicUrl(track.file_name);
+      // Resolve a playable URL robustly (public first, then signed)
+      const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
+      const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
+      let playableUrl: string;
 
-      console.log("🎵 Using public URL:", publicUrl);
+      // Start with a public URL based on the path
+      const { data: pub } = supabase.storage
+        .from('music')
+        .getPublicUrl(pathInBucket);
+      playableUrl = pub.publicUrl;
+
+      // Verify accessibility; if not accessible, fall back to a signed URL (7 days)
+      try {
+        const head = await fetch(playableUrl, { method: 'HEAD' });
+        if (!head.ok) {
+          const { data: signed } = await supabase.storage
+            .from('music')
+            .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
+          if (signed?.signedUrl) playableUrl = signed.signedUrl;
+        }
+      } catch {
+        const { data: signed } = await supabase.storage
+          .from('music')
+          .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
+        if (signed?.signedUrl) playableUrl = signed.signedUrl;
+      }
+
+      console.log("🎵 Using resolved URL:", playableUrl);
 
       setSelectedTrack(track);
       
-      if (audio.src !== publicUrl) {
-        audio.src = publicUrl;
+      if (audio.src !== playableUrl) {
+        audio.src = playableUrl;
         audio.load();
       }
 
@@ -115,12 +137,32 @@ const MusicLibrary = () => {
 
   const handleDownload = async (track: MusicTrack) => {
     try {
-      // Get fresh public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('music')
-        .getPublicUrl(track.file_name);
+      // Resolve a downloadable URL (public first, signed fallback)
+      const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
+      const pathInBucket = match ? match[1] : `tracks/${track.file_name}`;
+      let downloadUrl: string;
 
-      const response = await fetch(publicUrl);
+      const { data: pub } = supabase.storage
+        .from('music')
+        .getPublicUrl(pathInBucket);
+      downloadUrl = pub.publicUrl;
+
+      try {
+        const head = await fetch(downloadUrl, { method: 'HEAD' });
+        if (!head.ok) {
+          const { data: signed } = await supabase.storage
+            .from('music')
+            .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
+          if (signed?.signedUrl) downloadUrl = signed.signedUrl;
+        }
+      } catch {
+        const { data: signed } = await supabase.storage
+          .from('music')
+          .createSignedUrl(pathInBucket, 60 * 60 * 24 * 7);
+        if (signed?.signedUrl) downloadUrl = signed.signedUrl;
+      }
+
+      const response = await fetch(downloadUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -348,6 +390,14 @@ const MusicLibrary = () => {
                 onPlay={() => setIsNativePlaying(true)}
                 onPause={() => setIsNativePlaying(false)}
                 onEnded={() => setIsNativePlaying(false)}
+                onError={() => {
+                  setIsNativePlaying(false);
+                  toast({
+                    title: "Playback error",
+                    description: "File URL may be inaccessible. Try Download.",
+                    variant: "destructive",
+                  });
+                }}
               />
               <Button
                 variant="ghost"
