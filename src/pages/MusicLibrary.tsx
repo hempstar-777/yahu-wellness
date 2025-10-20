@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,8 @@ const MusicLibrary = () => {
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; track: MusicTrack | null }>({ open: false, track: null });
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
-  const navigate = useNavigate();
+const navigate = useNavigate();
+const errorNotifiedRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     fetchTracks();
@@ -290,8 +291,14 @@ const handleDownload = async (track: MusicTrack) => {
   crossOrigin="anonymous"
   preload="metadata"
   playsInline
+  src={track.resolved_url || getAudioUrl(track)}
   onPlay={() => handlePlayCount(track.id)}
   onError={async (e) => {
+    const last = errorNotifiedRef.current[track.id] || 0;
+    const now = Date.now();
+    if (now - last < 8000) return;
+    errorNotifiedRef.current[track.id] = now;
+
     const audioEl = e.currentTarget as HTMLAudioElement;
     try {
       const path = getPathInBucket(track);
@@ -300,6 +307,7 @@ const handleDownload = async (track: MusicTrack) => {
         const objectUrl = URL.createObjectURL(data);
         audioEl.src = objectUrl;
         await audioEl.play();
+        handlePlayCount(track.id);
         return;
       }
     } catch (err) {
@@ -317,10 +325,6 @@ const handleDownload = async (track: MusicTrack) => {
   }}
   controlsList="nodownload"
 >
-  <source
-    src={track.resolved_url || getAudioUrl(track)}
-    type={track.mime_type || 'audio/mpeg'}
-  />
   Your browser does not support the audio element.
 </audio>
                   </div>
