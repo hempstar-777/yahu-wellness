@@ -82,20 +82,61 @@ const MusicLibrary = () => {
 
     const audioUrl = track.file_url;
 
-    const playFromSrc = async (src: string) => {
-      if (!audioRef.current) return Promise.reject(new Error("no_audio_element"));
-      audioRef.current.preload = "auto";
-      audioRef.current.crossOrigin = "anonymous";
-      audioRef.current.src = src;
-      // iOS inline playback
-      (audioRef.current as any).playsInline = true;
-      await audioRef.current.play();
-      setAudioElement(audioRef.current);
-      setCurrentlyPlaying(track.id);
-      audioRef.current.onended = () => {
-        setCurrentlyPlaying(null);
+    const playFromSrc = (src: string) => new Promise<void>((resolve, reject) => {
+      const audio = audioRef.current;
+      if (!audio) {
+        reject(new Error("no_audio_element"));
+        return;
+      }
+
+      // Clean previous source and stop
+      try { audio.pause(); } catch {}
+      try { audio.currentTime = 0; } catch {}
+      // Remove any previous <source> children to ensure proper MIME negotiation
+      while (audio.firstChild) {
+        audio.removeChild(audio.firstChild);
+      }
+
+      audio.preload = "auto";
+      audio.crossOrigin = "anonymous";
+      (audio as any).playsInline = true;
+
+      const sourceEl = document.createElement('source');
+      sourceEl.src = src;
+      sourceEl.type = 'audio/mpeg';
+      audio.appendChild(sourceEl);
+
+      const cleanup = () => {
+        audio.removeEventListener('canplay', onCanPlay as any);
+        audio.removeEventListener('error', onError as any);
       };
-    };
+      const onCanPlay = async () => {
+        cleanup();
+        try {
+          await audio.play();
+          setAudioElement(audio);
+          setCurrentlyPlaying(track.id);
+          audio.onended = () => setCurrentlyPlaying(null);
+          resolve();
+        } catch (e) {
+          reject(e as any);
+        }
+      };
+      const onError = () => {
+        cleanup();
+        reject(new Error('media_error'));
+      };
+
+      audio.addEventListener('canplay', onCanPlay as any, { once: true });
+      audio.addEventListener('error', onError as any, { once: true });
+      // Force the browser to re-evaluate sources
+      try { audio.load(); } catch {}
+      // Safety timeout in case events don't fire
+      window.setTimeout(() => {
+        cleanup();
+        reject(new Error('timeout_waiting_canplay'));
+      }, 6000);
+    });
 
     try {
       // Try direct URL first
