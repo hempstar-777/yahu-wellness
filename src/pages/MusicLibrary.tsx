@@ -248,10 +248,37 @@ const MusicLibrary = () => {
                     <audio
                       controls
                       className="w-full"
-                      src={getAudioUrl(track)}
+                      crossOrigin="anonymous"
+                      preload="metadata"
+                      playsInline
                       onPlay={() => handlePlayCount(track.id)}
+                      onError={(e) => {
+                        console.error("Audio failed to play", {
+                          error: (e as any).currentTarget?.error,
+                          src: (e as any).currentTarget?.currentSrc,
+                        });
+                        toast({
+                          title: "Playback failed",
+                          description: "We couldn't play this track. Try the Download button.",
+                          variant: "destructive",
+                        });
+                      }}
                       controlsList="nodownload"
-                    />
+                    >
+                      <source
+                        src={getAudioUrl(track)}
+                        type={`${track.file_name.toLowerCase().endsWith('.mp3')
+                          ? 'audio/mpeg'
+                          : track.file_name.toLowerCase().endsWith('.m4a')
+                          ? 'audio/mp4'
+                          : track.file_name.toLowerCase().endsWith('.wav')
+                          ? 'audio/wav'
+                          : track.file_name.toLowerCase().endsWith('.ogg')
+                          ? 'audio/ogg'
+                          : 'audio/mpeg'}`}
+                      />
+                      Your browser does not support the audio element.
+                    </audio>
                   </div>
                 </div>
               </Card>
