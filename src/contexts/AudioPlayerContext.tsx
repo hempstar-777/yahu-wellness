@@ -26,6 +26,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+  const listenersAttachedRef = useRef(false);
 
   const play = async (track: Track) => {
     console.log("🎵 Play called for:", track.title, track.file_url);
@@ -120,8 +121,20 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       await audio.play();
       console.log("🎵 Playback started successfully!");
       setIsPlaying(true);
-    } catch (err) {
-      console.error("🎵 Play error:", err);
+    } catch (err: any) {
+      console.warn("🎵 Play error, attempting muted retry:", err?.name || err);
+      try {
+        audio.muted = true;
+        await audio.play();
+        console.log("🎵 Muted playback started, unmuting shortly...");
+        setIsPlaying(true);
+        setTimeout(() => {
+          audio.muted = false;
+        }, 200);
+        return;
+      } catch (err2) {
+        console.error("🎵 Muted retry failed:", err2);
+      }
       setIsPlaying(false);
       toast({
         title: "Playback blocked",
@@ -150,6 +163,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
 
   return (
     <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, play, pause, toggle, audioElement: audioRef.current }}>
+      <audio ref={audioRef} preload="auto" crossOrigin="anonymous" style={{ display: 'none' }} />
       {children}
     </AudioPlayerContext.Provider>
   );
