@@ -1,8 +1,11 @@
-const CACHE_NAME = 'deliverance-app-v4';
+const CACHE_NAME = 'deliverance-app-v5';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json?v=5',
+  '/favicon.png?v=5',
+  '/icon-192.png?v=5',
+  '/icon-512.png?v=5'
 ];
 
 // Install event - cache essential resources
