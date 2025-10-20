@@ -32,21 +32,30 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     console.log("🎵 Play called for:", track.title, track.file_url);
     
     if (!audioRef.current) {
-      console.log("🎵 Creating new Audio element");
-      audioRef.current = new Audio();
-      audioRef.current.crossOrigin = "anonymous";
-      audioRef.current.preload = "auto";
+      console.warn("🎵 Audio element not ready yet");
+      toast({
+        title: "Player initializing",
+        description: "Please tap Play again.",
+      });
+      return;
+    }
+
+    // Ensure listeners are attached once to the DOM audio element
+    if (!listenersAttachedRef.current) {
+      const a = audioRef.current;
+      a.crossOrigin = "anonymous";
       // Mobile-friendly playback settings
       // @ts-expect-error playsInline is supported in modern browsers
-      audioRef.current.playsInline = true;
-      audioRef.current.muted = false;
-      audioRef.current.volume = 1;
-      audioRef.current.addEventListener("ended", () => setIsPlaying(false));
-      audioRef.current.addEventListener("error", (e) => {
-        console.error("Audio error:", e, audioRef.current?.error, {
-          src: audioRef.current?.src,
-          networkState: audioRef.current?.networkState,
-          readyState: audioRef.current?.readyState,
+      a.playsInline = true;
+      a.preload = "auto";
+      a.muted = false;
+      a.volume = 1;
+      a.addEventListener("ended", () => setIsPlaying(false));
+      a.addEventListener("error", (e) => {
+        console.error("Audio error:", e, a.error, {
+          src: a.src,
+          networkState: a.networkState,
+          readyState: a.readyState,
         });
         setIsPlaying(false);
         toast({
@@ -55,6 +64,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
           variant: "destructive",
         });
       });
+      listenersAttachedRef.current = true;
     }
 
     const audio = audioRef.current!;
@@ -100,9 +110,11 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
           return url;
         }
         
-        // Create an object URL from the blob
-        const objectUrl = URL.createObjectURL(data);
-        console.log("🎵 Created object URL for audio playback");
+        // Ensure correct MIME type for mobile decoders
+        const ext = cleanPath.toLowerCase().endsWith(".mp3") ? "audio/mpeg" : data.type || "application/octet-stream";
+        const typedBlob = data.type === ext ? data : new Blob([data], { type: ext });
+        const objectUrl = URL.createObjectURL(typedBlob);
+        console.log("🎵 Created object URL for audio playback with type:", ext);
         return objectUrl;
       } catch (e) {
         console.error("🎵 Error resolving playable URL:", e);
