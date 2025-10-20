@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { AudioPlayerProvider } from "@/contexts/AudioPlayerContext";
+import { PersistentAudioPlayer } from "@/components/PersistentAudioPlayer";
 import SecurityHeaders from "@/components/SecurityHeaders";
 import YahuahBanner from "@/components/YahuahBanner";
 import AICustodian from "@/components/AICustodian";
@@ -66,9 +68,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
-          <YahuahBanner />
-          <AICustodian />
-          <Routes>
+          <AudioPlayerProvider>
+            <YahuahBanner />
+            <AICustodian />
+            <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/assessments" element={<Assessments />} />
           <Route path="/assessments/surface-issues" element={<SurfaceIssuesAssessment />} />
@@ -118,6 +121,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
+          <PersistentAudioPlayer />
+          </AudioPlayerProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

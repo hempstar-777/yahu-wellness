@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Music, Download, Play, Pause, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAudioPlayer } from "@/contexts/AudioPlayerContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,13 +33,11 @@ interface MusicTrack {
 const MusicLibrary = () => {
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; track: MusicTrack | null }>({ open: false, track: null });
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const { currentTrack, isPlaying, play } = useAudioPlayer();
 
   useEffect(() => {
     fetchTracks();
@@ -66,39 +65,13 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    // If same track is playing, pause it
-    if (currentlyPlaying === track.id) {
-      audio.pause();
-      setCurrentlyPlaying(null);
-      return;
-    }
-
-    // Stop and reset audio
-    audio.pause();
-    audio.currentTime = 0;
-    audio.src = track.file_url;
-
-    try {
-      await audio.play();
-      setCurrentlyPlaying(track.id);
-      
-      void supabase
-        .rpc("increment_play_count", { track_id: track.id })
-        .then(() =>
-          setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
-        );
-    } catch (err) {
-      console.error("Play error:", err);
-      toast({
-        title: "Can't play on this device",
-        description: "Opening the file in a new tab instead.",
-      });
-      window.open(track.file_url, "_blank");
-      setCurrentlyPlaying(null);
-    }
+    await play(track);
+    
+    void supabase
+      .rpc("increment_play_count", { track_id: track.id })
+      .then(() =>
+        setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
+      );
   };
 
   const handleDownload = async (track: MusicTrack) => {
@@ -255,9 +228,9 @@ const MusicLibrary = () => {
                     <Button
                       onClick={() => handlePlay(track)}
                       size="lg"
-                      variant={currentlyPlaying === track.id ? "secondary" : "default"}
+                      variant={currentTrack?.id === track.id && isPlaying ? "secondary" : "default"}
                     >
-                      {currentlyPlaying === track.id ? (
+                      {currentTrack?.id === track.id && isPlaying ? (
                         <Pause className="h-5 w-5" />
                       ) : (
                         <Play className="h-5 w-5" />
@@ -285,14 +258,6 @@ const MusicLibrary = () => {
             ))}
           </div>
         )}
-        <audio 
-          ref={audioRef}
-          preload="metadata"
-          playsInline
-          onEnded={() => setCurrentlyPlaying(null)}
-          onError={() => setCurrentlyPlaying(null)}
-          style={{ display: "none" }}
-        />
       </div>
 
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, track: null })}>
