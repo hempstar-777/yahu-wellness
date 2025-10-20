@@ -26,7 +26,10 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const play = async (track: Track) => {
+    console.log("🎵 Play called for:", track.title, track.file_url);
+    
     if (!audioRef.current) {
+      console.log("🎵 Creating new Audio element");
       audioRef.current = new Audio();
       audioRef.current.crossOrigin = "anonymous";
       audioRef.current.preload = "metadata";
@@ -41,6 +44,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
 
     // Toggle pause if same track is already playing
     if (currentTrack?.id === track.id && !audio.paused) {
+      console.log("🎵 Toggling pause for current track");
       audio.pause();
       setIsPlaying(false);
       return;
@@ -50,16 +54,26 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     const resolvePlayableUrl = async (url: string): Promise<string> => {
       try {
         const match = url.match(/\/storage\/v1\/object\/(public|sign)\/([^/]+)\/(.+)/);
-        if (!match) return url;
+        if (!match) {
+          console.log("🎵 URL doesn't match Supabase pattern, using as-is:", url);
+          return url;
+        }
         const [, visibility, bucket, path] = match;
+        console.log("🎵 Resolving Supabase URL:", { visibility, bucket, path });
+        
         if (visibility === "public") {
           const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+          console.log("🎵 Generated public URL:", data.publicUrl);
           return data.publicUrl;
         } else {
           const { data, error } = await supabase.storage
             .from(bucket)
             .createSignedUrl(path, 60 * 60);
-          if (!error && data?.signedUrl) return data.signedUrl;
+          if (!error && data?.signedUrl) {
+            console.log("🎵 Generated signed URL");
+            return data.signedUrl;
+          }
+          console.error("🎵 Failed to create signed URL:", error);
         }
       } catch (e) {
         console.warn("resolvePlayableUrl: falling back to provided URL", e);
@@ -68,15 +82,18 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     };
 
     const src = await resolvePlayableUrl(track.file_url);
+    console.log("🎵 Setting audio.src to:", src);
     audio.src = src;
     audio.load();
+    console.log("🎵 Audio loaded, attempting to play...");
     setCurrentTrack(track);
     
     try {
       await audio.play();
+      console.log("🎵 Playback started successfully!");
       setIsPlaying(true);
     } catch (err) {
-      console.error("Play error:", err);
+      console.error("🎵 Play error:", err);
       setIsPlaying(false);
     }
   };
