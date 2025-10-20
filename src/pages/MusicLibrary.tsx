@@ -65,55 +65,28 @@ const MusicLibrary = () => {
       try { audioElement.pause(); } catch {}
     }
 
-    console.log("Playing track:", track.title, "URL:", track.file_url);
-
-    const tryDirect = async (): Promise<HTMLAudioElement> => {
-      const a = new Audio();
-      a.preload = "auto";
-      a.crossOrigin = "anonymous";
-      a.src = track.file_url;
-
-      return new Promise((resolve, reject) => {
-        a.oncanplay = async () => {
-          try {
-            await a.play();
-            resolve(a);
-          } catch (e) {
-            reject(e);
-          }
-        };
-        a.onerror = () => reject(new Error("direct_source_failed"));
-      });
-    };
-
-    const tryFetchBlob = async (): Promise<HTMLAudioElement> => {
-      const res = await fetch(track.file_url);
-      if (!res.ok) throw new Error("fetch_failed");
-      const buf = await res.arrayBuffer();
-      const blob = new Blob([buf], { type: "audio/mpeg" });
-      const objectUrl = URL.createObjectURL(blob);
-      const a = new Audio();
-      a.preload = "auto";
-      a.src = objectUrl;
-      a.onended = () => URL.revokeObjectURL(objectUrl);
-      await a.play();
-      return a;
-    };
-
     try {
-      const a = await tryDirect().catch(async (err) => {
-        console.warn("Direct play failed, trying blob fallback:", err);
-        return await tryFetchBlob();
-      });
+      // Get the public URL from Supabase storage
+      const { data: urlData } = supabase.storage
+        .from('music')
+        .getPublicUrl(track.file_url);
 
-      setAudioElement(a);
+      const publicUrl = urlData.publicUrl;
+      console.log("Playing track:", track.title, "URL:", publicUrl);
+
+      const audio = new Audio(publicUrl);
+      audio.crossOrigin = "anonymous";
+      
+      await audio.play();
+      
+      setAudioElement(audio);
       setCurrentlyPlaying(track.id);
 
-      a.onended = () => {
+      audio.onended = () => {
         setCurrentlyPlaying(null);
       };
 
-      // Increment play count after a successful start
+      // Increment play count
       try {
         await supabase.rpc("increment_play_count", { track_id: track.id });
         setTracks((prev) =>
@@ -125,7 +98,7 @@ const MusicLibrary = () => {
         console.error("Error incrementing play count:", e);
       }
     } catch (e) {
-      console.error("Playback error (after fallback):", e);
+      console.error("Playback error:", e);
       toast({
         title: "Playback error",
         description: "This file couldn't be played. Try re-uploading as MP3.",
@@ -137,7 +110,12 @@ const MusicLibrary = () => {
 
   const handleDownload = async (track: MusicTrack) => {
     try {
-      const response = await fetch(track.file_url);
+      // Get the public URL from Supabase storage
+      const { data: urlData } = supabase.storage
+        .from('music')
+        .getPublicUrl(track.file_url);
+
+      const response = await fetch(urlData.publicUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
