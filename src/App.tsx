@@ -63,10 +63,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <SecurityHeaders />
-      <Toaster />
-      <Sonner />
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <SecurityHeaders />
+        <Toaster />
+        <Sonner />
         <AuthProvider>
           <AudioPlayerProvider>
             <YahuahBanner />
