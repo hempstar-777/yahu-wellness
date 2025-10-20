@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AudioPlayerProvider } from "@/contexts/AudioPlayerContext";
-import { PersistentAudioPlayer } from "@/components/PersistentAudioPlayer";
+
 import SecurityHeaders from "@/components/SecurityHeaders";
 import YahuahBanner from "@/components/YahuahBanner";
 import AICustodian from "@/components/AICustodian";
@@ -122,7 +122,6 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
-          <PersistentAudioPlayer />
           </AudioPlayerProvider>
         </AuthProvider>
       </BrowserRouter>
