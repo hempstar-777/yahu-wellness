@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ const MusicLibrary = () => {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     fetchTracks();
@@ -54,53 +55,72 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
+    const el = audioRef.current;
+
     if (currentlyPlaying === track.id) {
-      audioElement?.pause();
+      el?.pause();
       setCurrentlyPlaying(null);
       return;
     }
 
     // Stop any existing audio
-    if (audioElement) {
-      try { audioElement.pause(); } catch {}
+    if (el) {
+      try { el.pause(); } catch {}
+      try { el.src = ""; } catch {}
     }
 
-    try {
-      // Use the file_url directly since it's already a complete public URL
-      const audioUrl = track.file_url;
-      console.log("Playing track:", track.title, "URL:", audioUrl);
+    const audioUrl = track.file_url;
 
-      const audio = new Audio(audioUrl);
-      audio.crossOrigin = "anonymous";
-      
-      await audio.play();
-      
-      setAudioElement(audio);
+    const playFromSrc = async (src: string) => {
+      if (!audioRef.current) return Promise.reject(new Error("no_audio_element"));
+      audioRef.current.preload = "auto";
+      audioRef.current.crossOrigin = "anonymous";
+      audioRef.current.src = src;
+      // iOS inline playback
+      (audioRef.current as any).playsInline = true;
+      await audioRef.current.play();
+      setAudioElement(audioRef.current);
       setCurrentlyPlaying(track.id);
-
-      audio.onended = () => {
+      audioRef.current.onended = () => {
         setCurrentlyPlaying(null);
       };
+    };
 
-      // Increment play count
+    try {
+      // Try direct URL first
+      await playFromSrc(audioUrl);
+
+      void supabase
+        .rpc("increment_play_count", { track_id: track.id })
+        .then(() => setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t)));
+    } catch (err) {
+      console.warn("Direct play failed, attempting blob fallback:", err);
       try {
-        await supabase.rpc("increment_play_count", { track_id: track.id });
-        setTracks((prev) =>
-          prev.map((t) =>
-            t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t
-          )
-        );
+        const res = await fetch(audioUrl, { cache: "no-store" });
+        if (!res.ok) throw new Error(`fetch_failed_${res.status}`);
+        const buffer = await res.arrayBuffer();
+        const blob = new Blob([buffer], { type: "audio/mpeg" });
+        const objUrl = URL.createObjectURL(blob);
+        await playFromSrc(objUrl);
+        // Revoke when ended
+        if (audioRef.current) {
+          audioRef.current.onended = () => {
+            URL.revokeObjectURL(objUrl);
+            setCurrentlyPlaying(null);
+          };
+        }
+        void supabase
+          .rpc("increment_play_count", { track_id: track.id })
+          .then(() => setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t)));
       } catch (e) {
-        console.error("Error incrementing play count:", e);
+        console.error("Playback error (after blob fallback):", e);
+        toast({
+          title: "Playback error",
+          description: "We couldn't start this audio on your device. We'll investigate.",
+          variant: "destructive",
+        });
+        setCurrentlyPlaying(null);
       }
-    } catch (e) {
-      console.error("Playback error:", e);
-      toast({
-        title: "Playback error",
-        description: "This file couldn't be played. Try re-uploading as MP3.",
-        variant: "destructive",
-      });
-      setCurrentlyPlaying(null);
     }
   };
 
@@ -252,6 +272,7 @@ const MusicLibrary = () => {
             ))}
           </div>
         )}
+        <audio ref={audioRef} className="hidden" preload="none" playsInline />
       </div>
     </div>
   );
