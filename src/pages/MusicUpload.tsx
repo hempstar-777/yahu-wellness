@@ -75,11 +75,11 @@ const MusicUpload = () => {
         return;
       }
       
-      // Validate file size (5MB max for images)
-      if (selectedFile.size > 5242880) {
+      // Validate file size (10MB max for images)
+      if (selectedFile.size > 10485760) {
         toast({
           title: "File too large",
-          description: "Maximum image size is 5MB",
+          description: "Maximum image size is 10MB",
           variant: "destructive",
         });
         return;
@@ -258,7 +258,7 @@ const MusicUpload = () => {
                         Click to upload cover image
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        JPG, PNG, WEBP (max 5MB)
+                        JPG, PNG, WEBP (max 10MB)
                       </p>
                     </div>
                   )}

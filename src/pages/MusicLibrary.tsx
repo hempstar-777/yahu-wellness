@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Music, Download, Play, Pause, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useAudioPlayer } from "@/contexts/AudioPlayerContext";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,7 +37,9 @@ const MusicLibrary = () => {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { currentTrack, isPlaying, play } = useAudioPlayer();
+  const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
+  const [isNativePlaying, setIsNativePlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     fetchTracks();
@@ -65,14 +67,41 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
-    console.log("🎵 UI: Play button clicked for", track.title, track.file_url);
-    await play(track);
-  
-    void supabase
-      .rpc("increment_play_count", { track_id: track.id })
-      .then(() =>
-        setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
-      );
+    console.log("🎵 Native UI: Play clicked for", track.title, track.file_url);
+    try {
+      setSelectedTrack(track);
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      // If same track and currently playing, toggle pause
+      if (selectedTrack?.id === track.id && !audio.paused) {
+        audio.pause();
+        setIsNativePlaying(false);
+        return;
+      }
+
+      if (audio.src !== track.file_url) {
+        audio.src = track.file_url;
+        audio.load();
+      }
+
+      await audio.play();
+      setIsNativePlaying(true);
+
+      // Increment play count (fire-and-forget)
+      void supabase
+        .rpc("increment_play_count", { track_id: track.id })
+        .then(() =>
+          setTracks(prev => prev.map(t => t.id === track.id ? { ...t, play_count: t.play_count + 1 } : t))
+        );
+    } catch (e) {
+      console.error("🎵 Native play failed:", e);
+      toast({
+        title: "Playback error",
+        description: "Try tapping Play again or use Download.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownload = async (track: MusicTrack) => {
@@ -229,9 +258,9 @@ const MusicLibrary = () => {
                     <Button
                       onClick={() => handlePlay(track)}
                       size="lg"
-                      variant={currentTrack?.id === track.id && isPlaying ? "secondary" : "default"}
+                      variant={selectedTrack?.id === track.id && isNativePlaying ? "secondary" : "default"}
                     >
-                      {currentTrack?.id === track.id && isPlaying ? (
+                      {selectedTrack?.id === track.id && isNativePlaying ? (
                         <Pause className="h-5 w-5" />
                       ) : (
                         <Play className="h-5 w-5" />
@@ -280,6 +309,47 @@ const MusicLibrary = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Simple native audio player (from scratch) */}
+      <div className={selectedTrack ? "fixed bottom-0 left-0 right-0 border-t rounded-none bg-background" : "hidden"}>
+        <div className="container mx-auto px-4 py-3 max-w-6xl">
+          <Card className="p-3 rounded-lg shadow-md">
+            <div className="flex items-center gap-3">
+              {selectedTrack?.cover_url ? (
+                <img src={selectedTrack.cover_url} alt={selectedTrack.title} className="h-10 w-10 rounded object-cover" />
+              ) : (
+                <div className="h-10 w-10 rounded bg-primary/10 flex items-center justify-center">
+                  <Music className="h-5 w-5 text-primary" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium truncate">{selectedTrack?.title}</div>
+                <div className="text-xs text-muted-foreground truncate">{selectedTrack?.artist || ""}</div>
+              </div>
+              <audio
+                ref={audioRef}
+                controls
+                className="w-full max-w-md"
+                crossOrigin="anonymous"
+                preload="metadata"
+                onPlay={() => setIsNativePlaying(true)}
+                onPause={() => setIsNativePlaying(false)}
+                onEnded={() => setIsNativePlaying(false)}
+              />
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  if (audioRef.current) audioRef.current.pause();
+                  setIsNativePlaying(false);
+                  setSelectedTrack(null);
+                }}
+              >
+                <Trash2 className="h-5 w-5" />
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
