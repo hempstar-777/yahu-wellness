@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Track {
   id: string;
@@ -24,6 +25,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { toast } = useToast();
 
   const play = async (track: Track) => {
     console.log("🎵 Play called for:", track.title, track.file_url);
@@ -46,6 +48,11 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
           readyState: audioRef.current?.readyState,
         });
         setIsPlaying(false);
+        toast({
+          title: "Playback error",
+          description: "We couldn't play this track. Try downloading instead.",
+          variant: "destructive",
+        });
       });
     }
 
@@ -59,23 +66,17 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Fast path for public storage URLs: set src and play immediately (preserves user gesture on mobile)
+    // Attempt to play the provided URL directly first (keeps user gesture intact)
     try {
-      const publicMatch = track.file_url.match(/\/storage\/v1\/object\/(public)\/([^/]+)\/(.+)/);
-      if (publicMatch) {
-        const [, , bucket, path] = publicMatch;
-        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-        const fastSrc = data.publicUrl;
-        console.log("🎵 Fast public URL play:", { bucket, path, fastSrc });
-        audio.src = fastSrc;
-        audio.load();
-        setCurrentTrack(track);
-        await audio.play();
-        setIsPlaying(true);
-        return;
-      }
+      console.log("🎵 Attempting direct URL playback:", track.file_url);
+      audio.src = track.file_url;
+      audio.load();
+      setCurrentTrack(track);
+      await audio.play();
+      setIsPlaying(true);
+      return;
     } catch (e) {
-      console.warn("🎵 Fast path failed, falling back to blob download", e);
+      console.warn("🎵 Direct URL play failed, will try blob download fallback", e);
     }
 
     // Download the audio file as a blob to bypass CORS issues
@@ -87,10 +88,11 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
           return url;
         }
         const [, , bucket, path] = match;
-        console.log("🎵 Downloading audio file from:", { bucket, path });
+        const cleanPath = path.split("?")[0];
+        console.log("🎵 Downloading audio file from:", { bucket, path: cleanPath });
         
         // Download the file as a blob
-        const { data, error } = await supabase.storage.from(bucket).download(path);
+        const { data, error } = await supabase.storage.from(bucket).download(cleanPath);
         
         if (error || !data) {
           console.error("🎵 Failed to download audio file:", error);
@@ -121,6 +123,11 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error("🎵 Play error:", err);
       setIsPlaying(false);
+      toast({
+        title: "Playback blocked",
+        description: "Tap Play again or try another track. You can also use Download.",
+        variant: "destructive",
+      });
     }
   };
 

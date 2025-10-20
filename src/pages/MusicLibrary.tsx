@@ -65,8 +65,9 @@ const MusicLibrary = () => {
   };
 
   const handlePlay = async (track: MusicTrack) => {
+    console.log("🎵 UI: Play button clicked for", track.title, track.file_url);
     await play(track);
-    
+  
     void supabase
       .rpc("increment_play_count", { track_id: track.id })
       .then(() =>

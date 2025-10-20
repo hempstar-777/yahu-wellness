@@ -49,33 +49,33 @@ export function PersistentAudioPlayer() {
             {currentTrack.cover_url ? (
               <img
                 src={currentTrack.cover_url}
-                alt={currentTrack.title}
+                alt={`${currentTrack.title} cover art`}
                 className="h-12 w-12 rounded object-cover"
               />
             ) : (
-              <div className="h-12 w-12 rounded bg-primary/10 flex items-center justify-center">
+              <div className="h-12 w-12 rounded bg-primary/10 flex items-center justify-center" aria-hidden>
                 <Music className="h-6 w-6 text-primary" />
               </div>
             )}
           </div>
           
           <div className="flex-grow min-w-0">
-            <h4 className="font-semibold truncate">{currentTrack.title}</h4>
+            <h4 className="font-semibold truncate" title={currentTrack.title}>{currentTrack.title}</h4>
             {currentTrack.artist && (
-              <p className="text-sm text-muted-foreground truncate">
+              <p className="text-sm text-muted-foreground truncate" title={currentTrack.artist || undefined}>
                 {currentTrack.artist}
               </p>
             )}
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground" aria-live="polite">
               {currentTime} / {duration}
             </p>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Button onClick={toggle} size="lg" variant={isPlaying ? "secondary" : "default"}>
+            <Button onClick={toggle} size="lg" variant={isPlaying ? "secondary" : "default"} aria-label={isPlaying ? "Pause" : "Play"}>
               {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </Button>
-            <Button onClick={pause} size="lg" variant="ghost">
+            <Button onClick={pause} size="lg" variant="ghost" aria-label="Stop">
               <X className="h-5 w-5" />
             </Button>
           </div>
