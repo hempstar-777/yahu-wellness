@@ -47,6 +47,56 @@ const errorNotifiedRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     fetchTracks();
+
+    const channel = supabase
+      .channel('music_tracks_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'music_tracks' },
+        (payload) => {
+          try {
+            if (payload.eventType === 'INSERT') {
+              const t: any = payload.new;
+              const name = (t.file_name || '').toLowerCase();
+              const mime = name.endsWith('.mp3')
+                ? 'audio/mpeg'
+                : name.endsWith('.m4a')
+                ? 'audio/mp4'
+                : name.endsWith('.wav')
+                ? 'audio/wav'
+                : name.endsWith('.ogg')
+                ? 'audio/ogg'
+                : 'audio/mpeg';
+              const url = t.file_url as string;
+              setTracks(prev => [{ ...(t as MusicTrack), resolved_url: url, mime_type: mime }, ...prev]);
+            } else if (payload.eventType === 'UPDATE') {
+              const t: any = payload.new;
+              const name = (t.file_name || '').toLowerCase();
+              const mime = name.endsWith('.mp3')
+                ? 'audio/mpeg'
+                : name.endsWith('.m4a')
+                ? 'audio/mp4'
+                : name.endsWith('.wav')
+                ? 'audio/wav'
+                : name.endsWith('.ogg')
+                ? 'audio/ogg'
+                : 'audio/mpeg';
+              const url = t.file_url as string;
+              setTracks(prev => prev.map(x => x.id === t.id ? { ...(t as MusicTrack), resolved_url: url, mime_type: mime } : x));
+            } else if (payload.eventType === 'DELETE') {
+              const t: any = payload.old;
+              setTracks(prev => prev.filter(x => x.id !== t.id));
+            }
+          } catch (err) {
+            console.error('Realtime update error', err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try { supabase.removeChannel(channel); } catch {}
+    };
   }, []);
 
 const fetchTracks = async () => {
@@ -232,7 +282,7 @@ const handleDownload = async (track: MusicTrack) => {
           <div className="grid gap-4">
             {tracks.map((track) => (
               <Card key={track.id} className="p-6">
-                <div className="flex items-start gap-4">
+                <div className="flex flex-col md:flex-row items-start gap-4">
                   <div className="flex-shrink-0">
                     {track.cover_url ? (
                       <img
@@ -267,7 +317,7 @@ const handleDownload = async (track: MusicTrack) => {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3 flex-shrink-0">
+                  <div className="flex flex-col gap-3 md:flex-shrink-0 md:w-80 w-full">
                     <div className="flex items-center gap-2">
                       <Button
                         onClick={() => handleDownload(track)}
@@ -309,12 +359,23 @@ const handleDownload = async (track: MusicTrack) => {
 
     const audioEl = e.currentTarget as HTMLAudioElement;
     try {
+      const desiredType = track.mime_type || 'audio/mpeg';
+      const toTypedBlobUrl = async (blob: Blob) => {
+        if (blob.type && blob.type !== 'application/octet-stream') {
+          return URL.createObjectURL(blob);
+        }
+        const ab = await blob.arrayBuffer();
+        const typed = new Blob([ab], { type: desiredType });
+        return URL.createObjectURL(typed);
+      };
+
       const { bucket, path } = parseStorageUrl(track.file_url);
       if (bucket && path) {
         const { data } = await supabase.storage.from(bucket).download(path);
         if (data) {
-          const objectUrl = URL.createObjectURL(data);
+          const objectUrl = await toTypedBlobUrl(data);
           audioEl.src = objectUrl;
+          audioEl.load();
           await audioEl.play();
           handlePlayCount(track.id);
           return;
@@ -323,8 +384,9 @@ const handleDownload = async (track: MusicTrack) => {
       // Final fallback: fetch as-is
       const resp = await fetch(getAudioUrl(track));
       const blob = await resp.blob();
-      const objectUrl = URL.createObjectURL(blob);
+      const objectUrl = await toTypedBlobUrl(blob);
       audioEl.src = objectUrl;
+      audioEl.load();
       await audioEl.play();
       handlePlayCount(track.id);
       return;
