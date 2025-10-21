@@ -4,8 +4,10 @@ import { ChevronLeft, MessageSquare, RotateCcw, Ban, Link2, Zap, Shield } from "
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 const Deliverance = () => {
+  const { t } = useTranslation();
   const steps = [
     {
       number: 1,

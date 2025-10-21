@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { VIPStatus } from '@/components/VIPStatus';
 import { UserBadge } from '@/components/UserBadge';
 import { XPDisplay } from '@/components/XPDisplay';
@@ -56,6 +57,7 @@ interface Testimony {
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [assessments, setAssessments] = useState<AssessmentResult[]>([]);
   const [courseProgress, setCourseProgress] = useState<CourseProgress[]>([]);
   const [prayers, setPrayers] = useState<PrayerEntry[]>([]);

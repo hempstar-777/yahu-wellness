@@ -4,6 +4,7 @@ import { ChevronLeft, BookOpen, Copy, Heart, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const Prayers = () => {
   const corePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach because your word says if we confess our sins, you are faithful and just to forgive us our sins and to cleanse us from all unrighteousness.

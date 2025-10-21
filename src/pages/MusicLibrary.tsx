@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Music, Download, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 import {
   AlertDialog,
@@ -42,6 +43,7 @@ const MusicLibrary = () => {
   const { user, isAdmin } = useAuth();
 const navigate = useNavigate();
 const errorNotifiedRef = useRef<Record<string, number>>({});
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchTracks();
@@ -89,8 +91,8 @@ const fetchTracks = async () => {
   } catch (error) {
     console.error("Error fetching tracks:", error);
     toast({
-      title: "Error loading music",
-      description: "Failed to load music tracks",
+      title: t('musicLibrary.errorLoading'),
+      description: t('musicLibrary.errorLoadingDesc'),
       variant: "destructive",
     });
   } finally {
@@ -137,14 +139,14 @@ const handleDownload = async (track: MusicTrack) => {
     );
 
     toast({
-      title: "Download started",
-      description: `Downloading ${track.title}`,
+      title: t('musicLibrary.downloadStarted'),
+      description: t('musicLibrary.downloading', { title: track.title }),
     });
   } catch (error) {
     console.error("Error downloading track:", error);
     toast({
-      title: "Download failed",
-      description: "Failed to download the track",
+      title: t('musicLibrary.downloadFailed'),
+      description: t('musicLibrary.downloadFailedDesc'),
       variant: "destructive",
     });
   }
@@ -162,16 +164,16 @@ const handleDownload = async (track: MusicTrack) => {
       setTracks(prev => prev.filter(t => t.id !== track.id));
       
       toast({
-        title: "Track deleted",
-        description: `${track.title} has been removed`,
+        title: t('musicLibrary.trackDeleted'),
+        description: t('musicLibrary.trackDeletedDesc', { title: track.title }),
       });
       
       setDeleteDialog({ open: false, track: null });
     } catch (error) {
       console.error("Error deleting track:", error);
       toast({
-        title: "Delete failed",
-        description: "Failed to delete the track",
+        title: t('musicLibrary.deleteFailed'),
+        description: t('musicLibrary.deleteFailedDesc'),
         variant: "destructive",
       });
     }
@@ -182,7 +184,7 @@ const handleDownload = async (track: MusicTrack) => {
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
         <div className="text-center">
           <Music className="h-12 w-12 animate-pulse mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading music library...</p>
+          <p className="text-muted-foreground">{t('musicLibrary.loading')}</p>
         </div>
       </div>
     );
@@ -198,7 +200,7 @@ const handleDownload = async (track: MusicTrack) => {
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            {t('musicLibrary.back')}
           </Button>
           {isAdmin && (
             <Button
@@ -206,25 +208,25 @@ const handleDownload = async (track: MusicTrack) => {
               className="gap-2"
             >
               <Upload className="h-4 w-4" />
-              Upload Music
+              {t('musicLibrary.uploadMusic')}
             </Button>
           )}
         </div>
 
         <div className="text-center mb-12">
           <Music className="h-16 w-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Music Library</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('musicLibrary.title')}</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Worship and spiritual music to uplift your soul
+            {t('musicLibrary.worship')}
           </p>
         </div>
 
         {tracks.length === 0 ? (
           <Card className="p-12 text-center">
             <Music className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-xl font-semibold mb-2">No music yet</h3>
+            <h3 className="text-xl font-semibold mb-2">{t('musicLibrary.noMusic')}</h3>
             <p className="text-muted-foreground">
-              {isAdmin ? "Upload your first track to get started" : "Check back soon for new music"}
+              {isAdmin ? t('musicLibrary.noMusicAdmin') : t('musicLibrary.noMusicUser')}
             </p>
           </Card>
         ) : (
@@ -261,8 +263,8 @@ const handleDownload = async (track: MusicTrack) => {
                       </p>
                     )}
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{track.play_count} plays</span>
-                      <span>{track.download_count} downloads</span>
+                      <span>{track.play_count} {t('musicLibrary.plays')}</span>
+                      <span>{track.download_count} {t('musicLibrary.downloads')}</span>
                     </div>
                   </div>
 
@@ -318,8 +320,8 @@ const handleDownload = async (track: MusicTrack) => {
       });
     }
     toast({
-      title: "Playback failed",
-      description: "We couldn't play this track. Try the Download button.",
+      title: t('musicLibrary.playbackFailed'),
+      description: t('musicLibrary.playbackFailedDesc'),
       variant: "destructive",
     });
   }}
@@ -338,18 +340,18 @@ const handleDownload = async (track: MusicTrack) => {
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, track: null })}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this track?</AlertDialogTitle>
+            <AlertDialogTitle>{t('musicLibrary.deleteTrack')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deleteDialog.track?.title}"? This action cannot be undone.
+              {t('musicLibrary.deleteConfirm', { title: deleteDialog.track?.title || '' })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('musicLibrary.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteDialog.track && handleDelete(deleteDialog.track)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t('musicLibrary.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

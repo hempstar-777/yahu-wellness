@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Music, ArrowLeft, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const MusicUpload = () => {
   const [uploading, setUploading] = useState(false);
@@ -21,6 +22,7 @@ const MusicUpload = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
+  const { t } = useTranslation();
 
   if (!isAdmin) {
     navigate("/");
@@ -34,8 +36,8 @@ const MusicUpload = () => {
       const validTypes = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/ogg", "audio/m4a"];
       if (!validTypes.includes(selectedFile.type)) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload an audio file (MP3, WAV, OGG, or M4A)",
+          title: t('musicUpload.invalidFileType'),
+          description: t('musicUpload.invalidAudioType'),
           variant: "destructive",
         });
         return;
@@ -44,8 +46,8 @@ const MusicUpload = () => {
       // Validate file size (100MB max)
       if (selectedFile.size > 104857600) {
         toast({
-          title: "File too large",
-          description: "Maximum file size is 100MB",
+          title: t('musicUpload.fileTooLarge'),
+          description: t('musicUpload.audioTooLarge'),
           variant: "destructive",
         });
         return;
@@ -68,8 +70,8 @@ const MusicUpload = () => {
       const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
       if (!validTypes.includes(selectedFile.type)) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload an image file (JPG, PNG, or WEBP)",
+          title: t('musicUpload.invalidFileType'),
+          description: t('musicUpload.invalidImageType'),
           variant: "destructive",
         });
         return;
@@ -78,8 +80,8 @@ const MusicUpload = () => {
       // Validate file size (10MB max for images)
       if (selectedFile.size > 10485760) {
         toast({
-          title: "File too large",
-          description: "Maximum image size is 10MB",
+          title: t('musicUpload.fileTooLarge'),
+          description: t('musicUpload.imageTooLarge'),
           variant: "destructive",
         });
         return;
@@ -101,8 +103,8 @@ const MusicUpload = () => {
     
     if (!file) {
       toast({
-        title: "No file selected",
-        description: "Please select an audio file to upload",
+        title: t('musicUpload.noFileSelected'),
+        description: t('musicUpload.noFileSelectedDesc'),
         variant: "destructive",
       });
       return;
@@ -110,8 +112,8 @@ const MusicUpload = () => {
 
     if (!title.trim()) {
       toast({
-        title: "Title required",
-        description: "Please enter a title for the track",
+        title: t('musicUpload.titleRequired'),
+        description: t('musicUpload.titleRequiredDesc'),
         variant: "destructive",
       });
       return;
@@ -190,8 +192,8 @@ const MusicUpload = () => {
       console.log("Successfully inserted track:", insertedData);
 
       toast({
-        title: "Upload successful",
-        description: "Your music track has been uploaded",
+        title: t('musicUpload.uploadSuccess'),
+        description: t('musicUpload.uploadSuccessDesc'),
       });
 
       // Reset form
@@ -207,8 +209,8 @@ const MusicUpload = () => {
     } catch (error) {
       console.error("Error uploading track:", error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload music track",
+        title: t('musicUpload.uploadFailed'),
+        description: t('musicUpload.uploadFailedDesc'),
         variant: "destructive",
       });
     } finally {
@@ -225,21 +227,21 @@ const MusicUpload = () => {
           className="mb-8 gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Library
+          {t('musicUpload.backToLibrary')}
         </Button>
 
         <div className="text-center mb-8">
           <Upload className="h-16 w-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Upload Music</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('musicUpload.title')}</h1>
           <p className="text-muted-foreground">
-            Share your spiritual music with the community
+            {t('musicUpload.subtitle')}
           </p>
         </div>
 
         <Card className="p-8">
           <form onSubmit={handleUpload} className="space-y-6">
             <div>
-              <Label htmlFor="cover">Cover Image (Optional)</Label>
+              <Label htmlFor="cover">{t('musicUpload.coverImage')}</Label>
               <div className="mt-2">
                 <label
                   htmlFor="cover"
@@ -255,10 +257,10 @@ const MusicUpload = () => {
                     <div className="text-center">
                       <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        Click to upload cover image
+                        {t('musicUpload.clickToUpload')}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        JPG, PNG, WEBP (max 10MB)
+                        {t('musicUpload.imageFormats')}
                       </p>
                     </div>
                   )}
@@ -275,7 +277,7 @@ const MusicUpload = () => {
             </div>
 
             <div>
-              <Label htmlFor="file">Audio File *</Label>
+              <Label htmlFor="file">{t('musicUpload.audioFile')}</Label>
               <div className="mt-2">
                 <label
                   htmlFor="file"
@@ -294,10 +296,10 @@ const MusicUpload = () => {
                       <>
                         <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                         <p className="text-sm text-muted-foreground">
-                          Click to upload audio file
+                          {t('musicUpload.clickToUploadAudio')}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          MP3, WAV, OGG, M4A (max 100MB)
+                          {t('musicUpload.audioFormats')}
                         </p>
                       </>
                     )}
@@ -315,35 +317,35 @@ const MusicUpload = () => {
             </div>
 
             <div>
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">{t('musicUpload.title')}</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter track title"
+                placeholder={t('musicUpload.titlePlaceholder')}
                 disabled={uploading}
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="artist">Artist</Label>
+              <Label htmlFor="artist">{t('musicUpload.artist')}</Label>
               <Input
                 id="artist"
                 value={artist}
                 onChange={(e) => setArtist(e.target.value)}
-                placeholder="Enter artist name"
+                placeholder={t('musicUpload.artistPlaceholder')}
                 disabled={uploading}
               />
             </div>
 
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('musicUpload.description')}</Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter track description"
+                placeholder={t('musicUpload.descriptionPlaceholder')}
                 disabled={uploading}
                 rows={4}
               />
@@ -357,12 +359,12 @@ const MusicUpload = () => {
               {uploading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
+                  {t('musicUpload.uploading')}
                 </>
               ) : (
                 <>
                   <Upload className="mr-2 h-4 w-4" />
-                  Upload Track
+                  {t('musicUpload.uploadTrack')}
                 </>
               )}
             </Button>
