@@ -8,6 +8,7 @@ import { Music, Download, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import TrackPlayer from "@/components/TrackPlayer";
+import campYahuahLogo from "@/assets/camp-yahuah-logo.png";
 
 import {
   AlertDialog,
@@ -264,8 +265,12 @@ const handleDownload = async (track: MusicTrack) => {
         </div>
 
         <div className="text-center mb-12">
-          <Music className="h-16 w-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">{t('musicLibrary.title')}</h1>
+          <h1 className="text-4xl font-bold mb-6">{t('musicLibrary.title')}</h1>
+          <img 
+            src={campYahuahLogo} 
+            alt="Camp Yahuah" 
+            className="h-32 w-32 mx-auto mb-4 object-contain"
+          />
           <p className="text-muted-foreground max-w-2xl mx-auto">
             {t('musicLibrary.worship')}
           </p>

@@ -13,12 +13,8 @@ import { useTranslation } from "react-i18next";
 
 const MusicUpload = () => {
   const [uploading, setUploading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [artist, setArtist] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -30,78 +26,45 @@ const MusicUpload = () => {
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      // Validate file type
+    const selectedFiles = e.target.files;
+    if (selectedFiles && selectedFiles.length > 0) {
       const validTypes = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/ogg", "audio/m4a"];
-      if (!validTypes.includes(selectedFile.type)) {
-        toast({
-          title: t('musicUpload.invalidFileType'),
-          description: t('musicUpload.invalidAudioType'),
-          variant: "destructive",
-        });
-        return;
+      const validFiles: File[] = [];
+      
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        
+        // Validate file type
+        if (!validTypes.includes(file.type)) {
+          toast({
+            title: t('musicUpload.invalidFileType'),
+            description: `${file.name}: ${t('musicUpload.invalidAudioType')}`,
+            variant: "destructive",
+          });
+          continue;
+        }
+        
+        // Validate file size (100MB max)
+        if (file.size > 104857600) {
+          toast({
+            title: t('musicUpload.fileTooLarge'),
+            description: `${file.name}: ${t('musicUpload.audioTooLarge')}`,
+            variant: "destructive",
+          });
+          continue;
+        }
+        
+        validFiles.push(file);
       }
       
-      // Validate file size (100MB max)
-      if (selectedFile.size > 104857600) {
-        toast({
-          title: t('musicUpload.fileTooLarge'),
-          description: t('musicUpload.audioTooLarge'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setFile(selectedFile);
-      
-      // Auto-fill title from filename if empty
-      if (!title) {
-        const fileName = selectedFile.name.replace(/\.[^/.]+$/, "");
-        setTitle(fileName);
-      }
-    }
-  };
-
-  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      // Validate file type
-      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-      if (!validTypes.includes(selectedFile.type)) {
-        toast({
-          title: t('musicUpload.invalidFileType'),
-          description: t('musicUpload.invalidImageType'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Validate file size (10MB max for images)
-      if (selectedFile.size > 10485760) {
-        toast({
-          title: t('musicUpload.fileTooLarge'),
-          description: t('musicUpload.imageTooLarge'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setCoverImage(selectedFile);
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverPreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
+      setFiles(validFiles);
     }
   };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!file) {
+    if (files.length === 0) {
       toast({
         title: t('musicUpload.noFileSelected'),
         description: t('musicUpload.noFileSelectedDesc'),
@@ -110,104 +73,85 @@ const MusicUpload = () => {
       return;
     }
 
-    if (!title.trim()) {
-      toast({
-        title: t('musicUpload.titleRequired'),
-        description: t('musicUpload.titleRequiredDesc'),
-        variant: "destructive",
-      });
-      return;
-    }
-
     setUploading(true);
+    let successCount = 0;
+    let failCount = 0;
 
     try {
-      // Upload audio file to storage
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `tracks/${fileName}`;
+      const userId = (await supabase.auth.getUser()).data.user?.id;
 
-      console.log("Uploading audio file:", filePath);
-      const { error: uploadError } = await supabase.storage
-        .from("music")
-        .upload(filePath, file);
+      for (const file of files) {
+        try {
+          // Upload audio file to storage
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const filePath = `tracks/${fileName}`;
 
-      if (uploadError) {
-        console.error("Audio upload error:", uploadError);
-        throw uploadError;
-      }
+          const { error: uploadError } = await supabase.storage
+            .from("music")
+            .upload(filePath, file);
 
-      // Get public URL for audio
-      const { data: { publicUrl } } = supabase.storage
-        .from("music")
-        .getPublicUrl(filePath);
-      
-      console.log("Audio public URL:", publicUrl);
+          if (uploadError) {
+            console.error("Audio upload error:", uploadError);
+            failCount++;
+            continue;
+          }
 
-      // Upload cover image if provided
-      let coverUrl = null;
-      if (coverImage) {
-        const coverExt = coverImage.name.split(".").pop();
-        const coverFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${coverExt}`;
-        const coverPath = `covers/${coverFileName}`;
+          // Get public URL for audio
+          const { data: { publicUrl } } = supabase.storage
+            .from("music")
+            .getPublicUrl(filePath);
 
-        console.log("Uploading cover image:", coverPath);
-        const { error: coverUploadError } = await supabase.storage
-          .from("music-covers")
-          .upload(coverPath, coverImage);
+          // Create database record with auto-generated title
+          const trackTitle = file.name.replace(/\.[^/.]+$/, "");
+          const { error: dbError } = await supabase
+            .from("music_tracks")
+            .insert({
+              title: trackTitle,
+              artist: "Camp Yahuah",
+              description: description.trim() || null,
+              file_url: publicUrl,
+              file_name: fileName,
+              file_size: file.size,
+              cover_url: null,
+              uploaded_by: userId,
+            });
 
-        if (coverUploadError) {
-          console.error("Cover upload error:", coverUploadError);
-          // Don't throw, just log and continue without cover
-        } else {
-          const { data: { publicUrl: coverPublicUrl } } = supabase.storage
-            .from("music-covers")
-            .getPublicUrl(coverPath);
-          coverUrl = coverPublicUrl;
-          console.log("Cover public URL:", coverUrl);
+          if (dbError) {
+            console.error("Database insert error:", dbError);
+            failCount++;
+          } else {
+            successCount++;
+          }
+        } catch (err) {
+          console.error("Error uploading file:", file.name, err);
+          failCount++;
         }
       }
 
-      // Create database record
-      console.log("Creating database record...");
-      const { error: dbError, data: insertedData } = await supabase
-        .from("music_tracks")
-        .insert({
-          title: title.trim(),
-          artist: artist.trim() || null,
-          description: description.trim() || null,
-          file_url: publicUrl,
-          file_name: fileName,
-          file_size: file.size,
-          cover_url: coverUrl,
-          uploaded_by: (await supabase.auth.getUser()).data.user?.id,
-        })
-        .select();
-
-      if (dbError) {
-        console.error("Database insert error:", dbError);
-        throw dbError;
+      if (successCount > 0) {
+        toast({
+          title: t('musicUpload.uploadSuccess'),
+          description: `${successCount} track(s) uploaded successfully${failCount > 0 ? `, ${failCount} failed` : ''}`,
+        });
       }
 
-      console.log("Successfully inserted track:", insertedData);
-
-      toast({
-        title: t('musicUpload.uploadSuccess'),
-        description: t('musicUpload.uploadSuccessDesc'),
-      });
+      if (failCount > 0 && successCount === 0) {
+        toast({
+          title: t('musicUpload.uploadFailed'),
+          description: t('musicUpload.uploadFailedDesc'),
+          variant: "destructive",
+        });
+      }
 
       // Reset form
-      setTitle("");
-      setArtist("");
       setDescription("");
-      setFile(null);
-      setCoverImage(null);
-      setCoverPreview(null);
+      setFiles([]);
       
       // Navigate to music library
       navigate("/music-library");
     } catch (error) {
-      console.error("Error uploading track:", error);
+      console.error("Error uploading tracks:", error);
       toast({
         title: t('musicUpload.uploadFailed'),
         description: t('musicUpload.uploadFailedDesc'),
@@ -241,42 +185,6 @@ const MusicUpload = () => {
         <Card className="p-8">
           <form onSubmit={handleUpload} className="space-y-6">
             <div>
-              <Label htmlFor="cover">{t('musicUpload.coverImage')}</Label>
-              <div className="mt-2">
-                <label
-                  htmlFor="cover"
-                  className="flex items-center justify-center w-full h-48 px-4 transition border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 border-muted-foreground/25"
-                >
-                  {coverPreview ? (
-                    <img
-                      src={coverPreview}
-                      alt="Cover preview"
-                      className="h-full w-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="text-center">
-                      <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground">
-                        {t('musicUpload.clickToUpload')}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {t('musicUpload.imageFormats')}
-                      </p>
-                    </div>
-                  )}
-                  <input
-                    id="cover"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleCoverChange}
-                    disabled={uploading}
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div>
               <Label htmlFor="file">{t('musicUpload.audioFile')}</Label>
               <div className="mt-2">
                 <label
@@ -284,19 +192,19 @@ const MusicUpload = () => {
                   className="flex items-center justify-center w-full h-32 px-4 transition border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 border-muted-foreground/25"
                 >
                   <div className="text-center">
-                    {file ? (
+                    {files.length > 0 ? (
                       <>
                         <Music className="mx-auto h-8 w-8 text-primary mb-2" />
-                        <p className="text-sm font-medium">{file.name}</p>
+                        <p className="text-sm font-medium">{files.length} file(s) selected</p>
                         <p className="text-xs text-muted-foreground">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                          {(files.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)} MB total
                         </p>
                       </>
                     ) : (
                       <>
                         <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                         <p className="text-sm text-muted-foreground">
-                          {t('musicUpload.clickToUploadAudio')}
+                          Click to upload multiple audio files
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {t('musicUpload.audioFormats')}
@@ -311,36 +219,14 @@ const MusicUpload = () => {
                     accept="audio/*"
                     onChange={handleFileChange}
                     disabled={uploading}
+                    multiple
                   />
                 </label>
               </div>
             </div>
 
             <div>
-              <Label htmlFor="title">{t('musicUpload.title')}</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t('musicUpload.titlePlaceholder')}
-                disabled={uploading}
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="artist">{t('musicUpload.artist')}</Label>
-              <Input
-                id="artist"
-                value={artist}
-                onChange={(e) => setArtist(e.target.value)}
-                placeholder={t('musicUpload.artistPlaceholder')}
-                disabled={uploading}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="description">{t('musicUpload.description')}</Label>
+              <Label htmlFor="description">{t('musicUpload.description')} (Optional - applies to all tracks)</Label>
               <Textarea
                 id="description"
                 value={description}
@@ -354,7 +240,7 @@ const MusicUpload = () => {
             <Button
               type="submit"
               className="w-full"
-              disabled={uploading || !file}
+              disabled={uploading || files.length === 0}
             >
               {uploading ? (
                 <>
@@ -364,7 +250,7 @@ const MusicUpload = () => {
               ) : (
                 <>
                   <Upload className="mr-2 h-4 w-4" />
-                  {t('musicUpload.uploadTrack')}
+                  Upload {files.length > 0 ? `${files.length} Track(s)` : 'Tracks'}
                 </>
               )}
             </Button>
