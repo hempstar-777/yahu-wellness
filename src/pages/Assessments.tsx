@@ -7,83 +7,98 @@ import { useTranslation } from "react-i18next";
 
 const Assessments = () => {
   const { t } = useTranslation();
+  
+  const getDifficultyVariant = (difficultyKey: string) => {
+    if (difficultyKey.includes('beginner')) return 'secondary';
+    if (difficultyKey.includes('intermediate')) return 'default';
+    return 'outline';
+  };
+  
   const assessments = [
     {
       id: 1,
-      title: "Surface Issues",
-      description: "Basic checklist for common sins and bondages. Perfect starting point if you're unsure where to begin.",
+      title: t('assessments.surfaceTitle'),
+      description: t('assessments.surfaceDesc'),
       icon: FileText,
-      difficulty: "Beginner",
+      difficulty: t('assessments.beginner'),
+      difficultyKey: 'beginner',
       duration: "10-15 min",
       available: true,
       path: "/assessments/surface-issues",
     },
     {
       id: 2,
-      title: "Bondages & Habits",
-      description: "Deeper dive into patterns like pharmakia, illicit relationships, and addictive behaviors.",
+      title: t('assessments.bondagesTitle'),
+      description: t('assessments.bondagesDesc'),
       icon: Target,
-      difficulty: "Intermediate",
+      difficulty: t('assessments.intermediate'),
+      difficultyKey: 'intermediate',
       duration: "15-20 min",
       available: true,
       path: "/assessments/bondages",
     },
     {
       id: 3,
-      title: "Trauma & Soul Wounds",
-      description: "Address molestation, abuse, and their effects: bitterness, dissociation, and victimhood.",
+      title: t('assessments.traumaTitle'),
+      description: t('assessments.traumaDesc'),
       icon: Heart,
-      difficulty: "Advanced",
+      difficulty: t('assessments.advanced'),
+      difficultyKey: 'advanced',
       duration: "20-30 min",
       available: true,
       path: "/assessments/trauma",
     },
     {
       id: 4,
-      title: "Generational Iniquities",
-      description: "Identify and confess family bloodline sins including occult involvement.",
+      title: t('assessments.generationalTitle'),
+      description: t('assessments.generationalDesc'),
       icon: Users,
-      difficulty: "Advanced",
+      difficulty: t('assessments.advanced'),
+      difficultyKey: 'advanced',
       duration: "20-25 min",
       available: true,
       path: "/assessments/generational",
     },
     {
       id: 5,
-      title: "New Age Influences",
-      description: "Covers tattoos, ascended masters, and spiritual pathways requiring renunciation.",
+      title: t('assessments.newAgeTitle'),
+      description: t('assessments.newAgeDesc'),
       icon: Sparkles,
-      difficulty: "Intermediate",
+      difficulty: t('assessments.intermediate'),
+      difficultyKey: 'intermediate',
       duration: "15-20 min",
       available: true,
       path: "/assessments/new-age",
     },
     {
       id: 6,
-      title: "Advanced Strongholds",
-      description: "For alters, integration, vows, and persistent spiritual resistance.",
+      title: t('assessments.advancedTitle'),
+      description: t('assessments.advancedDesc'),
       icon: Lock,
-      difficulty: "Expert",
+      difficulty: t('assessments.expert'),
+      difficultyKey: 'expert',
       duration: "30+ min",
       available: true,
       path: "/assessments/advanced",
     },
     {
       id: 7,
-      title: "Doorways Assessment",
-      description: "Comprehensive list of 600+ specific doorways across all categories.",
+      title: t('assessments.doorwaysTitle'),
+      description: t('assessments.doorwaysDesc'),
       icon: FileText,
-      difficulty: "Comprehensive",
+      difficulty: t('assessments.comprehensive'),
+      difficultyKey: 'comprehensive',
       duration: "20-30 min",
       available: true,
       path: "/assessments/doorways",
     },
     {
       id: 8,
-      title: "Altars & Evil Dedications",
-      description: "Identify spiritual altars and demonic dedication points requiring demolition.",
+      title: t('assessments.altarsTitle'),
+      description: t('assessments.altarsDesc'),
       icon: Sparkles,
-      difficulty: "Advanced",
+      difficulty: t('assessments.advanced'),
+      difficultyKey: 'advanced',
       duration: "15-20 min",
       available: true,
       path: "/assessments/altars",
@@ -99,7 +114,7 @@ const Assessments = () => {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('common.back')}
               </Link>
             </Button>
             <div>
@@ -157,11 +172,7 @@ const Assessments = () => {
                   }`}>
                     <assessment.icon className="w-6 h-6" />
                   </div>
-                  <Badge variant={
-                    assessment.difficulty === 'Beginner' ? 'secondary' :
-                    assessment.difficulty === 'Intermediate' ? 'default' :
-                    'outline'
-                  } className="text-xs">
+                  <Badge variant={getDifficultyVariant(assessment.difficultyKey)} className="text-xs">
                     {assessment.difficulty}
                   </Badge>
                 </div>
@@ -179,10 +190,10 @@ const Assessments = () => {
                   <span className="text-xs text-muted-foreground">{assessment.duration}</span>
                   {assessment.available ? (
                     <Button size="sm" variant="ghost" className="text-primary hover:text-primary-glow">
-                      Start →
+                      {t('common.start')} →
                     </Button>
                   ) : (
-                    <span className="text-xs font-semibold text-muted-foreground">Coming Soon</span>
+                    <span className="text-xs font-semibold text-muted-foreground">{t('common.comingSoon')}</span>
                   )}
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 const Prayers = () => {
+  const { t } = useTranslation();
   const corePrayer = `Father Yahuah, I come before you in the mighty name of Yahusha Ha Mashiach because your word says if we confess our sins, you are faithful and just to forgive us our sins and to cleanse us from all unrighteousness.
 
 I confess that I have (harbored/engaged in/committed) [INSERT YOUR LIST FROM ASSESSMENT].
@@ -30,22 +31,22 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
 
   const prayerCategories = [
     {
-      title: "Core Deliverance Prayer",
+      title: t('prayers.coreDeliverance'),
       icon: BookOpen,
-      description: "The foundational 5-step prayer with blanks for your assessment lists",
+      description: t('prayers.coreDeliveranceDesc'),
       available: true,
     },
     {
-      title: "Forgiveness & Healing",
+      title: t('prayers.forgiveness'),
       icon: Heart,
-      description: "Prayers for releasing offenders and inviting Yahusha to mend soul wounds",
+      description: t('prayers.forgivenessDesc'),
       available: true,
       link: "/expanded-prayers",
     },
     {
-      title: "Bloodline Confession",
+      title: t('prayers.bloodline'),
       icon: Users,
-      description: "Advanced prayers for generational iniquities and family sins",
+      description: t('prayers.bloodlineDesc'),
       available: true,
       link: "/expanded-prayers",
     },
@@ -60,12 +61,12 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('common.back')}
               </Link>
             </Button>
             <div>
-              <h1 className="font-serif text-2xl md:text-3xl font-bold">Prayer Library</h1>
-              <p className="text-sm text-muted-foreground">Templates for renunciation and spiritual freedom</p>
+              <h1 className="font-serif text-2xl md:text-3xl font-bold">{t('prayers.title')}</h1>
+              <p className="text-sm text-muted-foreground">{t('prayers.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -97,7 +98,7 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
                 <h3 className="font-serif text-lg font-semibold">{category.title}</h3>
                 <p className="text-sm text-muted-foreground">{category.description}</p>
                 {!category.available && (
-                  <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+                  <Badge variant="outline" className="text-xs">{t('common.comingSoon')}</Badge>
                 )}
               </Card>
             </Link>
@@ -111,14 +112,14 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
           <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="font-serif text-3xl font-bold mb-2">Core Deliverance Prayer</h2>
+                <h2 className="font-serif text-3xl font-bold mb-2">{t('prayers.coreTitle')}</h2>
                 <p className="text-muted-foreground">
-                  Insert your assessment results into the bracketed sections below
+                  {t('prayers.coreSubtitle')}
                 </p>
               </div>
               <Button onClick={copyToClipboard} size="sm" variant="outline" className="flex-shrink-0">
                 <Copy className="w-4 h-4 mr-2" />
-                Copy
+                {t('common.copy')}
               </Button>
             </div>
 
@@ -129,21 +130,21 @@ Thank you, Yahusha Ha Mashiach, for setting me free.`;
             </div>
 
             <div className="bg-accent/50 rounded-lg p-4 space-y-2">
-              <h3 className="font-semibold text-accent-foreground">How to Use:</h3>
+              <h3 className="font-semibold text-accent-foreground">{t('prayers.howToUse')}</h3>
               <ul className="space-y-1 text-sm text-accent-foreground/80">
-                <li>1. Complete an assessment to generate your personalized list</li>
-                <li>2. Replace <strong>[INSERT YOUR LIST]</strong> with your specific items</li>
-                <li>3. Speak the entire prayer out loud in a safe, private setting</li>
-                <li>4. After completing, invite the Ruach HaKodesh to fill you</li>
+                <li>{t('prayers.step1')}</li>
+                <li>{t('prayers.step2')}</li>
+                <li>{t('prayers.step3')}</li>
+                <li>{t('prayers.step4')}</li>
               </ul>
             </div>
 
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
               <Button asChild size="lg" className="bg-gradient-spiritual shadow-elevated">
-                <Link to="/assessments">Take Assessment</Link>
+                <Link to="/assessments">{t('prayers.takeAssessment')}</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary/30">
-                <Link to="/deliverance">Learn the 5 Steps</Link>
+                <Link to="/deliverance">{t('prayers.learn5Steps')}</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary/30">
                 <Link to="/staying-free">Staying Free Guide</Link>

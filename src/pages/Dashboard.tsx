@@ -296,7 +296,7 @@ const Dashboard = () => {
                             {new Date(assessment.completed_at).toLocaleDateString()}
                           </p>
                         </div>
-                        <Badge variant="secondary">{assessment.score} items</Badge>
+                        <Badge variant="secondary">{assessment.score} {t('dashboard.items')}</Badge>
                       </div>
                     ))}
                   </div>

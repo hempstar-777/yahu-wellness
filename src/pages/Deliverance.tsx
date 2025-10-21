@@ -11,42 +11,42 @@ const Deliverance = () => {
   const steps = [
     {
       number: 1,
-      title: "Confess",
+      title: t('deliverance.step1Title'),
       icon: MessageSquare,
-      description: "Acknowledge your sins before Yahuah. Speak them out loud from your assessment list.",
-      example: '"Father Yahuah, I confess that I have harbored anger and unforgiveness..."',
+      description: t('deliverance.step1Desc'),
+      example: t('deliverance.step1Example'),
       scripture: "1 John 1:9",
     },
     {
       number: 2,
-      title: "Repent",
+      title: t('deliverance.step2Title'),
       icon: RotateCcw,
-      description: "Turn away from sin and receive grace. For non-consensual issues, focus on breaking victim agreements.",
-      example: '"I repent for [list items] and receive Your grace to not turn back."',
+      description: t('deliverance.step2Desc'),
+      example: t('deliverance.step2Example'),
       scripture: "Acts 3:19",
     },
     {
       number: 3,
-      title: "Renounce",
+      title: t('deliverance.step3Title'),
       icon: Ban,
-      description: "Break all agreements with the sin, its fruit, its children, and its presence in your life.",
-      example: '"I renounce anger and break all agreement with it, its fruit, its children..."',
+      description: t('deliverance.step3Desc'),
+      example: t('deliverance.step3Example'),
       scripture: "2 Corinthians 4:2",
     },
     {
       number: 4,
-      title: "Bind",
+      title: t('deliverance.step4Title'),
       icon: Link2,
-      description: "Bind every evil spirit that has operated in your life because of what you renounced.",
-      example: '"I bind you in chains and fetters of iron..."',
+      description: t('deliverance.step4Desc'),
+      example: t('deliverance.step4Example'),
       scripture: "Matthew 18:18",
     },
     {
       number: 5,
-      title: "Cast Out",
+      title: t('deliverance.step5Title'),
       icon: Zap,
-      description: "Command spirits to leave. If resistance, use brutal assault declarations with Yahuah's weapons.",
-      example: '"You are severed, fired, and escorted to wherever Yahusha sends you. Get out!"',
+      description: t('deliverance.step5Desc'),
+      example: t('deliverance.step5Example'),
       scripture: "Mark 16:17",
     },
   ];
@@ -60,12 +60,12 @@ const Deliverance = () => {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('common.back')}
               </Link>
             </Button>
             <div>
-              <h1 className="font-serif text-2xl md:text-3xl font-bold">Deliverance 101</h1>
-              <p className="text-sm text-muted-foreground">The 5-Step Process to Freedom</p>
+              <h1 className="font-serif text-2xl md:text-3xl font-bold">{t('deliverance.title')}</h1>
+              <p className="text-sm text-muted-foreground">{t('deliverance.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -75,16 +75,14 @@ const Deliverance = () => {
       <section className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h2 className="font-serif text-4xl md:text-5xl font-bold bg-gradient-spiritual bg-clip-text text-transparent">
-            Walk in Yahusha's Victory
+            {t('deliverance.heroTitle')}
           </h2>
           <p className="text-xl text-foreground/80 leading-relaxed">
-            Deliverance is simple and faith-enforced. Speak everything out loud and follow these 5 steps 
-            to break agreements with every bondage identified in your assessments.
+            {t('deliverance.heroDesc')}
           </p>
           <Alert className="border-secondary/30 bg-secondary/5 text-left">
             <AlertDescription>
-              <strong>Remember:</strong> After completing the steps, invite the Ruach HaKodesh (Holy Spirit) 
-              to fill you. Avoid leaving a void. For longstanding issues, you may need to repeat the process.
+              <strong>{t('deliverance.remember')}</strong> {t('deliverance.rememberText')}
             </AlertDescription>
           </Alert>
         </div>
@@ -209,9 +207,9 @@ const Deliverance = () => {
       {/* Resistance Handling */}
       <section className="container mx-auto px-4 py-12">
         <Card className="max-w-4xl mx-auto p-8 bg-gradient-divine text-primary-foreground shadow-glow">
-          <h3 className="font-serif text-2xl font-bold mb-4">Handling Resistance</h3>
+          <h3 className="font-serif text-2xl font-bold mb-4">{t('deliverance.resistanceTitle')}</h3>
           <p className="text-primary-foreground/90 leading-relaxed mb-6">
-            If spirits linger or resist removal after Step 5, engage in brutal spiritual assault using Yahuah's weapons:
+            {t('deliverance.resistanceDesc')}
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             {[
@@ -231,7 +229,7 @@ const Deliverance = () => {
             ))}
           </div>
           <p className="text-primary-foreground/90 leading-relaxed mt-6 text-sm">
-            Declare these weapons until all spirits relinquish their positions. Persistence is key!
+            {t('deliverance.resistanceNote')}
           </p>
         </Card>
       </section>
@@ -239,16 +237,16 @@ const Deliverance = () => {
       {/* Next Steps */}
       <section className="container mx-auto px-4 py-12 pb-16">
         <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h3 className="font-serif text-3xl font-bold">Ready to Begin?</h3>
+          <h3 className="font-serif text-3xl font-bold">{t('deliverance.readyTitle')}</h3>
           <p className="text-lg text-muted-foreground">
-            Complete an assessment first, then return here to apply the 5-step process with your personalized list.
+            {t('deliverance.readyDesc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button asChild size="lg" className="bg-gradient-spiritual shadow-elevated">
-              <Link to="/assessments">Take Assessment</Link>
+              <Link to="/assessments">{t('home.takeAssessment')}</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-primary/30 hover:border-primary/50">
-              <Link to="/prayers">View Prayer Templates</Link>
+              <Link to="/prayers">{t('deliverance.viewPrayers')}</Link>
             </Button>
           </div>
         </div>
