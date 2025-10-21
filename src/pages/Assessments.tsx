@@ -3,8 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, FileText, Heart, Users, Sparkles, Target, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Assessments = () => {
+  const { t } = useTranslation();
   const assessments = [
     {
       id: 1,
@@ -101,8 +103,8 @@ const Assessments = () => {
               </Link>
             </Button>
             <div>
-              <h1 className="font-serif text-2xl md:text-3xl font-bold">Assessments</h1>
-              <p className="text-sm text-muted-foreground">Identify bondages through guided self-evaluation</p>
+              <h1 className="font-serif text-2xl md:text-3xl font-bold">{t('assessments.title')}</h1>
+              <p className="text-sm text-muted-foreground">{t('assessments.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -112,18 +114,17 @@ const Assessments = () => {
       <section className="container mx-auto px-4 py-8">
         <Card className="max-w-4xl mx-auto p-6 md:p-8 border-primary/20 shadow-elevated">
           <div className="space-y-4">
-            <h2 className="font-serif text-2xl font-semibold">How Assessments Work</h2>
+            <h2 className="font-serif text-2xl font-semibold">{t('assessments.howItWorks')}</h2>
             <p className="text-foreground/80 leading-relaxed">
-              These interactive evaluations help you identify specific sins, bondages, and spiritual doorways in your life. 
-              Your responses generate personalized lists that you'll use in renunciation prayers during the 5-step deliverance process.
+              {t('assessments.description')}
             </p>
             <div className="bg-accent/50 rounded-lg p-4 space-y-2">
-              <h3 className="font-semibold text-accent-foreground">Tips for Success:</h3>
+              <h3 className="font-semibold text-accent-foreground">{t('assessments.tipsTitle')}</h3>
               <ul className="space-y-1 text-sm text-accent-foreground/80">
-                <li>• Be honest and thorough - Yahuah sees your heart</li>
-                <li>• Results can be saved in-app or emailed to you</li>
-                <li>• Retake assessments anytime as you grow</li>
-                <li>• You can "lump under unrighteousness" for lengthy lists</li>
+                <li>{t('assessments.tip1')}</li>
+                <li>{t('assessments.tip2')}</li>
+                <li>{t('assessments.tip3')}</li>
+                <li>{t('assessments.tip4')}</li>
               </ul>
             </div>
           </div>

@@ -160,12 +160,12 @@ const Dashboard = () => {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/">
                   <ChevronLeft className="w-4 h-4 mr-2" />
-                  Home
+                  {t('dashboard.home')}
                 </Link>
               </Button>
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold">Your Spiritual Journey</h1>
-            <p className="text-muted-foreground mt-2">Track your progress and stay encouraged</p>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold">{t('dashboard.title')}</h1>
+            <p className="text-muted-foreground mt-2">{t('dashboard.subtitle')}</p>
           </div>
         </header>
 
@@ -185,13 +185,13 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Award className="w-5 h-5" />
-                    Your Badges
+                    {t('dashboard.yourBadges')}
                   </CardTitle>
                   <Button asChild variant="outline" size="sm">
-                    <Link to="/achievements">View All</Link>
+                    <Link to="/achievements">{t('dashboard.viewAll')}</Link>
                   </Button>
                 </div>
-                <CardDescription>Recent achievements and accomplishments</CardDescription>
+                <CardDescription>{t('dashboard.recentAchievements')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
@@ -215,12 +215,12 @@ const Dashboard = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <ClipboardCheck className="w-4 h-4 text-primary" />
-                  Assessments
+                  {t('dashboard.assessments')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{assessments.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Completed</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('dashboard.completed')}</p>
               </CardContent>
             </Card>
 
@@ -228,7 +228,7 @@ const Dashboard = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-primary" />
-                  Course Progress
+                  {t('dashboard.courseProgress')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -241,13 +241,13 @@ const Dashboard = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <BookHeart className="w-4 h-4 text-primary" />
-                  Prayer Journal
+                  {t('dashboard.prayerJournal')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{prayers.length}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {answeredPrayers} answered
+                  {answeredPrayers} {t('dashboard.answered')}
                 </p>
               </CardContent>
             </Card>
@@ -256,12 +256,12 @@ const Dashboard = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-primary" />
-                  Testimonies
+                  {t('dashboard.testimonies')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{testimonies.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Shared</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('dashboard.shared')}</p>
               </CardContent>
             </Card>
           </div>
@@ -273,16 +273,16 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ClipboardCheck className="w-5 h-5" />
-                  Recent Assessments
+                  {t('dashboard.recentAssessments')}
                 </CardTitle>
-                <CardDescription>Your latest spiritual assessments</CardDescription>
+                <CardDescription>{t('dashboard.latestAssessments')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {assessments.length === 0 ? (
                   <Alert>
                     <TrendingUp className="h-4 w-4" />
                     <AlertDescription>
-                      No assessments completed yet. Start your journey!
+                      {t('dashboard.noAssessments')}
                     </AlertDescription>
                   </Alert>
                 ) : (
@@ -302,7 +302,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <Button asChild className="w-full mt-4" variant="outline">
-                  <Link to="/assessments">Take New Assessment</Link>
+                  <Link to="/assessments">{t('dashboard.takeNewAssessment')}</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -312,16 +312,16 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookHeart className="w-5 h-5" />
-                  Prayer Journal
+                  {t('dashboard.prayerJournal')}
                 </CardTitle>
-                <CardDescription>Your recent prayer requests</CardDescription>
+                <CardDescription>{t('dashboard.recentPrayers')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {prayers.length === 0 ? (
                   <Alert>
                     <BookHeart className="h-4 w-4" />
                     <AlertDescription>
-                      Start journaling your prayers and track answered prayers.
+                      {t('dashboard.noPrayers')}
                     </AlertDescription>
                   </Alert>
                 ) : (
@@ -336,14 +336,14 @@ const Dashboard = () => {
                           </p>
                         </div>
                         {prayer.is_answered && (
-                          <Badge className="ml-2">Answered</Badge>
+                          <Badge className="ml-2">{t('dashboard.answered')}</Badge>
                         )}
                       </div>
                     ))}
                   </div>
                 )}
                 <Button asChild className="w-full mt-4" variant="outline">
-                  <Link to="/prayer-journal">Open Journal</Link>
+                  <Link to="/prayer-journal">{t('dashboard.openJournal')}</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -352,57 +352,57 @@ const Dashboard = () => {
           {/* Quick Actions */}
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Continue Your Journey</CardTitle>
-              <CardDescription>Quick actions to keep growing spiritually</CardDescription>
+              <CardTitle>{t('dashboard.continueJourney')}</CardTitle>
+              <CardDescription>{t('dashboard.quickActions')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/assessments" className="flex flex-col items-center gap-2">
                     <ClipboardCheck className="w-6 h-6" />
-                    <span>Take Assessment</span>
+                    <span>{t('dashboard.takeAssessment')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/courses" className="flex flex-col items-center gap-2">
                     <GraduationCap className="w-6 h-6" />
-                    <span>Study Courses</span>
+                    <span>{t('dashboard.studyCourses')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/prayers" className="flex flex-col items-center gap-2">
                     <BookHeart className="w-6 h-6" />
-                    <span>Pray</span>
+                    <span>{t('dashboard.pray')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/testimonies" className="flex flex-col items-center gap-2">
                     <MessageSquare className="w-6 h-6" />
-                    <span>Share Testimony</span>
+                    <span>{t('dashboard.shareTestimony')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/prayer-videos" className="flex flex-col items-center gap-2">
                     <Video className="w-6 h-6" />
-                    <span>Prayer Videos</span>
+                    <span>{t('dashboard.prayerVideos')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/group-prayer" className="flex flex-col items-center gap-2">
                     <Users className="w-6 h-6" />
-                    <span>Group Prayer</span>
+                    <span>{t('dashboard.groupPrayer')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/forums" className="flex flex-col items-center gap-2">
                     <MessageSquare className="w-6 h-6" />
-                    <span>Forums</span>
+                    <span>{t('dashboard.forums')}</span>
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="h-auto py-4">
                   <Link to="/minister-toolkit" className="flex flex-col items-center gap-2">
                     <Briefcase className="w-6 h-6" />
-                    <span>Minister Toolkit</span>
+                    <span>{t('dashboard.ministerToolkit')}</span>
                   </Link>
                 </Button>
               </div>
