@@ -1948,12 +1948,12 @@ const EmotionsDictionary = () => {
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/">
+            <Link to="/">
+              <Button variant="ghost" size="sm">
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 Back
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             <div>
               <h1 className="font-serif text-2xl md:text-3xl font-bold">Emotions & Spiritual Health Dictionary</h1>
               <p className="text-sm text-muted-foreground">Understanding the mind-body-soul-spirit connection</p>
@@ -2074,7 +2074,20 @@ const EmotionsDictionary = () => {
                    item.sin.startsWith(selectedLetter) || 
                    item.virtue.startsWith(selectedLetter))
                 )
-                .map((item, index) => (
+                .length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No results found matching your search.</p>
+                  </Card>
+                ) : (
+                  deadlySins
+                    .filter(item => 
+                      (item.sin.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                       item.virtue.toLowerCase().includes(searchTerm.toLowerCase())) &&
+                      (selectedLetter === "All" || 
+                       item.sin.startsWith(selectedLetter) || 
+                       item.virtue.startsWith(selectedLetter))
+                    )
+                    .map((item, index) => (
                 <Card key={index} className="border-primary/20 shadow-elevated overflow-hidden">
                   {/* Header with Sin vs Virtue */}
                   <div className="grid md:grid-cols-2 divide-x divide-border/50">
@@ -2226,7 +2239,8 @@ const EmotionsDictionary = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ))
+                )}
             </div>
           </TabsContent>
 
@@ -2238,7 +2252,17 @@ const EmotionsDictionary = () => {
                   emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
                   (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
                 )
-                .map((emotion, index) => (
+                .length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No emotions found matching your search.</p>
+                  </Card>
+                ) : (
+                  positiveEmotions
+                    .filter(emotion => 
+                      emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                      (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
+                    )
+                    .map((emotion, index) => (
                 <Card key={index} className="border-primary/20 shadow-sm hover:shadow-elevated transition-shadow">
                   <CardHeader className="bg-gradient-spiritual text-primary-foreground">
                     <CardTitle className="text-2xl">{emotion.name}</CardTitle>
@@ -2301,7 +2325,8 @@ const EmotionsDictionary = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ))
+                )}
             </div>
           </TabsContent>
 
@@ -2321,7 +2346,17 @@ const EmotionsDictionary = () => {
                   emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
                   (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
                 )
-                .map((emotion, index) => (
+                .length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No emotions found matching your search.</p>
+                  </Card>
+                ) : (
+                  negativeEmotions
+                    .filter(emotion => 
+                      emotion.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                      (selectedLetter === "All" || emotion.name.startsWith(selectedLetter))
+                    )
+                    .map((emotion, index) => (
                 <Card key={index} className="border-destructive/20 shadow-sm hover:shadow-elevated transition-shadow">
                   <CardHeader className="bg-gradient-to-r from-destructive/80 to-destructive/60 text-destructive-foreground">
                     <CardTitle className="text-2xl">{emotion.name}</CardTitle>
@@ -2394,7 +2429,8 @@ const EmotionsDictionary = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ))
+                )}
             </div>
           </TabsContent>
         </Tabs>
