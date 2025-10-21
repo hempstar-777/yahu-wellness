@@ -58,8 +58,7 @@ const fetchTracks = async () => {
 
     if (error) throw error;
 
-    const enhanced = await Promise.all((data || []).map(async (t: MusicTrack) => {
-      const path = getPathInBucket(t);
+    const enhanced = (data || []).map((t: MusicTrack) => {
       const name = (t.file_name || '').toLowerCase();
       const mime = name.endsWith('.mp3')
         ? 'audio/mpeg'
@@ -71,21 +70,10 @@ const fetchTracks = async () => {
         ? 'audio/ogg'
         : 'audio/mpeg';
 
-      let url: string | undefined;
-      try {
-        const { data: signed, error: signErr } = await supabase.storage
-          .from('music')
-          .createSignedUrl(path, 60 * 60 * 6); // 6 hours
-        if (!signErr && signed?.signedUrl) url = signed.signedUrl;
-      } catch (_) {}
-
-      if (!url) {
-        const { data: pub } = supabase.storage.from('music').getPublicUrl(path);
-        url = pub.publicUrl;
-      }
-
+      // Prefer the URL stored with the track; avoid hardcoding bucket names
+      const url = t.file_url;
       return { ...t, resolved_url: url, mime_type: mime } as MusicTrack;
-    }));
+    });
 
     setTracks(enhanced);
   } catch (error) {
@@ -100,15 +88,13 @@ const fetchTracks = async () => {
   }
 };
 
-const getPathInBucket = (track: MusicTrack): string => {
-  const match = track.file_url?.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(.+)$/);
-  return match ? match[1] : `tracks/${track.file_name}`;
+const parseStorageUrl = (fileUrl: string): { bucket: string | null; path: string | null } => {
+  const m = fileUrl?.match(/\/storage\/v1\/object\/(?:public|sign)\/([^/]+)\/(.+?)(?:\?.*)?$/);
+  return m ? { bucket: m[1], path: m[2] } : { bucket: null, path: null };
 };
 
 const getAudioUrl = (track: MusicTrack): string => {
-  if (track.resolved_url) return track.resolved_url;
-  const { data } = supabase.storage.from('music').getPublicUrl(getPathInBucket(track));
-  return data.publicUrl;
+  return track.resolved_url || track.file_url;
 };
 
   const handlePlayCount = async (trackId: string) => {
@@ -118,12 +104,25 @@ const getAudioUrl = (track: MusicTrack): string => {
 
 const handleDownload = async (track: MusicTrack) => {
   try {
-    const path = getPathInBucket(track);
-    const { data, error } = await supabase.storage.from('music').download(path);
-    if (error || !data) throw error || new Error('Download failed');
+    const { bucket, path } = parseStorageUrl(track.file_url);
+    let blob: Blob | null = null;
 
-    const ext = (track.file_name.split('.').pop() || 'mp3');
-    const url = window.URL.createObjectURL(data);
+    if (bucket && path) {
+      const { data, error } = await supabase.storage.from(bucket).download(path);
+      if (error) throw error;
+      blob = data ?? null;
+    }
+
+    if (!blob) {
+      // Fallback: fetch the direct URL (could be external)
+      const resp = await fetch(getAudioUrl(track));
+      blob = await resp.blob();
+    }
+
+    if (!blob) throw new Error('Download failed');
+
+    const ext = (track.file_name?.split('.').pop() || 'mp3');
+    const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `${track.title}.${ext}`;
@@ -139,14 +138,14 @@ const handleDownload = async (track: MusicTrack) => {
     );
 
     toast({
-      title: t('musicLibrary.downloadStarted'),
-      description: t('musicLibrary.downloading', { title: track.title }),
+      title: t('musicLibrary.downloadStarted', { defaultValue: 'Download started' }),
+      description: t('musicLibrary.downloading', { title: track.title, defaultValue: `Downloading ${track.title}...` }),
     });
   } catch (error) {
     console.error("Error downloading track:", error);
     toast({
-      title: t('musicLibrary.downloadFailed'),
-      description: t('musicLibrary.downloadFailedDesc'),
+      title: t('musicLibrary.downloadFailed', { defaultValue: 'Download failed' }),
+      description: t('musicLibrary.downloadFailedDesc', { defaultValue: 'Please try again or contact support.' }),
       variant: "destructive",
     });
   }
@@ -293,8 +292,15 @@ const handleDownload = async (track: MusicTrack) => {
   crossOrigin="anonymous"
   preload="metadata"
   playsInline
-  src={track.resolved_url || getAudioUrl(track)}
+  src={getAudioUrl(track)}
   onPlay={() => handlePlayCount(track.id)}
+  onStalled={(e) => {
+    // Try to resume on minor network hiccups
+    e.currentTarget.play().catch(() => {});
+  }}
+  onWaiting={(e) => {
+    e.currentTarget.play().catch(() => {});
+  }}
   onError={async (e) => {
     const last = errorNotifiedRef.current[track.id] || 0;
     const now = Date.now();
@@ -303,15 +309,25 @@ const handleDownload = async (track: MusicTrack) => {
 
     const audioEl = e.currentTarget as HTMLAudioElement;
     try {
-      const path = getPathInBucket(track);
-      const { data } = await supabase.storage.from('music').download(path);
-      if (data) {
-        const objectUrl = URL.createObjectURL(data);
-        audioEl.src = objectUrl;
-        await audioEl.play();
-        handlePlayCount(track.id);
-        return;
+      const { bucket, path } = parseStorageUrl(track.file_url);
+      if (bucket && path) {
+        const { data } = await supabase.storage.from(bucket).download(path);
+        if (data) {
+          const objectUrl = URL.createObjectURL(data);
+          audioEl.src = objectUrl;
+          await audioEl.play();
+          handlePlayCount(track.id);
+          return;
+        }
       }
+      // Final fallback: fetch as-is
+      const resp = await fetch(getAudioUrl(track));
+      const blob = await resp.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      audioEl.src = objectUrl;
+      await audioEl.play();
+      handlePlayCount(track.id);
+      return;
     } catch (err) {
       console.error("Audio failed to play", {
         error: (e as any).currentTarget?.error,
@@ -320,8 +336,8 @@ const handleDownload = async (track: MusicTrack) => {
       });
     }
     toast({
-      title: t('musicLibrary.playbackFailed'),
-      description: t('musicLibrary.playbackFailedDesc'),
+      title: t('musicLibrary.playbackFailed', { defaultValue: 'Playback failed' }),
+      description: t('musicLibrary.playbackFailedDesc', { defaultValue: 'We could not play this track. Tap again or use Download.' }),
       variant: "destructive",
     });
   }}
