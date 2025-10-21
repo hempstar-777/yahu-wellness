@@ -2066,7 +2066,15 @@ const EmotionsDictionary = () => {
             </Card>
 
             <div className="grid gap-8">
-              {deadlySins.map((item, index) => (
+              {deadlySins
+                .filter(item => 
+                  (item.sin.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                   item.virtue.toLowerCase().includes(searchTerm.toLowerCase())) &&
+                  (selectedLetter === "All" || 
+                   item.sin.startsWith(selectedLetter) || 
+                   item.virtue.startsWith(selectedLetter))
+                )
+                .map((item, index) => (
                 <Card key={index} className="border-primary/20 shadow-elevated overflow-hidden">
                   {/* Header with Sin vs Virtue */}
                   <div className="grid md:grid-cols-2 divide-x divide-border/50">
