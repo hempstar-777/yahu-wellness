@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Music, Download, Upload, ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import TrackPlayer from "@/components/TrackPlayer";
 
 import {
   AlertDialog,
@@ -42,11 +43,61 @@ const MusicLibrary = () => {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
 const navigate = useNavigate();
-const errorNotifiedRef = useRef<Record<string, number>>({});
+
   const { t } = useTranslation();
 
   useEffect(() => {
     fetchTracks();
+
+    const channel = supabase
+      .channel('music_tracks_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'music_tracks' },
+        (payload) => {
+          try {
+            if (payload.eventType === 'INSERT') {
+              const t: any = payload.new;
+              const name = (t.file_name || '').toLowerCase();
+              const mime = name.endsWith('.mp3')
+                ? 'audio/mpeg'
+                : name.endsWith('.m4a')
+                ? 'audio/mp4'
+                : name.endsWith('.wav')
+                ? 'audio/wav'
+                : name.endsWith('.ogg')
+                ? 'audio/ogg'
+                : 'audio/mpeg';
+              const url = t.file_url as string;
+              setTracks(prev => [{ ...(t as MusicTrack), resolved_url: url, mime_type: mime }, ...prev]);
+            } else if (payload.eventType === 'UPDATE') {
+              const t: any = payload.new;
+              const name = (t.file_name || '').toLowerCase();
+              const mime = name.endsWith('.mp3')
+                ? 'audio/mpeg'
+                : name.endsWith('.m4a')
+                ? 'audio/mp4'
+                : name.endsWith('.wav')
+                ? 'audio/wav'
+                : name.endsWith('.ogg')
+                ? 'audio/ogg'
+                : 'audio/mpeg';
+              const url = t.file_url as string;
+              setTracks(prev => prev.map(x => x.id === t.id ? { ...(t as MusicTrack), resolved_url: url, mime_type: mime } : x));
+            } else if (payload.eventType === 'DELETE') {
+              const t: any = payload.old;
+              setTracks(prev => prev.filter(x => x.id !== t.id));
+            }
+          } catch (err) {
+            console.error('Realtime update error', err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try { supabase.removeChannel(channel); } catch {}
+    };
   }, []);
 
 const fetchTracks = async () => {
@@ -234,17 +285,12 @@ const handleDownload = async (track: MusicTrack) => {
               <Card key={track.id} className="p-6">
                 <div className="flex flex-col md:flex-row items-start gap-4">
                   <div className="flex-shrink-0">
-                    {track.cover_url ? (
-                      <img
-                        src={track.cover_url}
-                        alt={track.title}
-                        className="h-16 w-16 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Music className="h-8 w-8 text-primary" />
-                      </div>
-                    )}
+                    <img
+                      src="/logo.png"
+                      alt={`${track.title} logo`}
+                      className="h-16 w-16 rounded-lg object-cover"
+                      loading="lazy"
+                    />
                   </div>
                   
                   <div className="flex-grow min-w-0">
@@ -286,77 +332,7 @@ const handleDownload = async (track: MusicTrack) => {
                         </Button>
                       )}
                     </div>
-<audio
-  controls
-  className="w-full"
-  crossOrigin="anonymous"
-  preload="metadata"
-  playsInline
-  src={getAudioUrl(track)}
-  onPlay={() => handlePlayCount(track.id)}
-  onStalled={(e) => {
-    // Try to resume on minor network hiccups
-    e.currentTarget.play().catch(() => {});
-  }}
-  onWaiting={(e) => {
-    e.currentTarget.play().catch(() => {});
-  }}
-  onError={async (e) => {
-    const last = errorNotifiedRef.current[track.id] || 0;
-    const now = Date.now();
-    if (now - last < 8000) return;
-    errorNotifiedRef.current[track.id] = now;
-
-    const audioEl = e.currentTarget as HTMLAudioElement;
-    try {
-      const desiredType = track.mime_type || 'audio/mpeg';
-      const toTypedBlobUrl = async (blob: Blob) => {
-        if (blob.type && blob.type !== 'application/octet-stream') {
-          return URL.createObjectURL(blob);
-        }
-        const ab = await blob.arrayBuffer();
-        const typed = new Blob([ab], { type: desiredType });
-        return URL.createObjectURL(typed);
-      };
-
-      const { bucket, path } = parseStorageUrl(track.file_url);
-      if (bucket && path) {
-        const { data } = await supabase.storage.from(bucket).download(path);
-        if (data) {
-          const objectUrl = await toTypedBlobUrl(data);
-          audioEl.src = objectUrl;
-          audioEl.load();
-          await audioEl.play();
-          handlePlayCount(track.id);
-          return;
-        }
-      }
-      // Final fallback: fetch as-is
-      const resp = await fetch(getAudioUrl(track));
-      const blob = await resp.blob();
-      const objectUrl = await toTypedBlobUrl(blob);
-      audioEl.src = objectUrl;
-      audioEl.load();
-      await audioEl.play();
-      handlePlayCount(track.id);
-      return;
-    } catch (err) {
-      console.error("Audio failed to play", {
-        error: (e as any).currentTarget?.error,
-        src: (e as any).currentTarget?.currentSrc,
-        err,
-      });
-    }
-    toast({
-      title: t('musicLibrary.playbackFailed', { defaultValue: 'Playback failed' }),
-      description: t('musicLibrary.playbackFailedDesc', { defaultValue: 'We could not play this track. Tap again or use Download.' }),
-      variant: "destructive",
-    });
-  }}
-  controlsList="nodownload"
->
-  Your browser does not support the audio element.
-</audio>
+<TrackPlayer track={track} onPlayed={() => handlePlayCount(track.id)} />
                   </div>
                 </div>
               </Card>
