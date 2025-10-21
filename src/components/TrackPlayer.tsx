@@ -1,9 +1,7 @@
-import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Play } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 export interface TrackPlayerTrack {
   id: string;
@@ -38,10 +36,8 @@ const deriveMime = (name: string) => {
 };
 
 export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-  const { t } = useTranslation();
+  let audioEl: HTMLAudioElement | null = null;
+  let buttonEl: HTMLButtonElement | null = null;
 
   const toTypedBlobUrl = async (blob: Blob, desiredType: string) => {
     if (blob.type && blob.type !== 'application/octet-stream') {
@@ -68,24 +64,23 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
   };
 
   const handlePlay = async () => {
-    if (loading) return;
-    setLoading(true);
     try {
+      if (buttonEl) buttonEl.disabled = true;
       const objectUrl = await fetchObjectUrl();
-      const el = audioRef.current!;
-      el.src = objectUrl;
-      el.load();
-      await el.play();
+      if (!audioEl) return;
+      audioEl.src = objectUrl;
+      audioEl.load();
+      await audioEl.play();
       onPlayed?.();
     } catch (err) {
       console.error('TrackPlayer play error', err);
       toast({
-        title: t('musicLibrary.playbackFailed', { defaultValue: 'Playback failed' }),
-        description: t('musicLibrary.playbackFailedDesc', { defaultValue: 'We could not play this track. Tap again or use Download.' }),
+        title: 'Playback failed',
+        description: 'We could not play this track. Tap again or use Download.',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      if (buttonEl) buttonEl.disabled = false;
     }
   };
 
@@ -95,20 +90,18 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         onClick={handlePlay}
         size="lg"
         className="gap-2 active:translate-y-[2px] transition-transform"
-        disabled={loading}
+        ref={(el) => { buttonEl = el; }}
       >
         <Play className="h-5 w-5" />
-        {loading ? t('musicLibrary.loading', { defaultValue: 'Loading...' }) : t('musicLibrary.play', { defaultValue: 'Play' })}
+        Play
       </Button>
 
       <audio
-        ref={audioRef}
-        controls
+        ref={(el) => { audioEl = el; }}
         className="w-full"
         crossOrigin="anonymous"
         preload="metadata"
         playsInline
-        controlsList="nodownload"
       >
         Your browser does not support the audio element.
       </audio>
