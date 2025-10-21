@@ -8,6 +8,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { VIPCounter } from "@/components/VIPCounter";
+import PWAInstallButton from "@/components/PWAInstallButton";
 
 const Index = () => {
   const { t } = useTranslation();
@@ -93,6 +94,7 @@ const Index = () => {
               {t('home.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <PWAInstallButton />
               <Button asChild size="lg" className="bg-gradient-spiritual shadow-elevated hover:shadow-glow transition-all duration-300">
                 <Link to="/assessments">{t('home.beginJourney')}</Link>
               </Button>
