@@ -40,6 +40,8 @@ const deriveMime = (name: string) => {
 export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [loading, setLoading] = useState(false);
+  const [srcUrl, setSrcUrl] = useState<string | null>(null);
+  const [srcType, setSrcType] = useState<string>(track.mime_type || deriveMime(track.file_name));
 
   const toTypedBlobUrl = async (blob: Blob, desiredType: string) => {
     if (blob.type && blob.type !== 'application/octet-stream') {
@@ -78,15 +80,44 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
     if (loading) return;
     setLoading(true);
     try {
-      const objectUrl = await fetchObjectUrl();
+      const desiredType = track.mime_type || deriveMime(track.file_name);
+      const url = await fetchObjectUrl();
       const el = audioRef.current;
       if (!el) return;
-      el.src = objectUrl;
+      // Update source with explicit type for better Android compatibility
+      setSrcType(desiredType);
+      setSrcUrl(url);
+      el.onerror = () => {
+        if (el.error) {
+          console.error('HTMLAudioElement error', {
+            code: el.error.code,
+            message: el.error.message,
+          });
+        }
+      };
       el.load();
       await el.play();
       onPlayed?.();
     } catch (err) {
       console.error('TrackPlayer play error', err);
+      // Fallback: try playing via a short-lived signed URL directly
+      try {
+        const { bucket, path } = parseStorageUrl(track.file_url);
+        const el = audioRef.current;
+        if (bucket && path && el) {
+          const { data: signed } = await supabase.storage.from(bucket).createSignedUrl(path, 60);
+          if (signed?.signedUrl) {
+            setSrcType(track.mime_type || deriveMime(track.file_name));
+            setSrcUrl(signed.signedUrl);
+            el.load();
+            await el.play();
+            onPlayed?.();
+            return;
+          }
+        }
+      } catch (fallbackErr) {
+        console.error('Signed URL fallback failed', fallbackErr);
+      }
       toast({
         title: 'Playback failed',
         description: 'We could not play this track. Tap again or use Download.',
@@ -117,6 +148,7 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         preload="metadata"
         playsInline
       >
+        {srcUrl && <source src={srcUrl} type={srcType} />}
         Your browser does not support the audio element.
       </audio>
     </div>
