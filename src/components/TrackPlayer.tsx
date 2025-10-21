@@ -84,7 +84,8 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
       const url = await fetchObjectUrl();
       const el = audioRef.current;
       if (!el) return;
-      // Update source with explicit type for better Android compatibility
+      // Set src directly for reliable playback, and also update source state
+      el.src = url;
       setSrcType(desiredType);
       setSrcUrl(url);
       el.onerror = () => {
@@ -107,7 +108,9 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         if (bucket && path && el) {
           const { data: signed } = await supabase.storage.from(bucket).createSignedUrl(path, 60);
           if (signed?.signedUrl) {
-            setSrcType(track.mime_type || deriveMime(track.file_name));
+            const desiredType = track.mime_type || deriveMime(track.file_name);
+            el.src = signed.signedUrl;
+            setSrcType(desiredType);
             setSrcUrl(signed.signedUrl);
             el.load();
             await el.play();
