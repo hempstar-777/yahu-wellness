@@ -47,56 +47,6 @@ const errorNotifiedRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     fetchTracks();
-
-    const channel = supabase
-      .channel('music_tracks_realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'music_tracks' },
-        (payload) => {
-          try {
-            if (payload.eventType === 'INSERT') {
-              const t: any = payload.new;
-              const name = (t.file_name || '').toLowerCase();
-              const mime = name.endsWith('.mp3')
-                ? 'audio/mpeg'
-                : name.endsWith('.m4a')
-                ? 'audio/mp4'
-                : name.endsWith('.wav')
-                ? 'audio/wav'
-                : name.endsWith('.ogg')
-                ? 'audio/ogg'
-                : 'audio/mpeg';
-              const url = t.file_url as string;
-              setTracks(prev => [{ ...(t as MusicTrack), resolved_url: url, mime_type: mime }, ...prev]);
-            } else if (payload.eventType === 'UPDATE') {
-              const t: any = payload.new;
-              const name = (t.file_name || '').toLowerCase();
-              const mime = name.endsWith('.mp3')
-                ? 'audio/mpeg'
-                : name.endsWith('.m4a')
-                ? 'audio/mp4'
-                : name.endsWith('.wav')
-                ? 'audio/wav'
-                : name.endsWith('.ogg')
-                ? 'audio/ogg'
-                : 'audio/mpeg';
-              const url = t.file_url as string;
-              setTracks(prev => prev.map(x => x.id === t.id ? { ...(t as MusicTrack), resolved_url: url, mime_type: mime } : x));
-            } else if (payload.eventType === 'DELETE') {
-              const t: any = payload.old;
-              setTracks(prev => prev.filter(x => x.id !== t.id));
-            }
-          } catch (err) {
-            console.error('Realtime update error', err);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      try { supabase.removeChannel(channel); } catch {}
-    };
   }, []);
 
 const fetchTracks = async () => {
