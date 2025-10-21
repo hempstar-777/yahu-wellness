@@ -80,50 +80,27 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
     if (loading) return;
     setLoading(true);
     try {
-      const desiredType = track.mime_type || deriveMime(track.file_name);
-      const url = await fetchObjectUrl();
-      const el = audioRef.current;
-      if (!el) return;
-      // Set src directly for reliable playback, and also update source state
-      el.src = url;
-      setSrcType(desiredType);
-      setSrcUrl(url);
-      el.onerror = () => {
-        if (el.error) {
-          console.error('HTMLAudioElement error', {
-            code: el.error.code,
-            message: el.error.message,
-          });
+      const { bucket, path } = parseStorageUrl(track.file_url);
+      if (bucket && path) {
+        const { data: signed, error } = await supabase.storage
+          .from(bucket)
+          .createSignedUrl(path, 300);
+        if (signed?.signedUrl) {
+          window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
+          onPlayed?.();
+          return;
         }
-      };
-      el.load();
-      await el.play();
+        console.warn('Signed URL creation failed, opening direct URL', { error, bucket, path });
+      }
+
+      const direct = track.resolved_url || track.file_url;
+      window.open(direct, '_blank', 'noopener,noreferrer');
       onPlayed?.();
     } catch (err) {
-      console.error('TrackPlayer play error', err);
-      // Fallback: try playing via a short-lived signed URL directly
-      try {
-        const { bucket, path } = parseStorageUrl(track.file_url);
-        const el = audioRef.current;
-        if (bucket && path && el) {
-          const { data: signed } = await supabase.storage.from(bucket).createSignedUrl(path, 60);
-          if (signed?.signedUrl) {
-            const desiredType = track.mime_type || deriveMime(track.file_name);
-            el.src = signed.signedUrl;
-            setSrcType(desiredType);
-            setSrcUrl(signed.signedUrl);
-            el.load();
-            await el.play();
-            onPlayed?.();
-            return;
-          }
-        }
-      } catch (fallbackErr) {
-        console.error('Signed URL fallback failed', fallbackErr);
-      }
+      console.error('Open in new tab failed', err);
       toast({
-        title: 'Playback failed',
-        description: 'We could not play this track. Tap again or use Download.',
+        title: 'Could not open player',
+        description: 'Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -141,7 +118,7 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         aria-busy={loading}
       >
         <Play className="h-5 w-5" />
-        {loading ? 'Loading...' : 'Play'}
+        {loading ? 'Loading...' : 'Open Player'}
       </Button>
 
       <audio
