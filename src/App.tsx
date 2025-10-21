@@ -21,6 +21,9 @@ import AdvancedAssessment from "./pages/AdvancedAssessment";
 import DoorwaysAssessment from "./pages/DoorwaysAssessment";
 import EmotionsDictionary from "./pages/EmotionsDictionary";
 import Courses from "./pages/Courses";
+import DeliveranceCourse from "./pages/DeliveranceCourse";
+import IntercessionCourse from "./pages/IntercessionCourse";
+import CourtsOfHeavenCourse from "./pages/CourtsOfHeavenCourse";
 import NaturalHealingResources from "./pages/NaturalHealingResources";
 import SpiritualTraumaResources from "./pages/SpiritualTraumaResources";
 import Deliverance from "./pages/Deliverance";
@@ -84,6 +87,9 @@ const App = () => (
           <Route path="/assessments/doorways" element={<DoorwaysAssessment />} />
           <Route path="/emotions" element={<EmotionsDictionary />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/course/deliverance" element={<DeliveranceCourse />} />
+          <Route path="/course/intercession" element={<IntercessionCourse />} />
+          <Route path="/course/courts-of-heaven" element={<CourtsOfHeavenCourse />} />
           <Route path="/natural-healing" element={<NaturalHealingResources />} />
           <Route path="/spiritual-trauma" element={<SpiritualTraumaResources />} />
           <Route path="/deliverance" element={<Deliverance />} />

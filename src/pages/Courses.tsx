@@ -693,9 +693,15 @@ const Courses = () => {
                                   variant={completed ? "outline" : "default"}
                                   onClick={() => {
                                     if (category.id === 'naturalHealing') {
-                                      window.location.href = '/natural-healing';
+                                      navigate('/natural-healing');
                                     } else if (category.id === 'trauma') {
-                                      window.location.href = '/spiritual-trauma';
+                                      navigate('/spiritual-trauma');
+                                    } else if (category.id === 'deliverance') {
+                                      navigate(`/course/deliverance?level=${level.level}`);
+                                    } else if (category.id === 'intercessors') {
+                                      navigate(`/course/intercession?level=${level.level}`);
+                                    } else if (category.id === 'tribunals') {
+                                      navigate(`/course/courts-of-heaven?level=${level.level}`);
                                     } else {
                                       enrollInCourse(category.id, level.level);
                                     }
