@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -36,8 +37,8 @@ const deriveMime = (name: string) => {
 };
 
 export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
-  let audioEl: HTMLAudioElement | null = null;
-  let buttonEl: HTMLButtonElement | null = null;
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const toTypedBlobUrl = async (blob: Blob, desiredType: string) => {
     if (blob.type && blob.type !== 'application/octet-stream') {
@@ -64,13 +65,15 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
   };
 
   const handlePlay = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
-      if (buttonEl) buttonEl.disabled = true;
       const objectUrl = await fetchObjectUrl();
-      if (!audioEl) return;
-      audioEl.src = objectUrl;
-      audioEl.load();
-      await audioEl.play();
+      const el = audioRef.current;
+      if (!el) return;
+      el.src = objectUrl;
+      el.load();
+      await el.play();
       onPlayed?.();
     } catch (err) {
       console.error('TrackPlayer play error', err);
@@ -80,7 +83,7 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         variant: 'destructive',
       });
     } finally {
-      if (buttonEl) buttonEl.disabled = false;
+      setLoading(false);
     }
   };
 
@@ -90,14 +93,15 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
         onClick={handlePlay}
         size="lg"
         className="gap-2 active:translate-y-[2px] transition-transform"
-        ref={(el) => { buttonEl = el; }}
+        disabled={loading}
+        aria-busy={loading}
       >
         <Play className="h-5 w-5" />
-        Play
+        {loading ? 'Loading...' : 'Play'}
       </Button>
 
       <audio
-        ref={(el) => { audioEl = el; }}
+        ref={audioRef}
         className="w-full"
         crossOrigin="anonymous"
         preload="metadata"
