@@ -80,21 +80,10 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
     if (loading) return;
     setLoading(true);
     try {
-      const { bucket, path } = parseStorageUrl(track.file_url);
-      if (bucket && path) {
-        const { data: signed, error } = await supabase.storage
-          .from(bucket)
-          .createSignedUrl(path, 300);
-        if (signed?.signedUrl) {
-          window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
-          onPlayed?.();
-          return;
-        }
-        console.warn('Signed URL creation failed, opening direct URL', { error, bucket, path });
-      }
-
-      const direct = track.resolved_url || track.file_url;
-      window.open(direct, '_blank', 'noopener,noreferrer');
+      // Use edge function to stream audio from app domain
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const streamUrl = `${supabaseUrl}/functions/v1/stream-audio?track=${track.id}`;
+      window.open(streamUrl, '_blank', 'noopener,noreferrer');
       onPlayed?.();
     } catch (err) {
       console.error('Open in new tab failed', err);

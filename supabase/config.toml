@@ -1,5 +1,8 @@
 project_id = "vnhnmkjxhmsylrznxckj"
 
+[functions.stream-audio]
+verify_jwt = false
+
 [functions.ai-deliverance-chat]
 verify_jwt = true
 
