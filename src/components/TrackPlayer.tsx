@@ -19,7 +19,8 @@ interface TrackPlayerProps {
 }
 
 const parseStorageUrl = (fileUrl: string): { bucket: string | null; path: string | null } => {
-  const m = fileUrl?.match(/\/storage\/v1\/object\/(?:public|sign)\/([^/]+)\/(.+?)(?:\?.*)?$/);
+  // Supports /object/<bucket>/<path> and /object/public|sign/<bucket>/<path>
+  const m = fileUrl?.match(/\/storage\/v1\/object\/(?:(?:public|sign)\/)?([^/]+)\/(.+?)(?:\?.*)?$/);
   return m ? { bucket: m[1], path: m[2] } : { bucket: null, path: null };
 };
 
@@ -53,17 +54,26 @@ export default function TrackPlayer({ track, onPlayed }: TrackPlayerProps) {
     const desiredType = track.mime_type || deriveMime(track.file_name);
     const { bucket, path } = parseStorageUrl(track.file_url);
 
-    // Try direct storage download first if bucket/path resolvable
+    // Try direct authenticated storage download first
     if (bucket && path) {
-      const { data } = await supabase.storage.from(bucket).download(path);
+      const { data, error } = await supabase.storage.from(bucket).download(path);
       if (data) return toTypedBlobUrl(data, desiredType);
+      console.warn('Storage download fallback to signed URL', { error, bucket, path });
+      const { data: signed } = await supabase.storage.from(bucket).createSignedUrl(path, 60);
+      if (signed?.signedUrl) {
+        const resp = await fetch(signed.signedUrl);
+        if (!resp.ok) throw new Error(`Signed URL fetch failed: ${resp.status}`);
+        const blob = await resp.blob();
+        return toTypedBlobUrl(blob, desiredType);
+      }
     }
-    // Fallback to fetching the URL as-is
+
+    // Final fallback: fetch the provided URL as-is
     const resp = await fetch(track.resolved_url || track.file_url);
+    if (!resp.ok) throw new Error(`Direct fetch failed: ${resp.status}`);
     const blob = await resp.blob();
     return toTypedBlobUrl(blob, desiredType);
   };
-
   const handlePlay = async () => {
     if (loading) return;
     setLoading(true);
