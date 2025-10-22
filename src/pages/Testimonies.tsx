@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import TestimonialMatching from '@/components/TestimonialMatching';
+import { useTranslation } from 'react-i18next';
 
 interface Testimony {
   id: string;
@@ -31,6 +32,7 @@ interface Testimony {
 
 const Testimonies = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [myTestimonies, setMyTestimonies] = useState<Testimony[]>([]);
   const [publicTestimonies, setPublicTestimonies] = useState<Testimony[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +82,7 @@ const Testimonies = () => {
       if (publicData) setPublicTestimonies(publicData);
     } catch (error) {
       console.error('Error fetching testimonies:', error);
-      toast.error('Failed to load testimonies');
+      toast.error(t('testimonies.failedToLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +104,7 @@ const Testimonies = () => {
           .eq('id', editingTestimony.id);
 
         if (error) throw error;
-        toast.success('Testimony updated successfully');
+        toast.success(t('testimonies.testimonyUpdated'));
       } else {
         const { error } = await supabase
           .from('testimonies')
@@ -114,7 +116,7 @@ const Testimonies = () => {
           });
 
         if (error) throw error;
-        toast.success('Testimony shared! Thank you for glorifying God.');
+        toast.success(t('testimonies.testimonyShared'));
       }
 
       setIsDialogOpen(false);
@@ -123,12 +125,12 @@ const Testimonies = () => {
       fetchTestimonies();
     } catch (error) {
       console.error('Error saving testimony:', error);
-      toast.error('Failed to save testimony');
+      toast.error(t('testimonies.failedToSave'));
     }
   };
 
   const deleteTestimony = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this testimony?')) return;
+    if (!confirm(t('testimonies.deleteConfirm'))) return;
 
     try {
       const { error } = await supabase
@@ -137,11 +139,11 @@ const Testimonies = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast.success('Testimony deleted');
+      toast.success(t('testimonies.testimonyDeleted'));
       fetchTestimonies();
     } catch (error) {
       console.error('Error deleting testimony:', error);
-      toast.error('Failed to delete testimony');
+      toast.error(t('testimonies.failedToDelete'));
     }
   };
 
@@ -171,12 +173,12 @@ const Testimonies = () => {
               {testimony.is_public ? (
                 <Badge className="gap-1">
                   <Globe className="w-3 h-3" />
-                  Public
+                  {t('testimonies.public')}
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="gap-1">
                   <Lock className="w-3 h-3" />
-                  Private
+                  {t('testimonies.private')}
                 </Badge>
               )}
             </div>
@@ -224,7 +226,7 @@ const Testimonies = () => {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/dashboard">
                   <ChevronLeft className="w-4 h-4 mr-2" />
-                  Dashboard
+                  {t('testimonies.dashboard')}
                 </Link>
               </Button>
             </div>
@@ -232,41 +234,41 @@ const Testimonies = () => {
               <div>
                 <h1 className="font-serif text-3xl md:text-4xl font-bold flex items-center gap-3">
                   <MessageSquare className="w-8 h-8" />
-                  Testimonies
+                  {t('testimonies.title')}
                 </h1>
-                <p className="text-muted-foreground mt-2">Share how God has delivered you</p>
+                <p className="text-muted-foreground mt-2">{t('testimonies.subtitle')}</p>
               </div>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button onClick={() => closeDialog()}>
                     <Plus className="w-4 h-4 mr-2" />
-                    Share Testimony
+                    {t('testimonies.shareTestimony')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[625px]">
                   <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                      <DialogTitle>{editingTestimony ? 'Edit Testimony' : 'Share Your Testimony'}</DialogTitle>
+                      <DialogTitle>{editingTestimony ? t('testimonies.editTestimony') : t('testimonies.shareYourTestimony')}</DialogTitle>
                       <DialogDescription>
-                        "They triumphed over him by the blood of the Lamb and by the word of their testimony" - Revelation 12:11
+                        {t('testimonies.verseQuote')}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid gap-2">
-                        <Label htmlFor="title">Title</Label>
+                        <Label htmlFor="title">{t('testimonies.titleLabel')}</Label>
                         <Input
                           id="title"
-                          placeholder="What did God deliver you from?"
+                          placeholder={t('testimonies.titlePlaceholder')}
                           value={formData.title}
                           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                           required
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="content">Your Testimony</Label>
+                        <Label htmlFor="content">{t('testimonies.contentLabel')}</Label>
                         <Textarea
                           id="content"
-                          placeholder="Share your story of deliverance..."
+                          placeholder={t('testimonies.contentPlaceholder')}
                           value={formData.content}
                           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                           rows={8}
@@ -275,9 +277,9 @@ const Testimonies = () => {
                       </div>
                       <div className="flex items-center justify-between space-x-2 p-4 border rounded-lg">
                         <div className="space-y-0.5">
-                          <Label htmlFor="public">Make Public</Label>
+                          <Label htmlFor="public">{t('testimonies.makePublic')}</Label>
                           <p className="text-sm text-muted-foreground">
-                            Allow others to be encouraged by your testimony
+                            {t('testimonies.makePublicDesc')}
                           </p>
                         </div>
                         <Switch
@@ -289,10 +291,10 @@ const Testimonies = () => {
                     </div>
                     <DialogFooter>
                       <Button type="button" variant="outline" onClick={closeDialog}>
-                        Cancel
+                        {t('testimonies.cancel')}
                       </Button>
                       <Button type="submit">
-                        {editingTestimony ? 'Update' : 'Share Testimony'}
+                        {editingTestimony ? t('testimonies.update') : t('testimonies.shareTestimony')}
                       </Button>
                     </DialogFooter>
                   </form>
@@ -305,8 +307,8 @@ const Testimonies = () => {
         <div className="container mx-auto px-4 py-8">
           <Tabs defaultValue="my-testimonies" className="max-w-6xl mx-auto">
             <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="my-testimonies">My Testimonies</TabsTrigger>
-              <TabsTrigger value="community">Community Testimonies</TabsTrigger>
+              <TabsTrigger value="my-testimonies">{t('testimonies.myTestimonies')}</TabsTrigger>
+              <TabsTrigger value="community">{t('testimonies.communityTestimonies')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="my-testimonies" className="space-y-6">
@@ -315,14 +317,14 @@ const Testimonies = () => {
               )}
               {isLoading ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">Loading testimonies...</p>
+                  <p className="text-muted-foreground">{t('testimonies.loadingTestimonies')}</p>
                 </div>
               ) : myTestimonies.length === 0 ? (
                 <Card>
                   <CardHeader>
-                    <CardTitle>No Testimonies Yet</CardTitle>
+                    <CardTitle>{t('testimonies.noTestimoniesYet')}</CardTitle>
                     <CardDescription>
-                      Share your first testimony of God's deliverance and victory in your life.
+                      {t('testimonies.shareFirstTestimony')}
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -338,14 +340,14 @@ const Testimonies = () => {
             <TabsContent value="community">
               {isLoading ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">Loading testimonies...</p>
+                  <p className="text-muted-foreground">{t('testimonies.loadingTestimonies')}</p>
                 </div>
               ) : publicTestimonies.length === 0 ? (
                 <Card>
                   <CardHeader>
-                    <CardTitle>No Public Testimonies</CardTitle>
+                    <CardTitle>{t('testimonies.noPublicTestimonies')}</CardTitle>
                     <CardDescription>
-                      Be the first to share a public testimony and encourage others!
+                      {t('testimonies.beTheFirst')}
                     </CardDescription>
                   </CardHeader>
                 </Card>

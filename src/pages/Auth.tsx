@@ -8,10 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, Shield } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslation } from 'react-i18next';
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -22,8 +24,8 @@ const Auth = () => {
     
     if (!loginForm.email || !loginForm.password) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all fields",
+        title: t('auth.missingInfo'),
+        description: t('auth.fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -35,14 +37,14 @@ const Auth = () => {
 
     if (error) {
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password",
+        title: t('auth.loginFailed'),
+        description: error.message || t('auth.invalidCredentials'),
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Welcome Back!",
-        description: "You have successfully logged in",
+        title: t('auth.welcomeBack'),
+        description: t('auth.successfulLogin'),
       });
     }
   };
@@ -52,8 +54,8 @@ const Auth = () => {
 
     if (!signupForm.email || !signupForm.password || !signupForm.confirmPassword || !signupForm.fullName) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all fields",
+        title: t('auth.missingInfo'),
+        description: t('auth.fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -61,8 +63,8 @@ const Auth = () => {
 
     if (signupForm.password.length < 6) {
       toast({
-        title: "Weak Password",
-        description: "Password must be at least 6 characters long",
+        title: t('auth.weakPassword'),
+        description: t('auth.passwordLength'),
         variant: "destructive",
       });
       return;
@@ -70,8 +72,8 @@ const Auth = () => {
 
     if (signupForm.password !== signupForm.confirmPassword) {
       toast({
-        title: "Password Mismatch",
-        description: "Passwords do not match",
+        title: t('auth.passwordMismatch'),
+        description: t('auth.passwordsDontMatch'),
         variant: "destructive",
       });
       return;
@@ -84,21 +86,21 @@ const Auth = () => {
     if (error) {
       if (error.message.includes('already registered')) {
         toast({
-          title: "Account Exists",
-          description: "This email is already registered. Please login instead.",
+          title: t('auth.accountExists'),
+          description: t('auth.emailRegistered'),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Signup Failed",
+          title: t('auth.signupFailed'),
           description: error.message,
           variant: "destructive",
         });
       }
     } else {
       toast({
-        title: "Account Created!",
-        description: "Welcome to your spiritual journey",
+        title: t('auth.accountCreated'),
+        description: t('auth.welcomeMessage'),
       });
     }
   };
@@ -110,50 +112,50 @@ const Auth = () => {
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Shield className="w-6 h-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Deliverance Ministry</CardTitle>
-          <CardDescription>Begin your journey to spiritual freedom</CardDescription>
+          <CardTitle className="text-2xl">{t('auth.title')}</CardTitle>
+          <CardDescription>{t('auth.subtitle')}</CardDescription>
         </CardHeader>
         
         <CardContent>
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your spiritual journey is personal and protected. All data is encrypted and secure.
+              {t('auth.securityNotice')}
             </AlertDescription>
           </Alert>
 
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="login">{t('auth.login')}</TabsTrigger>
+              <TabsTrigger value="signup">{t('auth.signup')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email">{t('auth.email')}</Label>
                   <Input
                     id="login-email"
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     value={loginForm.email}
                     onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password">{t('auth.password')}</Label>
                   <Input
                     id="login-password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t('auth.passwordPlaceholder')}
                     value={loginForm.password}
                     onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+                  {isLoading ? t('auth.loggingIn') : t('auth.loginButton')}
                 </Button>
               </form>
             </TabsContent>
@@ -161,51 +163,51 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Label htmlFor="signup-name">{t('auth.fullName')}</Label>
                   <Input
                     id="signup-name"
                     type="text"
-                    placeholder="Your Name"
+                    placeholder={t('auth.fullNamePlaceholder')}
                     value={signupForm.fullName}
                     onChange={(e) => setSignupForm({ ...signupForm, fullName: e.target.value })}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">{t('auth.email')}</Label>
                   <Input
                     id="signup-email"
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     value={signupForm.email}
                     onChange={(e) => setSignupForm({ ...signupForm, email: e.target.value })}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password">{t('auth.password')}</Label>
                   <Input
                     id="signup-password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t('auth.passwordPlaceholder')}
                     value={signupForm.password}
                     onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-confirm">Confirm Password</Label>
+                  <Label htmlFor="signup-confirm">{t('auth.confirmPassword')}</Label>
                   <Input
                     id="signup-confirm"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t('auth.passwordPlaceholder')}
                     value={signupForm.confirmPassword}
                     onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Creating Account..." : "Create Account"}
+                  {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
                 </Button>
               </form>
             </TabsContent>
@@ -213,7 +215,7 @@ const Auth = () => {
         </CardContent>
         
         <CardFooter className="text-center text-sm text-muted-foreground">
-          By continuing, you agree to our terms of service and privacy policy
+          {t('auth.termsFooter')}
         </CardFooter>
       </Card>
     </div>
