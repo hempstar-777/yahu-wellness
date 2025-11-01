@@ -20,6 +20,7 @@ import NewAgeAssessment from "./pages/NewAgeAssessment";
 import AdvancedAssessment from "./pages/AdvancedAssessment";
 import DoorwaysAssessment from "./pages/DoorwaysAssessment";
 import EmotionsDictionary from "./pages/EmotionsDictionary";
+import EmotionalResonance from "./pages/EmotionalResonance";
 import Courses from "./pages/Courses";
 import DeliveranceCourse from "./pages/DeliveranceCourse";
 import IntercessionCourse from "./pages/IntercessionCourse";
@@ -86,6 +87,7 @@ const App = () => (
           <Route path="/assessments/advanced" element={<AdvancedAssessment />} />
           <Route path="/assessments/doorways" element={<DoorwaysAssessment />} />
           <Route path="/emotions" element={<EmotionsDictionary />} />
+          <Route path="/emotional-resonance" element={<EmotionalResonance />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/course/deliverance" element={<DeliveranceCourse />} />
           <Route path="/course/intercession" element={<IntercessionCourse />} />

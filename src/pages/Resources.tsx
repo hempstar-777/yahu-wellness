@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink, Heart, Flame, Apple } from "lucide-react";
+import { ChevronLeft, BookOpen, Video, MessageCircle, ExternalLink, Heart, Flame, Apple, Brain } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import BibleAudioPlayer from "@/components/BibleAudioPlayer";
@@ -51,6 +51,12 @@ const Resources = () => {
       description: "Why inviting the Ruach HaKodesh is crucial—avoiding spiritual voids",
       duration: "8 min read",
       link: "/teaching/post-deliverance"
+    },
+    {
+      title: "Emotional Resonance Mastery",
+      description: "How to master the invisible force that shapes your emotions, relationships, and influence",
+      duration: "20 min read",
+      link: "/emotional-resonance"
     },
   ];
 
